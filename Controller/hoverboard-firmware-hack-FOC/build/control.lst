@@ -1,0 +1,1111 @@
+ARM GAS  /tmp/cc1pJ3dA.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"control.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/control.c"
+  18              		.section	.text.Nunchuk_tx,"ax",%progbits
+  19              		.align	1
+  20              		.global	Nunchuk_tx
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	Nunchuk_tx:
+  26              	.LVL0:
+  27              	.LFB66:
+   1:Src/control.c **** 
+   2:Src/control.c **** #include <stdbool.h>
+   3:Src/control.c **** #include <string.h>
+   4:Src/control.c **** #include "stm32f1xx_hal.h"
+   5:Src/control.c **** #include "defines.h"
+   6:Src/control.c **** #include "setup.h"
+   7:Src/control.c **** #include "config.h"
+   8:Src/control.c **** 
+   9:Src/control.c **** #define NUNCHUK_I2C_ADDRESS 0xA4
+  10:Src/control.c **** 
+  11:Src/control.c **** TIM_HandleTypeDef TimHandle;
+  12:Src/control.c **** TIM_HandleTypeDef TimHandle2;
+  13:Src/control.c **** uint8_t  ppm_count = 0;
+  14:Src/control.c **** uint8_t  pwm_count = 0;
+  15:Src/control.c **** uint32_t timeoutCntGen = TIMEOUT;
+  16:Src/control.c **** uint8_t  timeoutFlgGen = 0;
+  17:Src/control.c **** uint8_t  nunchuk_data[6] = {0};
+  18:Src/control.c **** 
+  19:Src/control.c **** uint8_t i2cBuffer[2];
+  20:Src/control.c **** nunchuk_state nunchukState = NUNCHUK_CONNECTING;
+  21:Src/control.c **** 
+  22:Src/control.c **** extern I2C_HandleTypeDef hi2c2;
+  23:Src/control.c **** extern DMA_HandleTypeDef hdma_i2c2_rx;
+  24:Src/control.c **** extern DMA_HandleTypeDef hdma_i2c2_tx;
+  25:Src/control.c **** 
+  26:Src/control.c **** #if defined(CONTROL_PPM_LEFT) || defined(CONTROL_PPM_RIGHT)
+  27:Src/control.c **** uint16_t ppm_captured_value[PPM_NUM_CHANNELS + 1] = {500, 500};
+  28:Src/control.c **** uint16_t ppm_captured_value_buffer[PPM_NUM_CHANNELS+1] = {500, 500};
+  29:Src/control.c **** uint32_t ppm_timeout = 0;
+  30:Src/control.c **** 
+  31:Src/control.c **** bool ppm_valid = true;
+ARM GAS  /tmp/cc1pJ3dA.s 			page 2
+
+
+  32:Src/control.c **** 
+  33:Src/control.c **** void PPM_ISR_Callback(void) {
+  34:Src/control.c ****   // Dummy loop with 16 bit count wrap around
+  35:Src/control.c ****   uint16_t rc_delay = TIM2->CNT;
+  36:Src/control.c ****   TIM2->CNT = 0;
+  37:Src/control.c **** 
+  38:Src/control.c ****   if (rc_delay > 3000) {
+  39:Src/control.c ****     if (ppm_valid && ppm_count == PPM_NUM_CHANNELS) {
+  40:Src/control.c ****       ppm_timeout = 0;
+  41:Src/control.c ****       timeoutCntGen = 0;
+  42:Src/control.c ****       timeoutFlgGen = 0;
+  43:Src/control.c ****       memcpy(ppm_captured_value, ppm_captured_value_buffer, sizeof(ppm_captured_value));
+  44:Src/control.c ****     }
+  45:Src/control.c ****     ppm_valid = true;
+  46:Src/control.c ****     ppm_count = 0;
+  47:Src/control.c ****   }
+  48:Src/control.c ****   else if (ppm_count < PPM_NUM_CHANNELS && IN_RANGE(rc_delay, 900, 2100)){
+  49:Src/control.c ****     ppm_captured_value_buffer[ppm_count++] = CLAMP(rc_delay, 1000, 2000) - 1000;
+  50:Src/control.c ****   } else {
+  51:Src/control.c ****     ppm_valid = false;
+  52:Src/control.c ****   }
+  53:Src/control.c **** }
+  54:Src/control.c **** 
+  55:Src/control.c **** // SysTick executes once each ms
+  56:Src/control.c **** void PPM_SysTick_Callback(void) {
+  57:Src/control.c ****   ppm_timeout++;
+  58:Src/control.c ****   // Stop after 500 ms without PPM signal
+  59:Src/control.c ****   if(ppm_timeout > 500) {
+  60:Src/control.c ****     int i;
+  61:Src/control.c ****     for(i = 0; i < PPM_NUM_CHANNELS; i++) {
+  62:Src/control.c ****       ppm_captured_value[i] = 500;
+  63:Src/control.c ****     }
+  64:Src/control.c ****     ppm_timeout = 0;
+  65:Src/control.c ****   }
+  66:Src/control.c **** }
+  67:Src/control.c **** 
+  68:Src/control.c **** void PPM_Init(void) {
+  69:Src/control.c ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  70:Src/control.c ****   /*Configure GPIO pin : PA3 */
+  71:Src/control.c ****   GPIO_InitStruct.Pin = PPM_PIN;
+  72:Src/control.c ****   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  73:Src/control.c ****   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  74:Src/control.c ****   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  75:Src/control.c ****   HAL_GPIO_Init(PPM_PORT, &GPIO_InitStruct);
+  76:Src/control.c **** 
+  77:Src/control.c ****   __HAL_RCC_TIM2_CLK_ENABLE();
+  78:Src/control.c ****   TimHandle.Instance = TIM2;
+  79:Src/control.c ****   TimHandle.Init.Period = UINT16_MAX;
+  80:Src/control.c ****   TimHandle.Init.Prescaler = (SystemCoreClock/DELAY_TIM_FREQUENCY_US)-1;;
+  81:Src/control.c ****   TimHandle.Init.ClockDivision = 0;
+  82:Src/control.c ****   TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
+  83:Src/control.c ****   HAL_TIM_Base_Init(&TimHandle);
+  84:Src/control.c **** 
+  85:Src/control.c ****   #if defined(CONTROL_PPM_LEFT)  
+  86:Src/control.c ****   /* EXTI interrupt init*/
+  87:Src/control.c ****   HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+  88:Src/control.c ****   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+ARM GAS  /tmp/cc1pJ3dA.s 			page 3
+
+
+  89:Src/control.c ****   #endif
+  90:Src/control.c **** 
+  91:Src/control.c ****   #if defined(CONTROL_PPM_RIGHT)  
+  92:Src/control.c ****   /* EXTI interrupt init*/
+  93:Src/control.c ****   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  94:Src/control.c ****   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  95:Src/control.c ****   #endif
+  96:Src/control.c **** 
+  97:Src/control.c ****   HAL_TIM_Base_Start(&TimHandle);
+  98:Src/control.c **** }
+  99:Src/control.c **** #endif
+ 100:Src/control.c **** 
+ 101:Src/control.c **** 
+ 102:Src/control.c **** #if defined(CONTROL_PWM_LEFT) || defined(CONTROL_PWM_RIGHT)
+ 103:Src/control.c ****  /*
+ 104:Src/control.c ****   * Illustration of the PWM functionality
+ 105:Src/control.c ****   * CH1 ________|‾‾‾‾‾‾‾‾‾‾|________
+ 106:Src/control.c ****   * CH2 ______________|‾‾‾‾‾‾‾‾‾‾‾|________
+ 107:Src/control.c ****   *             ↑     ↑    ↑      ↑
+ 108:Src/control.c ****   * TIM2       RST  SAVE RC_CH1 RC_CH1
+ 109:Src/control.c ****  */
+ 110:Src/control.c **** 
+ 111:Src/control.c **** uint16_t pwm_captured_ch1_value = 500;
+ 112:Src/control.c **** uint16_t pwm_captured_ch2_value = 500;
+ 113:Src/control.c **** uint16_t pwm_CNT_prev_ch1 = 0;
+ 114:Src/control.c **** uint16_t pwm_CNT_prev_ch2 = 0;
+ 115:Src/control.c **** uint32_t pwm_timeout_ch1 = 0;
+ 116:Src/control.c **** uint32_t pwm_timeout_ch2 = 0;
+ 117:Src/control.c **** 
+ 118:Src/control.c **** void PWM_ISR_CH1_Callback(void) {
+ 119:Src/control.c ****   // Dummy loop with 16 bit count wrap around
+ 120:Src/control.c ****   if(HAL_GPIO_ReadPin(PWM_PORT_CH1, PWM_PIN_CH1)) {   // Rising  Edge interrupt -> save timer value
+ 121:Src/control.c ****     if (HAL_GPIO_ReadPin(PWM_PORT_CH2, PWM_PIN_CH2)) {
+ 122:Src/control.c ****       pwm_CNT_prev_ch1 = TIM2->CNT;
+ 123:Src/control.c ****     } else {
+ 124:Src/control.c ****       TIM2->CNT = 0;
+ 125:Src/control.c ****       pwm_CNT_prev_ch1 = 0;
+ 126:Src/control.c ****     }
+ 127:Src/control.c ****   } else {                                    // Falling Edge interrupt -> measure pulse duration
+ 128:Src/control.c ****     uint16_t rc_signal = TIM2->CNT - pwm_CNT_prev_ch1;
+ 129:Src/control.c ****     if (IN_RANGE(rc_signal, 900, 2100)){
+ 130:Src/control.c ****       timeoutCntGen = 0;
+ 131:Src/control.c ****       timeoutFlgGen = 0;
+ 132:Src/control.c ****       pwm_timeout_ch1 = 0;
+ 133:Src/control.c ****       pwm_captured_ch1_value = CLAMP(rc_signal, 1000, 2000) - 1000;
+ 134:Src/control.c ****     }
+ 135:Src/control.c ****   }
+ 136:Src/control.c **** }
+ 137:Src/control.c **** 
+ 138:Src/control.c **** void PWM_ISR_CH2_Callback(void) {
+ 139:Src/control.c ****   // Dummy loop with 16 bit count wrap around
+ 140:Src/control.c ****   if(HAL_GPIO_ReadPin(PWM_PORT_CH2, PWM_PIN_CH2)) {   // Rising  Edge interrupt -> save timer value
+ 141:Src/control.c ****     if (HAL_GPIO_ReadPin(PWM_PORT_CH1, PWM_PIN_CH1)) {
+ 142:Src/control.c ****       pwm_CNT_prev_ch2 = TIM2->CNT;
+ 143:Src/control.c ****     } else {
+ 144:Src/control.c ****       TIM2->CNT = 0;
+ 145:Src/control.c ****       pwm_CNT_prev_ch2 = 0;
+ARM GAS  /tmp/cc1pJ3dA.s 			page 4
+
+
+ 146:Src/control.c ****     }
+ 147:Src/control.c ****   } else {                                    // Falling Edge interrupt -> measure pulse duration
+ 148:Src/control.c ****     uint16_t rc_signal = TIM2->CNT - pwm_CNT_prev_ch2;
+ 149:Src/control.c ****     if (IN_RANGE(rc_signal, 900, 2100)){
+ 150:Src/control.c ****       timeoutCntGen = 0;
+ 151:Src/control.c ****       timeoutFlgGen = 0;
+ 152:Src/control.c ****       pwm_timeout_ch2 = 0;
+ 153:Src/control.c ****       pwm_captured_ch2_value = CLAMP(rc_signal, 1000, 2000) - 1000;
+ 154:Src/control.c ****     }
+ 155:Src/control.c ****   }
+ 156:Src/control.c **** }
+ 157:Src/control.c **** 
+ 158:Src/control.c **** // SysTick executes once each ms
+ 159:Src/control.c **** void PWM_SysTick_Callback(void) {
+ 160:Src/control.c ****   pwm_timeout_ch1++;
+ 161:Src/control.c ****   pwm_timeout_ch2++;
+ 162:Src/control.c ****   // Stop after 500 ms without PWM signal
+ 163:Src/control.c ****   if(pwm_timeout_ch1 > 500) {
+ 164:Src/control.c ****     pwm_captured_ch1_value = 500;
+ 165:Src/control.c ****     pwm_timeout_ch1 = 0;
+ 166:Src/control.c ****   }
+ 167:Src/control.c ****   if(pwm_timeout_ch2 > 500) {
+ 168:Src/control.c ****     pwm_captured_ch2_value = 500;
+ 169:Src/control.c ****     pwm_timeout_ch2 = 0;
+ 170:Src/control.c ****   }
+ 171:Src/control.c **** }
+ 172:Src/control.c **** 
+ 173:Src/control.c **** void PWM_Init(void) {
+ 174:Src/control.c ****   // PWM Timer (TIM2)
+ 175:Src/control.c ****   __HAL_RCC_TIM2_CLK_ENABLE();
+ 176:Src/control.c ****   TimHandle.Instance            = TIM2;
+ 177:Src/control.c ****   TimHandle.Init.Period         = UINT16_MAX;
+ 178:Src/control.c ****   TimHandle.Init.Prescaler      = (SystemCoreClock/DELAY_TIM_FREQUENCY_US)-1;;
+ 179:Src/control.c ****   TimHandle.Init.ClockDivision  = 0;
+ 180:Src/control.c ****   TimHandle.Init.CounterMode    = TIM_COUNTERMODE_UP;
+ 181:Src/control.c ****   HAL_TIM_Base_Init(&TimHandle);  
+ 182:Src/control.c ****   
+ 183:Src/control.c ****   // Channel 1 (steering)
+ 184:Src/control.c ****   GPIO_InitTypeDef GPIO_InitStruct1 = {0};
+ 185:Src/control.c ****   // Configure GPIO pin : PA2 (Left) or PB10 (Right)
+ 186:Src/control.c ****   GPIO_InitStruct1.Pin          = PWM_PIN_CH1;
+ 187:Src/control.c ****   GPIO_InitStruct1.Mode         = GPIO_MODE_IT_RISING_FALLING;
+ 188:Src/control.c ****   GPIO_InitStruct1.Speed        = GPIO_SPEED_FREQ_HIGH;
+ 189:Src/control.c ****   GPIO_InitStruct1.Pull         = GPIO_PULLDOWN;
+ 190:Src/control.c ****   HAL_GPIO_Init(PWM_PORT_CH1, &GPIO_InitStruct1);
+ 191:Src/control.c **** 
+ 192:Src/control.c ****   // Channel 2 (speed)
+ 193:Src/control.c ****   GPIO_InitTypeDef GPIO_InitStruct2 = {0};
+ 194:Src/control.c ****   /*Configure GPIO pin : PA3 (Left) or PB11 (Right) */
+ 195:Src/control.c ****   GPIO_InitStruct2.Pin          = PWM_PIN_CH2;
+ 196:Src/control.c ****   GPIO_InitStruct2.Mode         = GPIO_MODE_IT_RISING_FALLING;
+ 197:Src/control.c ****   GPIO_InitStruct2.Speed        = GPIO_SPEED_FREQ_HIGH;
+ 198:Src/control.c ****   GPIO_InitStruct2.Pull         = GPIO_PULLDOWN;
+ 199:Src/control.c ****   HAL_GPIO_Init(PWM_PORT_CH2, &GPIO_InitStruct2);
+ 200:Src/control.c **** 
+ 201:Src/control.c ****   #ifdef CONTROL_PWM_LEFT
+ 202:Src/control.c ****   /* EXTI interrupt init*/
+ARM GAS  /tmp/cc1pJ3dA.s 			page 5
+
+
+ 203:Src/control.c ****   HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+ 204:Src/control.c ****   HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+ 205:Src/control.c ****   HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+ 206:Src/control.c ****   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+ 207:Src/control.c ****   #endif
+ 208:Src/control.c **** 
+ 209:Src/control.c ****   #ifdef CONTROL_PWM_RIGHT
+ 210:Src/control.c ****   /* EXTI interrupt init*/
+ 211:Src/control.c ****   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+ 212:Src/control.c ****   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+ 213:Src/control.c ****   #endif
+ 214:Src/control.c **** 
+ 215:Src/control.c ****   // Start timer
+ 216:Src/control.c ****   HAL_TIM_Base_Start(&TimHandle);
+ 217:Src/control.c **** }
+ 218:Src/control.c **** #endif
+ 219:Src/control.c **** 
+ 220:Src/control.c **** uint8_t Nunchuk_tx(uint8_t i2cBuffer[], uint8_t i2cBufferLength) {
+  28              		.loc 1 220 66 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 220 66 is_stmt 0 view .LVU1
+  33 0000 00B5     		push	{lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 14, -4
+  37 0002 83B0     		sub	sp, sp, #12
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+  40 0004 0246     		mov	r2, r0
+  41 0006 0B46     		mov	r3, r1
+ 221:Src/control.c ****   if(HAL_I2C_Master_Transmit(&hi2c2,NUNCHUK_I2C_ADDRESS,(uint8_t*)i2cBuffer, i2cBufferLength, 100) 
+  42              		.loc 1 221 3 is_stmt 1 view .LVU2
+  43              		.loc 1 221 6 is_stmt 0 view .LVU3
+  44 0008 6421     		movs	r1, #100
+  45              	.LVL1:
+  46              		.loc 1 221 6 view .LVU4
+  47 000a 0091     		str	r1, [sp]
+  48 000c A421     		movs	r1, #164
+  49 000e 0548     		ldr	r0, .L5
+  50              	.LVL2:
+  51              		.loc 1 221 6 view .LVU5
+  52 0010 FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+  53              	.LVL3:
+  54              		.loc 1 221 5 discriminator 1 view .LVU6
+  55 0014 18B1     		cbz	r0, .L3
+ 222:Src/control.c ****     return true;
+ 223:Src/control.c ****   }
+ 224:Src/control.c ****   return false;
+  56              		.loc 1 224 10 view .LVU7
+  57 0016 0020     		movs	r0, #0
+  58              	.L2:
+ 225:Src/control.c **** }
+  59              		.loc 1 225 1 view .LVU8
+  60 0018 03B0     		add	sp, sp, #12
+  61              	.LCFI2:
+ARM GAS  /tmp/cc1pJ3dA.s 			page 6
+
+
+  62              		.cfi_remember_state
+  63              		.cfi_def_cfa_offset 4
+  64              		@ sp needed
+  65 001a 5DF804FB 		ldr	pc, [sp], #4
+  66              	.L3:
+  67              	.LCFI3:
+  68              		.cfi_restore_state
+ 222:Src/control.c ****     return true;
+  69              		.loc 1 222 12 view .LVU9
+  70 001e 0120     		movs	r0, #1
+  71 0020 FAE7     		b	.L2
+  72              	.L6:
+  73 0022 00BF     		.align	2
+  74              	.L5:
+  75 0024 00000000 		.word	hi2c2
+  76              		.cfi_endproc
+  77              	.LFE66:
+  79              		.section	.text.Nunchuk_rx,"ax",%progbits
+  80              		.align	1
+  81              		.global	Nunchuk_rx
+  82              		.syntax unified
+  83              		.thumb
+  84              		.thumb_func
+  86              	Nunchuk_rx:
+  87              	.LVL4:
+  88              	.LFB67:
+ 226:Src/control.c **** 
+ 227:Src/control.c **** uint8_t Nunchuk_rx(uint8_t i2cBuffer[], uint8_t i2cBufferLength) {
+  89              		.loc 1 227 66 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 0
+  92              		@ frame_needed = 0, uses_anonymous_args = 0
+  93              		.loc 1 227 66 is_stmt 0 view .LVU11
+  94 0000 00B5     		push	{lr}
+  95              	.LCFI4:
+  96              		.cfi_def_cfa_offset 4
+  97              		.cfi_offset 14, -4
+  98 0002 83B0     		sub	sp, sp, #12
+  99              	.LCFI5:
+ 100              		.cfi_def_cfa_offset 16
+ 101 0004 0246     		mov	r2, r0
+ 102 0006 0B46     		mov	r3, r1
+ 228:Src/control.c ****   if(HAL_I2C_Master_Receive(&hi2c2,NUNCHUK_I2C_ADDRESS,(uint8_t*)i2cBuffer, i2cBufferLength, 100) =
+ 103              		.loc 1 228 3 is_stmt 1 view .LVU12
+ 104              		.loc 1 228 6 is_stmt 0 view .LVU13
+ 105 0008 6421     		movs	r1, #100
+ 106              	.LVL5:
+ 107              		.loc 1 228 6 view .LVU14
+ 108 000a 0091     		str	r1, [sp]
+ 109 000c A421     		movs	r1, #164
+ 110 000e 0548     		ldr	r0, .L11
+ 111              	.LVL6:
+ 112              		.loc 1 228 6 view .LVU15
+ 113 0010 FFF7FEFF 		bl	HAL_I2C_Master_Receive
+ 114              	.LVL7:
+ 115              		.loc 1 228 5 discriminator 1 view .LVU16
+ 116 0014 18B1     		cbz	r0, .L9
+ARM GAS  /tmp/cc1pJ3dA.s 			page 7
+
+
+ 229:Src/control.c ****     return true;
+ 230:Src/control.c ****   }
+ 231:Src/control.c ****   return false;
+ 117              		.loc 1 231 10 view .LVU17
+ 118 0016 0020     		movs	r0, #0
+ 119              	.L8:
+ 232:Src/control.c **** }
+ 120              		.loc 1 232 1 view .LVU18
+ 121 0018 03B0     		add	sp, sp, #12
+ 122              	.LCFI6:
+ 123              		.cfi_remember_state
+ 124              		.cfi_def_cfa_offset 4
+ 125              		@ sp needed
+ 126 001a 5DF804FB 		ldr	pc, [sp], #4
+ 127              	.L9:
+ 128              	.LCFI7:
+ 129              		.cfi_restore_state
+ 229:Src/control.c ****     return true;
+ 130              		.loc 1 229 12 view .LVU19
+ 131 001e 0120     		movs	r0, #1
+ 132 0020 FAE7     		b	.L8
+ 133              	.L12:
+ 134 0022 00BF     		.align	2
+ 135              	.L11:
+ 136 0024 00000000 		.word	hi2c2
+ 137              		.cfi_endproc
+ 138              	.LFE67:
+ 140              		.section	.text.Nunchuk_Init,"ax",%progbits
+ 141              		.align	1
+ 142              		.global	Nunchuk_Init
+ 143              		.syntax unified
+ 144              		.thumb
+ 145              		.thumb_func
+ 147              	Nunchuk_Init:
+ 148              	.LFB68:
+ 233:Src/control.c **** 
+ 234:Src/control.c **** uint8_t Nunchuk_Init(void) {
+ 149              		.loc 1 234 28 is_stmt 1 view -0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153 0000 08B5     		push	{r3, lr}
+ 154              	.LCFI8:
+ 155              		.cfi_def_cfa_offset 8
+ 156              		.cfi_offset 3, -8
+ 157              		.cfi_offset 14, -4
+ 235:Src/control.c ****   //-- START -- init WiiNunchuk
+ 236:Src/control.c ****   i2cBuffer[0] = 0xF0;
+ 158              		.loc 1 236 3 view .LVU21
+ 159              		.loc 1 236 16 is_stmt 0 view .LVU22
+ 160 0002 0E48     		ldr	r0, .L17
+ 161 0004 F023     		movs	r3, #240
+ 162 0006 0370     		strb	r3, [r0]
+ 237:Src/control.c ****   i2cBuffer[1] = 0x55;
+ 163              		.loc 1 237 3 is_stmt 1 view .LVU23
+ 164              		.loc 1 237 16 is_stmt 0 view .LVU24
+ 165 0008 5523     		movs	r3, #85
+ARM GAS  /tmp/cc1pJ3dA.s 			page 8
+
+
+ 166 000a 4370     		strb	r3, [r0, #1]
+ 238:Src/control.c **** 
+ 239:Src/control.c ****   if(Nunchuk_tx(i2cBuffer, 2) == false) {
+ 167              		.loc 1 239 3 is_stmt 1 view .LVU25
+ 168              		.loc 1 239 6 is_stmt 0 view .LVU26
+ 169 000c 0221     		movs	r1, #2
+ 170 000e FFF7FEFF 		bl	Nunchuk_tx
+ 171              	.LVL8:
+ 172              		.loc 1 239 5 discriminator 1 view .LVU27
+ 173 0012 00B9     		cbnz	r0, .L16
+ 174              	.L14:
+ 240:Src/control.c ****     return false;
+ 241:Src/control.c ****   }
+ 242:Src/control.c ****   HAL_Delay(10);
+ 243:Src/control.c **** 
+ 244:Src/control.c ****   i2cBuffer[0] = 0xFB;
+ 245:Src/control.c ****   i2cBuffer[1] = 0x00;
+ 246:Src/control.c **** 
+ 247:Src/control.c ****   if(Nunchuk_tx(i2cBuffer, 2) == false) {
+ 248:Src/control.c ****     return false;
+ 249:Src/control.c ****   }
+ 250:Src/control.c ****   HAL_Delay(10);
+ 251:Src/control.c **** 
+ 252:Src/control.c ****   return true;
+ 253:Src/control.c **** }
+ 175              		.loc 1 253 1 view .LVU28
+ 176 0014 08BD     		pop	{r3, pc}
+ 177              	.L16:
+ 242:Src/control.c **** 
+ 178              		.loc 1 242 3 is_stmt 1 view .LVU29
+ 179 0016 0A20     		movs	r0, #10
+ 180 0018 FFF7FEFF 		bl	HAL_Delay
+ 181              	.LVL9:
+ 244:Src/control.c ****   i2cBuffer[1] = 0x00;
+ 182              		.loc 1 244 3 view .LVU30
+ 244:Src/control.c ****   i2cBuffer[1] = 0x00;
+ 183              		.loc 1 244 16 is_stmt 0 view .LVU31
+ 184 001c 0748     		ldr	r0, .L17
+ 185 001e FB23     		movs	r3, #251
+ 186 0020 0370     		strb	r3, [r0]
+ 245:Src/control.c **** 
+ 187              		.loc 1 245 3 is_stmt 1 view .LVU32
+ 245:Src/control.c **** 
+ 188              		.loc 1 245 16 is_stmt 0 view .LVU33
+ 189 0022 0023     		movs	r3, #0
+ 190 0024 4370     		strb	r3, [r0, #1]
+ 247:Src/control.c ****     return false;
+ 191              		.loc 1 247 3 is_stmt 1 view .LVU34
+ 247:Src/control.c ****     return false;
+ 192              		.loc 1 247 6 is_stmt 0 view .LVU35
+ 193 0026 0221     		movs	r1, #2
+ 194 0028 FFF7FEFF 		bl	Nunchuk_tx
+ 195              	.LVL10:
+ 247:Src/control.c ****     return false;
+ 196              		.loc 1 247 5 discriminator 1 view .LVU36
+ 197 002c 0028     		cmp	r0, #0
+ 198 002e F1D0     		beq	.L14
+ARM GAS  /tmp/cc1pJ3dA.s 			page 9
+
+
+ 250:Src/control.c **** 
+ 199              		.loc 1 250 3 is_stmt 1 view .LVU37
+ 200 0030 0A20     		movs	r0, #10
+ 201 0032 FFF7FEFF 		bl	HAL_Delay
+ 202              	.LVL11:
+ 252:Src/control.c **** }
+ 203              		.loc 1 252 3 view .LVU38
+ 252:Src/control.c **** }
+ 204              		.loc 1 252 10 is_stmt 0 view .LVU39
+ 205 0036 0120     		movs	r0, #1
+ 206 0038 ECE7     		b	.L14
+ 207              	.L18:
+ 208 003a 00BF     		.align	2
+ 209              	.L17:
+ 210 003c 00000000 		.word	i2cBuffer
+ 211              		.cfi_endproc
+ 212              	.LFE68:
+ 214              		.section	.text.Nunchuk_Connect,"ax",%progbits
+ 215              		.align	1
+ 216              		.global	Nunchuk_Connect
+ 217              		.syntax unified
+ 218              		.thumb
+ 219              		.thumb_func
+ 221              	Nunchuk_Connect:
+ 222              	.LFB69:
+ 254:Src/control.c **** 
+ 255:Src/control.c **** uint8_t Nunchuk_Connect() {
+ 223              		.loc 1 255 27 is_stmt 1 view -0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 0
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227 0000 08B5     		push	{r3, lr}
+ 228              	.LCFI9:
+ 229              		.cfi_def_cfa_offset 8
+ 230              		.cfi_offset 3, -8
+ 231              		.cfi_offset 14, -4
+ 256:Src/control.c ****   /* Initialise / re-initialise I2C peripheral */
+ 257:Src/control.c ****   I2C_Init();
+ 232              		.loc 1 257 3 view .LVU41
+ 233 0002 FFF7FEFF 		bl	I2C_Init
+ 234              	.LVL12:
+ 258:Src/control.c ****   
+ 259:Src/control.c ****   /* Initialise / re-initialise nunchuk */
+ 260:Src/control.c ****   if(Nunchuk_Init() == true) {
+ 235              		.loc 1 260 3 view .LVU42
+ 236              		.loc 1 260 6 is_stmt 0 view .LVU43
+ 237 0006 FFF7FEFF 		bl	Nunchuk_Init
+ 238              	.LVL13:
+ 239              		.loc 1 260 5 discriminator 1 view .LVU44
+ 240 000a 0128     		cmp	r0, #1
+ 241 000c 01D0     		beq	.L23
+ 261:Src/control.c ****     nunchukState = NUNCHUK_CONNECTED;
+ 262:Src/control.c ****     return true;
+ 263:Src/control.c ****   } else {
+ 264:Src/control.c ****     return false;
+ 242              		.loc 1 264 12 view .LVU45
+ 243 000e 0020     		movs	r0, #0
+ARM GAS  /tmp/cc1pJ3dA.s 			page 10
+
+
+ 244              	.L20:
+ 265:Src/control.c ****   }
+ 266:Src/control.c **** }
+ 245              		.loc 1 266 1 view .LVU46
+ 246 0010 08BD     		pop	{r3, pc}
+ 247              	.L23:
+ 261:Src/control.c ****     nunchukState = NUNCHUK_CONNECTED;
+ 248              		.loc 1 261 5 is_stmt 1 view .LVU47
+ 261:Src/control.c ****     nunchukState = NUNCHUK_CONNECTED;
+ 249              		.loc 1 261 18 is_stmt 0 view .LVU48
+ 250 0012 024B     		ldr	r3, .L24
+ 251 0014 0322     		movs	r2, #3
+ 252 0016 1A70     		strb	r2, [r3]
+ 262:Src/control.c ****   } else {
+ 253              		.loc 1 262 5 is_stmt 1 view .LVU49
+ 262:Src/control.c ****   } else {
+ 254              		.loc 1 262 12 is_stmt 0 view .LVU50
+ 255 0018 FAE7     		b	.L20
+ 256              	.L25:
+ 257 001a 00BF     		.align	2
+ 258              	.L24:
+ 259 001c 00000000 		.word	nunchukState
+ 260              		.cfi_endproc
+ 261              	.LFE69:
+ 263              		.section	.text.Nunchuk_Read,"ax",%progbits
+ 264              		.align	1
+ 265              		.global	Nunchuk_Read
+ 266              		.syntax unified
+ 267              		.thumb
+ 268              		.thumb_func
+ 270              	Nunchuk_Read:
+ 271              	.LFB70:
+ 267:Src/control.c **** 
+ 268:Src/control.c **** nunchuk_state Nunchuk_Read(void) {
+ 272              		.loc 1 268 34 is_stmt 1 view -0
+ 273              		.cfi_startproc
+ 274              		@ args = 0, pretend = 0, frame = 0
+ 275              		@ frame_needed = 0, uses_anonymous_args = 0
+ 276 0000 38B5     		push	{r3, r4, r5, lr}
+ 277              	.LCFI10:
+ 278              		.cfi_def_cfa_offset 16
+ 279              		.cfi_offset 3, -16
+ 280              		.cfi_offset 4, -12
+ 281              		.cfi_offset 5, -8
+ 282              		.cfi_offset 14, -4
+ 269:Src/control.c ****   static uint8_t delay_counter = 0;
+ 283              		.loc 1 269 3 view .LVU52
+ 270:Src/control.c ****   uint16_t checksum = 0;
+ 284              		.loc 1 270 3 view .LVU53
+ 285              	.LVL14:
+ 271:Src/control.c ****   uint8_t success = true;
+ 286              		.loc 1 271 3 view .LVU54
+ 272:Src/control.c ****   uint8_t i = 0;
+ 287              		.loc 1 272 3 view .LVU55
+ 273:Src/control.c **** 
+ 274:Src/control.c ****   switch(nunchukState) {
+ 288              		.loc 1 274 3 view .LVU56
+ARM GAS  /tmp/cc1pJ3dA.s 			page 11
+
+
+ 289 0002 3A4B     		ldr	r3, .L50
+ 290 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 291 0006 032B     		cmp	r3, #3
+ 292 0008 66D8     		bhi	.L27
+ 293 000a DFE803F0 		tbb	[pc, r3]
+ 294              	.L29:
+ 295 000e 0F       		.byte	(.L30-.L29)/2
+ 296 000f 02       		.byte	(.L31-.L29)/2
+ 297 0010 0F       		.byte	(.L30-.L29)/2
+ 298 0011 18       		.byte	(.L28-.L29)/2
+ 299              		.p2align 1
+ 300              	.L31:
+ 275:Src/control.c ****     case NUNCHUK_DISCONNECTED:
+ 276:Src/control.c ****       success = false;
+ 301              		.loc 1 276 7 view .LVU57
+ 302              	.LVL15:
+ 277:Src/control.c ****       /* Delay a bit before reconnecting */
+ 278:Src/control.c ****       if(delay_counter++ > 100) {
+ 303              		.loc 1 278 7 view .LVU58
+ 304              		.loc 1 278 23 is_stmt 0 view .LVU59
+ 305 0012 374A     		ldr	r2, .L50+4
+ 306 0014 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 307 0016 591C     		adds	r1, r3, #1
+ 308 0018 1170     		strb	r1, [r2]
+ 309              		.loc 1 278 9 view .LVU60
+ 310 001a 642B     		cmp	r3, #100
+ 311 001c 61D9     		bls	.L32
+ 279:Src/control.c ****         success = Nunchuk_Connect();
+ 312              		.loc 1 279 9 is_stmt 1 view .LVU61
+ 313              		.loc 1 279 19 is_stmt 0 view .LVU62
+ 314 001e FFF7FEFF 		bl	Nunchuk_Connect
+ 315              	.LVL16:
+ 316 0022 0446     		mov	r4, r0
+ 317              	.LVL17:
+ 280:Src/control.c ****         delay_counter = 0;
+ 318              		.loc 1 280 9 is_stmt 1 view .LVU63
+ 319              		.loc 1 280 23 is_stmt 0 view .LVU64
+ 320 0024 324B     		ldr	r3, .L50+4
+ 321 0026 0022     		movs	r2, #0
+ 322 0028 1A70     		strb	r2, [r3]
+ 323 002a 53E0     		b	.L33
+ 324              	.LVL18:
+ 325              	.L30:
+ 281:Src/control.c ****       }
+ 282:Src/control.c ****       break;
+ 283:Src/control.c ****       
+ 284:Src/control.c ****     case NUNCHUK_CONNECTING:
+ 285:Src/control.c ****     case NUNCHUK_RECONNECTING:
+ 286:Src/control.c ****         /* Try to reconnect once, if fails again fall back to disconnected state */
+ 287:Src/control.c ****         success = Nunchuk_Connect();
+ 326              		.loc 1 287 9 is_stmt 1 view .LVU65
+ 327              		.loc 1 287 19 is_stmt 0 view .LVU66
+ 328 002c FFF7FEFF 		bl	Nunchuk_Connect
+ 329              	.LVL19:
+ 288:Src/control.c ****         if(!success) {
+ 330              		.loc 1 288 9 is_stmt 1 view .LVU67
+ 331              		.loc 1 288 11 is_stmt 0 view .LVU68
+ARM GAS  /tmp/cc1pJ3dA.s 			page 12
+
+
+ 332 0030 0446     		mov	r4, r0
+ 333 0032 0028     		cmp	r0, #0
+ 334 0034 4ED1     		bne	.L33
+ 289:Src/control.c ****           nunchukState = NUNCHUK_DISCONNECTED;
+ 335              		.loc 1 289 11 is_stmt 1 view .LVU69
+ 336              		.loc 1 289 24 is_stmt 0 view .LVU70
+ 337 0036 2D4B     		ldr	r3, .L50
+ 338 0038 0122     		movs	r2, #1
+ 339 003a 1A70     		strb	r2, [r3]
+ 290:Src/control.c ****         }
+ 291:Src/control.c ****       break;
+ 292:Src/control.c **** 
+ 293:Src/control.c ****     case NUNCHUK_CONNECTED:
+ 294:Src/control.c ****       /* Send read address of 0x00 to the Nunchuk */
+ 295:Src/control.c ****       i2cBuffer[0] = 0x00;
+ 296:Src/control.c ****       if(!Nunchuk_tx(i2cBuffer, 1)) {
+ 297:Src/control.c ****         success = false;
+ 298:Src/control.c ****       }
+ 299:Src/control.c ****       HAL_Delay(3);
+ 300:Src/control.c **** 
+ 301:Src/control.c ****       /* Clear the receive data buffer */
+ 302:Src/control.c ****       for(i = 0; i<6; i++) {
+ 303:Src/control.c ****         nunchuk_data[i] = 0;
+ 304:Src/control.c ****       }
+ 305:Src/control.c **** 
+ 306:Src/control.c ****       /* Read back 6 bytes from the Nunchuk */
+ 307:Src/control.c ****       if(!Nunchuk_rx(nunchuk_data, 6)) {
+ 308:Src/control.c ****         success = false;
+ 309:Src/control.c ****       }
+ 310:Src/control.c ****       HAL_Delay(3);
+ 311:Src/control.c **** 
+ 312:Src/control.c ****       /* Checksum the receive buffer to ensure it is not in an error condition, i.e. all 0x00 or 0x
+ 313:Src/control.c ****       for(i = 0; i<6; i++) {
+ 314:Src/control.c ****         checksum += nunchuk_data[i];
+ 315:Src/control.c ****       }
+ 316:Src/control.c ****       if(checksum == 0 || checksum == 0x5FA) {
+ 317:Src/control.c ****         success = false;
+ 318:Src/control.c ****       }
+ 319:Src/control.c **** 
+ 320:Src/control.c ****       /* Comms failure or timeout counter reached timeout limit */
+ 321:Src/control.c ****       if(success == false || timeoutCntGen > 3) {
+ 322:Src/control.c ****         /* Clear the receive data buffer */
+ 323:Src/control.c ****         for(i = 0; i<6; i++) {
+ 324:Src/control.c ****           nunchuk_data[i] = 0;
+ 325:Src/control.c ****         }
+ 326:Src/control.c ****         /* Brings motors to safe stop */
+ 327:Src/control.c ****         /* Expected values from nunchuk for stopped (mid) position */
+ 328:Src/control.c ****         nunchuk_data[0] = 127;
+ 329:Src/control.c ****         nunchuk_data[1] = 128;
+ 330:Src/control.c ****         timeoutFlgGen = 1;
+ 331:Src/control.c ****         nunchukState = NUNCHUK_RECONNECTING;
+ 332:Src/control.c ****       }
+ 333:Src/control.c ****       break;
+ 334:Src/control.c ****   }
+ 335:Src/control.c ****   /* Reset the timeout flag and counter if successful communication */
+ 336:Src/control.c ****   if(success == true) {
+ 340              		.loc 1 336 3 is_stmt 1 view .LVU71
+ARM GAS  /tmp/cc1pJ3dA.s 			page 13
+
+
+ 341 003c 51E0     		b	.L32
+ 342              	.LVL20:
+ 343              	.L28:
+ 295:Src/control.c ****       if(!Nunchuk_tx(i2cBuffer, 1)) {
+ 344              		.loc 1 295 7 view .LVU72
+ 295:Src/control.c ****       if(!Nunchuk_tx(i2cBuffer, 1)) {
+ 345              		.loc 1 295 20 is_stmt 0 view .LVU73
+ 346 003e 2D48     		ldr	r0, .L50+8
+ 347 0040 0023     		movs	r3, #0
+ 348 0042 0370     		strb	r3, [r0]
+ 296:Src/control.c ****         success = false;
+ 349              		.loc 1 296 7 is_stmt 1 view .LVU74
+ 296:Src/control.c ****         success = false;
+ 350              		.loc 1 296 11 is_stmt 0 view .LVU75
+ 351 0044 0121     		movs	r1, #1
+ 352 0046 FFF7FEFF 		bl	Nunchuk_tx
+ 353              	.LVL21:
+ 296:Src/control.c ****         success = false;
+ 354              		.loc 1 296 9 discriminator 1 view .LVU76
+ 355 004a 0546     		mov	r5, r0
+ 356 004c 00B1     		cbz	r0, .L34
+ 271:Src/control.c ****   uint8_t i = 0;
+ 357              		.loc 1 271 11 view .LVU77
+ 358 004e 0125     		movs	r5, #1
+ 359              	.L34:
+ 360              	.LVL22:
+ 299:Src/control.c **** 
+ 361              		.loc 1 299 7 is_stmt 1 view .LVU78
+ 362 0050 0320     		movs	r0, #3
+ 363 0052 FFF7FEFF 		bl	HAL_Delay
+ 364              	.LVL23:
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 365              		.loc 1 302 7 view .LVU79
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 366              		.loc 1 302 13 is_stmt 0 view .LVU80
+ 367 0056 0023     		movs	r3, #0
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 368              		.loc 1 302 7 view .LVU81
+ 369 0058 04E0     		b	.L35
+ 370              	.LVL24:
+ 371              	.L36:
+ 303:Src/control.c ****       }
+ 372              		.loc 1 303 9 is_stmt 1 view .LVU82
+ 303:Src/control.c ****       }
+ 373              		.loc 1 303 25 is_stmt 0 view .LVU83
+ 374 005a 274A     		ldr	r2, .L50+12
+ 375 005c 0021     		movs	r1, #0
+ 376 005e D154     		strb	r1, [r2, r3]
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 377              		.loc 1 302 24 is_stmt 1 discriminator 3 view .LVU84
+ 378 0060 0133     		adds	r3, r3, #1
+ 379              	.LVL25:
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 380              		.loc 1 302 24 is_stmt 0 discriminator 3 view .LVU85
+ 381 0062 DBB2     		uxtb	r3, r3
+ 382              	.LVL26:
+ 383              	.L35:
+ARM GAS  /tmp/cc1pJ3dA.s 			page 14
+
+
+ 302:Src/control.c ****         nunchuk_data[i] = 0;
+ 384              		.loc 1 302 19 is_stmt 1 discriminator 1 view .LVU86
+ 385 0064 052B     		cmp	r3, #5
+ 386 0066 F8D9     		bls	.L36
+ 307:Src/control.c ****         success = false;
+ 387              		.loc 1 307 7 view .LVU87
+ 307:Src/control.c ****         success = false;
+ 388              		.loc 1 307 11 is_stmt 0 view .LVU88
+ 389 0068 0621     		movs	r1, #6
+ 390 006a 2348     		ldr	r0, .L50+12
+ 391 006c FFF7FEFF 		bl	Nunchuk_rx
+ 392              	.LVL27:
+ 307:Src/control.c ****         success = false;
+ 393              		.loc 1 307 9 discriminator 1 view .LVU89
+ 394 0070 0446     		mov	r4, r0
+ 395 0072 00B1     		cbz	r0, .L37
+ 396 0074 2C46     		mov	r4, r5
+ 397              	.L37:
+ 398              	.LVL28:
+ 310:Src/control.c **** 
+ 399              		.loc 1 310 7 is_stmt 1 view .LVU90
+ 400 0076 0320     		movs	r0, #3
+ 401 0078 FFF7FEFF 		bl	HAL_Delay
+ 402              	.LVL29:
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 403              		.loc 1 313 7 view .LVU91
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 404              		.loc 1 313 13 is_stmt 0 view .LVU92
+ 405 007c 0023     		movs	r3, #0
+ 270:Src/control.c ****   uint8_t success = true;
+ 406              		.loc 1 270 12 view .LVU93
+ 407 007e 1A46     		mov	r2, r3
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 408              		.loc 1 313 7 view .LVU94
+ 409 0080 05E0     		b	.L38
+ 410              	.LVL30:
+ 411              	.L39:
+ 314:Src/control.c ****       }
+ 412              		.loc 1 314 9 is_stmt 1 view .LVU95
+ 314:Src/control.c ****       }
+ 413              		.loc 1 314 33 is_stmt 0 view .LVU96
+ 414 0082 1D49     		ldr	r1, .L50+12
+ 415 0084 C95C     		ldrb	r1, [r1, r3]	@ zero_extendqisi2
+ 314:Src/control.c ****       }
+ 416              		.loc 1 314 18 view .LVU97
+ 417 0086 0A44     		add	r2, r2, r1
+ 418              	.LVL31:
+ 314:Src/control.c ****       }
+ 419              		.loc 1 314 18 view .LVU98
+ 420 0088 92B2     		uxth	r2, r2
+ 421              	.LVL32:
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 422              		.loc 1 313 24 is_stmt 1 discriminator 3 view .LVU99
+ 423 008a 0133     		adds	r3, r3, #1
+ 424              	.LVL33:
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 425              		.loc 1 313 24 is_stmt 0 discriminator 3 view .LVU100
+ARM GAS  /tmp/cc1pJ3dA.s 			page 15
+
+
+ 426 008c DBB2     		uxtb	r3, r3
+ 427              	.LVL34:
+ 428              	.L38:
+ 313:Src/control.c ****         checksum += nunchuk_data[i];
+ 429              		.loc 1 313 19 is_stmt 1 discriminator 1 view .LVU101
+ 430 008e 052B     		cmp	r3, #5
+ 431 0090 F7D9     		bls	.L39
+ 316:Src/control.c ****         success = false;
+ 432              		.loc 1 316 7 view .LVU102
+ 316:Src/control.c ****         success = false;
+ 433              		.loc 1 316 9 is_stmt 0 view .LVU103
+ 434 0092 2AB1     		cbz	r2, .L44
+ 316:Src/control.c ****         success = false;
+ 435              		.loc 1 316 24 discriminator 1 view .LVU104
+ 436 0094 40F2FA53 		movw	r3, #1530
+ 437              	.LVL35:
+ 316:Src/control.c ****         success = false;
+ 438              		.loc 1 316 24 discriminator 1 view .LVU105
+ 439 0098 9A42     		cmp	r2, r3
+ 440 009a 02D1     		bne	.L40
+ 441              	.LVL36:
+ 317:Src/control.c ****       }
+ 442              		.loc 1 317 17 view .LVU106
+ 443 009c 0024     		movs	r4, #0
+ 444 009e 00E0     		b	.L40
+ 445              	.LVL37:
+ 446              	.L44:
+ 317:Src/control.c ****       }
+ 447              		.loc 1 317 17 view .LVU107
+ 448 00a0 0024     		movs	r4, #0
+ 449              	.LVL38:
+ 450              	.L40:
+ 321:Src/control.c ****         /* Clear the receive data buffer */
+ 451              		.loc 1 321 7 is_stmt 1 view .LVU108
+ 321:Src/control.c ****         /* Clear the receive data buffer */
+ 452              		.loc 1 321 9 is_stmt 0 view .LVU109
+ 453 00a2 0CB3     		cbz	r4, .L46
+ 321:Src/control.c ****         /* Clear the receive data buffer */
+ 454              		.loc 1 321 44 discriminator 1 view .LVU110
+ 455 00a4 154B     		ldr	r3, .L50+16
+ 456 00a6 1B68     		ldr	r3, [r3]
+ 321:Src/control.c ****         /* Clear the receive data buffer */
+ 457              		.loc 1 321 27 discriminator 1 view .LVU111
+ 458 00a8 032B     		cmp	r3, #3
+ 459 00aa 13D9     		bls	.L33
+ 460 00ac 0023     		movs	r3, #0
+ 461 00ae 04E0     		b	.L42
+ 462              	.LVL39:
+ 463              	.L43:
+ 324:Src/control.c ****         }
+ 464              		.loc 1 324 11 is_stmt 1 view .LVU112
+ 324:Src/control.c ****         }
+ 465              		.loc 1 324 27 is_stmt 0 view .LVU113
+ 466 00b0 114A     		ldr	r2, .L50+12
+ 467 00b2 0021     		movs	r1, #0
+ 468 00b4 D154     		strb	r1, [r2, r3]
+ 323:Src/control.c ****           nunchuk_data[i] = 0;
+ARM GAS  /tmp/cc1pJ3dA.s 			page 16
+
+
+ 469              		.loc 1 323 26 is_stmt 1 discriminator 3 view .LVU114
+ 470 00b6 0133     		adds	r3, r3, #1
+ 471              	.LVL40:
+ 323:Src/control.c ****           nunchuk_data[i] = 0;
+ 472              		.loc 1 323 26 is_stmt 0 discriminator 3 view .LVU115
+ 473 00b8 DBB2     		uxtb	r3, r3
+ 474              	.LVL41:
+ 475              	.L42:
+ 323:Src/control.c ****           nunchuk_data[i] = 0;
+ 476              		.loc 1 323 21 is_stmt 1 discriminator 1 view .LVU116
+ 477 00ba 052B     		cmp	r3, #5
+ 478 00bc F8D9     		bls	.L43
+ 328:Src/control.c ****         nunchuk_data[1] = 128;
+ 479              		.loc 1 328 9 view .LVU117
+ 328:Src/control.c ****         nunchuk_data[1] = 128;
+ 480              		.loc 1 328 25 is_stmt 0 view .LVU118
+ 481 00be 0E4B     		ldr	r3, .L50+12
+ 482              	.LVL42:
+ 328:Src/control.c ****         nunchuk_data[1] = 128;
+ 483              		.loc 1 328 25 view .LVU119
+ 484 00c0 7F22     		movs	r2, #127
+ 485 00c2 1A70     		strb	r2, [r3]
+ 329:Src/control.c ****         timeoutFlgGen = 1;
+ 486              		.loc 1 329 9 is_stmt 1 view .LVU120
+ 329:Src/control.c ****         timeoutFlgGen = 1;
+ 487              		.loc 1 329 25 is_stmt 0 view .LVU121
+ 488 00c4 8022     		movs	r2, #128
+ 489 00c6 5A70     		strb	r2, [r3, #1]
+ 330:Src/control.c ****         nunchukState = NUNCHUK_RECONNECTING;
+ 490              		.loc 1 330 9 is_stmt 1 view .LVU122
+ 330:Src/control.c ****         nunchukState = NUNCHUK_RECONNECTING;
+ 491              		.loc 1 330 23 is_stmt 0 view .LVU123
+ 492 00c8 0D4B     		ldr	r3, .L50+20
+ 493 00ca 0122     		movs	r2, #1
+ 494 00cc 1A70     		strb	r2, [r3]
+ 331:Src/control.c ****       }
+ 495              		.loc 1 331 9 is_stmt 1 view .LVU124
+ 331:Src/control.c ****       }
+ 496              		.loc 1 331 22 is_stmt 0 view .LVU125
+ 497 00ce 074B     		ldr	r3, .L50
+ 498 00d0 0222     		movs	r2, #2
+ 499 00d2 1A70     		strb	r2, [r3]
+ 500              	.LVL43:
+ 501              	.L33:
+ 502              		.loc 1 336 3 is_stmt 1 view .LVU126
+ 503              		.loc 1 336 5 is_stmt 0 view .LVU127
+ 504 00d4 012C     		cmp	r4, #1
+ 505 00d6 04D1     		bne	.L32
+ 506              	.LVL44:
+ 507              	.L27:
+ 337:Src/control.c ****     timeoutCntGen = 0;
+ 508              		.loc 1 337 5 is_stmt 1 view .LVU128
+ 509              		.loc 1 337 19 is_stmt 0 view .LVU129
+ 510 00d8 0023     		movs	r3, #0
+ 511 00da 084A     		ldr	r2, .L50+16
+ 512 00dc 1360     		str	r3, [r2]
+ 338:Src/control.c ****     timeoutFlgGen = 0;
+ARM GAS  /tmp/cc1pJ3dA.s 			page 17
+
+
+ 513              		.loc 1 338 5 is_stmt 1 view .LVU130
+ 514              		.loc 1 338 19 is_stmt 0 view .LVU131
+ 515 00de 084A     		ldr	r2, .L50+20
+ 516 00e0 1370     		strb	r3, [r2]
+ 517              	.L32:
+ 339:Src/control.c ****   }
+ 340:Src/control.c ****   return nunchukState;
+ 518              		.loc 1 340 3 is_stmt 1 view .LVU132
+ 341:Src/control.c ****   //setScopeChannel(0, (int)nunchuk_data[0]);
+ 342:Src/control.c ****   //setScopeChannel(1, (int)nunchuk_data[1]);
+ 343:Src/control.c ****   //setScopeChannel(2, (int)nunchuk_data[5] & 1);
+ 344:Src/control.c ****   //setScopeChannel(3, ((int)nunchuk_data[5] >> 1) & 1);
+ 345:Src/control.c **** }
+ 519              		.loc 1 345 1 is_stmt 0 view .LVU133
+ 520 00e2 024B     		ldr	r3, .L50
+ 521 00e4 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 522 00e6 38BD     		pop	{r3, r4, r5, pc}
+ 523              	.LVL45:
+ 524              	.L46:
+ 525              		.loc 1 345 1 view .LVU134
+ 526 00e8 2346     		mov	r3, r4
+ 527 00ea E6E7     		b	.L42
+ 528              	.L51:
+ 529              		.align	2
+ 530              	.L50:
+ 531 00ec 00000000 		.word	nunchukState
+ 532 00f0 00000000 		.word	delay_counter.0
+ 533 00f4 00000000 		.word	i2cBuffer
+ 534 00f8 00000000 		.word	nunchuk_data
+ 535 00fc 00000000 		.word	timeoutCntGen
+ 536 0100 00000000 		.word	timeoutFlgGen
+ 537              		.cfi_endproc
+ 538              	.LFE70:
+ 540              		.section	.bss.delay_counter.0,"aw",%nobits
+ 543              	delay_counter.0:
+ 544 0000 00       		.space	1
+ 545              		.global	nunchukState
+ 546              		.section	.bss.nunchukState,"aw",%nobits
+ 549              	nunchukState:
+ 550 0000 00       		.space	1
+ 551              		.global	i2cBuffer
+ 552              		.section	.bss.i2cBuffer,"aw",%nobits
+ 553              		.align	2
+ 556              	i2cBuffer:
+ 557 0000 0000     		.space	2
+ 558              		.global	nunchuk_data
+ 559              		.section	.bss.nunchuk_data,"aw",%nobits
+ 560              		.align	2
+ 563              	nunchuk_data:
+ 564 0000 00000000 		.space	6
+ 564      0000
+ 565              		.global	timeoutFlgGen
+ 566              		.section	.bss.timeoutFlgGen,"aw",%nobits
+ 569              	timeoutFlgGen:
+ 570 0000 00       		.space	1
+ 571              		.global	timeoutCntGen
+ 572              		.section	.data.timeoutCntGen,"aw"
+ARM GAS  /tmp/cc1pJ3dA.s 			page 18
+
+
+ 573              		.align	2
+ 576              	timeoutCntGen:
+ 577 0000 14000000 		.word	20
+ 578              		.global	pwm_count
+ 579              		.section	.bss.pwm_count,"aw",%nobits
+ 582              	pwm_count:
+ 583 0000 00       		.space	1
+ 584              		.global	ppm_count
+ 585              		.section	.bss.ppm_count,"aw",%nobits
+ 588              	ppm_count:
+ 589 0000 00       		.space	1
+ 590              		.global	TimHandle2
+ 591              		.section	.bss.TimHandle2,"aw",%nobits
+ 592              		.align	2
+ 595              	TimHandle2:
+ 596 0000 00000000 		.space	64
+ 596      00000000 
+ 596      00000000 
+ 596      00000000 
+ 596      00000000 
+ 597              		.global	TimHandle
+ 598              		.section	.bss.TimHandle,"aw",%nobits
+ 599              		.align	2
+ 602              	TimHandle:
+ 603 0000 00000000 		.space	64
+ 603      00000000 
+ 603      00000000 
+ 603      00000000 
+ 603      00000000 
+ 604              		.text
+ 605              	.Letext0:
+ 606              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 607              		.file 3 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 608              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 609              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 610              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h"
+ 611              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 612              		.file 8 "Inc/defines.h"
+ 613              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ARM GAS  /tmp/cc1pJ3dA.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 control.c
+     /tmp/cc1pJ3dA.s:19     .text.Nunchuk_tx:00000000 $t
+     /tmp/cc1pJ3dA.s:25     .text.Nunchuk_tx:00000000 Nunchuk_tx
+     /tmp/cc1pJ3dA.s:75     .text.Nunchuk_tx:00000024 $d
+     /tmp/cc1pJ3dA.s:80     .text.Nunchuk_rx:00000000 $t
+     /tmp/cc1pJ3dA.s:86     .text.Nunchuk_rx:00000000 Nunchuk_rx
+     /tmp/cc1pJ3dA.s:136    .text.Nunchuk_rx:00000024 $d
+     /tmp/cc1pJ3dA.s:141    .text.Nunchuk_Init:00000000 $t
+     /tmp/cc1pJ3dA.s:147    .text.Nunchuk_Init:00000000 Nunchuk_Init
+     /tmp/cc1pJ3dA.s:210    .text.Nunchuk_Init:0000003c $d
+     /tmp/cc1pJ3dA.s:556    .bss.i2cBuffer:00000000 i2cBuffer
+     /tmp/cc1pJ3dA.s:215    .text.Nunchuk_Connect:00000000 $t
+     /tmp/cc1pJ3dA.s:221    .text.Nunchuk_Connect:00000000 Nunchuk_Connect
+     /tmp/cc1pJ3dA.s:259    .text.Nunchuk_Connect:0000001c $d
+     /tmp/cc1pJ3dA.s:549    .bss.nunchukState:00000000 nunchukState
+     /tmp/cc1pJ3dA.s:264    .text.Nunchuk_Read:00000000 $t
+     /tmp/cc1pJ3dA.s:270    .text.Nunchuk_Read:00000000 Nunchuk_Read
+     /tmp/cc1pJ3dA.s:295    .text.Nunchuk_Read:0000000e $d
+     /tmp/cc1pJ3dA.s:299    .text.Nunchuk_Read:00000012 $t
+     /tmp/cc1pJ3dA.s:531    .text.Nunchuk_Read:000000ec $d
+     /tmp/cc1pJ3dA.s:543    .bss.delay_counter.0:00000000 delay_counter.0
+     /tmp/cc1pJ3dA.s:563    .bss.nunchuk_data:00000000 nunchuk_data
+     /tmp/cc1pJ3dA.s:576    .data.timeoutCntGen:00000000 timeoutCntGen
+     /tmp/cc1pJ3dA.s:569    .bss.timeoutFlgGen:00000000 timeoutFlgGen
+     /tmp/cc1pJ3dA.s:544    .bss.delay_counter.0:00000000 $d
+     /tmp/cc1pJ3dA.s:550    .bss.nunchukState:00000000 $d
+     /tmp/cc1pJ3dA.s:553    .bss.i2cBuffer:00000000 $d
+     /tmp/cc1pJ3dA.s:560    .bss.nunchuk_data:00000000 $d
+     /tmp/cc1pJ3dA.s:570    .bss.timeoutFlgGen:00000000 $d
+     /tmp/cc1pJ3dA.s:573    .data.timeoutCntGen:00000000 $d
+     /tmp/cc1pJ3dA.s:582    .bss.pwm_count:00000000 pwm_count
+     /tmp/cc1pJ3dA.s:583    .bss.pwm_count:00000000 $d
+     /tmp/cc1pJ3dA.s:588    .bss.ppm_count:00000000 ppm_count
+     /tmp/cc1pJ3dA.s:589    .bss.ppm_count:00000000 $d
+     /tmp/cc1pJ3dA.s:595    .bss.TimHandle2:00000000 TimHandle2
+     /tmp/cc1pJ3dA.s:592    .bss.TimHandle2:00000000 $d
+     /tmp/cc1pJ3dA.s:602    .bss.TimHandle:00000000 TimHandle
+     /tmp/cc1pJ3dA.s:599    .bss.TimHandle:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_I2C_Master_Transmit
+hi2c2
+HAL_I2C_Master_Receive
+HAL_Delay
+I2C_Init

@@ -1,0 +1,1194 @@
+ARM GAS  /tmp/ccezFcIf.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"BLDC_controller_data.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/BLDC_controller_data.c"
+  18              		.global	rtP_Left
+  19              		.section	.data.rtP_Left,"aw"
+  20              		.align	2
+  23              	rtP_Left:
+  24 0000 00300000 		.word	12288
+  25 0004 2800     		.short	40
+  26 0006 1400     		.short	20
+  27 0008 0000     		.short	0
+  28 000a D007     		.short	2000
+  29 000c AB29     		.short	10667
+  30 000e 8025     		.short	9600
+  31 0010 0005     		.short	1280
+  32 0012 4038     		.short	14400
+  33 0014 4038     		.short	14400
+  34 0016 3C38     		.short	14396
+  35 0018 3238     		.short	14386
+  36 001a 2038     		.short	14368
+  37 001c 0738     		.short	14343
+  38 001e E737     		.short	14311
+  39 0020 BF37     		.short	14271
+  40 0022 9137     		.short	14225
+  41 0024 5B37     		.short	14171
+  42 0026 1D37     		.short	14109
+  43 0028 D836     		.short	14040
+  44 002a 8B36     		.short	13963
+  45 002c 3736     		.short	13879
+  46 002e DA35     		.short	13786
+  47 0030 7535     		.short	13685
+  48 0032 0835     		.short	13576
+  49 0034 9334     		.short	13459
+  50 0036 1534     		.short	13333
+  51 0038 8E33     		.short	13198
+  52 003a FD32     		.short	13053
+  53 003c 6432     		.short	12900
+  54 003e C031     		.short	12736
+  55 0040 1231     		.short	12562
+  56 0042 5930     		.short	12377
+  57 0044 952F     		.short	12181
+  58 0046 C52E     		.short	11973
+  59 0048 E92D     		.short	11753
+ARM GAS  /tmp/ccezFcIf.s 			page 2
+
+
+  60 004a 002D     		.short	11520
+  61 004c 092C     		.short	11273
+  62 004e 032B     		.short	11011
+  63 0050 ED29     		.short	10733
+  64 0052 C628     		.short	10438
+  65 0054 8C27     		.short	10124
+  66 0056 3E26     		.short	9790
+  67 0058 D924     		.short	9433
+  68 005a 5B23     		.short	9051
+  69 005c C021     		.short	8640
+  70 005e 0420     		.short	8196
+  71 0060 211E     		.short	7713
+  72 0062 101C     		.short	7184
+  73 0064 C519     		.short	6597
+  74 0066 2F17     		.short	5935
+  75 0068 3214     		.short	5170
+  76 006a 9510     		.short	4245
+  77 006c CB0B     		.short	3019
+  78 006e 0000     		.short	0
+  79 0070 0000     		.short	0
+  80 0072 4001     		.short	320
+  81 0074 8002     		.short	640
+  82 0076 C003     		.short	960
+  83 0078 0005     		.short	1280
+  84 007a 4006     		.short	1600
+  85 007c 8007     		.short	1920
+  86 007e C008     		.short	2240
+  87 0080 000A     		.short	2560
+  88 0082 400B     		.short	2880
+  89 0084 800C     		.short	3200
+  90 0086 C00D     		.short	3520
+  91 0088 000F     		.short	3840
+  92 008a 4010     		.short	4160
+  93 008c 8011     		.short	4480
+  94 008e C012     		.short	4800
+  95 0090 0014     		.short	5120
+  96 0092 4015     		.short	5440
+  97 0094 8016     		.short	5760
+  98 0096 C017     		.short	6080
+  99 0098 0019     		.short	6400
+ 100 009a 401A     		.short	6720
+ 101 009c 801B     		.short	7040
+ 102 009e C01C     		.short	7360
+ 103 00a0 001E     		.short	7680
+ 104 00a2 401F     		.short	8000
+ 105 00a4 8020     		.short	8320
+ 106 00a6 C021     		.short	8640
+ 107 00a8 0023     		.short	8960
+ 108 00aa 4024     		.short	9280
+ 109 00ac 8025     		.short	9600
+ 110 00ae C026     		.short	9920
+ 111 00b0 0028     		.short	10240
+ 112 00b2 4029     		.short	10560
+ 113 00b4 802A     		.short	10880
+ 114 00b6 C02B     		.short	11200
+ 115 00b8 002D     		.short	11520
+ 116 00ba 402E     		.short	11840
+ARM GAS  /tmp/ccezFcIf.s 			page 3
+
+
+ 117 00bc 802F     		.short	12160
+ 118 00be C030     		.short	12480
+ 119 00c0 0032     		.short	12800
+ 120 00c2 4033     		.short	13120
+ 121 00c4 8034     		.short	13440
+ 122 00c6 C035     		.short	13760
+ 123 00c8 0037     		.short	14080
+ 124 00ca 4038     		.short	14400
+ 125 00cc 9001     		.short	400
+ 126 00ce E02E     		.short	12000
+ 127 00d0 A00F     		.short	4000
+ 128 00d2 F000     		.short	240
+ 129 00d4 E001     		.short	480
+ 130 00d6 0019     		.short	6400
+ 131 00d8 C012     		.short	4800
+ 132 00da 803E     		.short	16000
+ 133 00dc 3000     		.short	48
+ 134 00de 8025     		.short	9600
+ 135 00e0 803E     		.short	16000
+ 136 00e2 E02E     		.short	12000
+ 137 00e4 0003     		.short	768
+ 138 00e6 3303     		.short	819
+ 139 00e8 CD04     		.short	1229
+ 140 00ea E112     		.short	4833
+ 141 00ec B81E     		.short	7864
+ 142 00ee E102     		.short	737
+ 143 00f0 CD04     		.short	1229
+ 144 00f2 E102     		.short	737
+ 145 00f4 FB00     		.short	251
+ 146 00f6 F600     		.short	246
+ 147 00f8 0F       		.byte	15
+ 148 00f9 02       		.byte	2
+ 149 00fa 00       		.byte	0
+ 150 00fb 00       		.byte	0
+ 151 00fc 00       		.byte	0
+ 152 00fd 01       		.byte	1
+ 153 00fe 00       		.byte	0
+ 154 00ff 00       		.space	1
+ 155              		.global	rtConstP
+ 156              		.section	.rodata.rtConstP,"a"
+ 157              		.align	2
+ 160              	rtConstP:
+ 161 0000 0020     		.short	8192
+ 162 0002 EA21     		.short	8682
+ 163 0004 CA23     		.short	9162
+ 164 0006 9E25     		.short	9630
+ 165 0008 6727     		.short	10087
+ 166 000a 2329     		.short	10531
+ 167 000c D32A     		.short	10963
+ 168 000e 752C     		.short	11381
+ 169 0010 0A2E     		.short	11786
+ 170 0012 902F     		.short	12176
+ 171 0014 0731     		.short	12551
+ 172 0016 6F32     		.short	12911
+ 173 0018 C733     		.short	13255
+ 174 001a 0F35     		.short	13583
+ 175 001c 4636     		.short	13894
+ARM GAS  /tmp/ccezFcIf.s 			page 4
+
+
+ 176 001e 6D37     		.short	14189
+ 177 0020 8238     		.short	14466
+ 178 0022 8639     		.short	14726
+ 179 0024 783A     		.short	14968
+ 180 0026 573B     		.short	15191
+ 181 0028 243C     		.short	15396
+ 182 002a DE3C     		.short	15582
+ 183 002c 853D     		.short	15749
+ 184 002e 193E     		.short	15897
+ 185 0030 9A3E     		.short	16026
+ 186 0032 073F     		.short	16135
+ 187 0034 613F     		.short	16225
+ 188 0036 A63F     		.short	16294
+ 189 0038 D83F     		.short	16344
+ 190 003a F63F     		.short	16374
+ 191 003c 0040     		.short	16384
+ 192 003e F63F     		.short	16374
+ 193 0040 D83F     		.short	16344
+ 194 0042 A63F     		.short	16294
+ 195 0044 613F     		.short	16225
+ 196 0046 073F     		.short	16135
+ 197 0048 9A3E     		.short	16026
+ 198 004a 193E     		.short	15897
+ 199 004c 853D     		.short	15749
+ 200 004e DE3C     		.short	15582
+ 201 0050 243C     		.short	15396
+ 202 0052 573B     		.short	15191
+ 203 0054 783A     		.short	14968
+ 204 0056 8639     		.short	14726
+ 205 0058 8238     		.short	14466
+ 206 005a 6D37     		.short	14189
+ 207 005c 4636     		.short	13894
+ 208 005e 0F35     		.short	13583
+ 209 0060 C733     		.short	13255
+ 210 0062 6F32     		.short	12911
+ 211 0064 0731     		.short	12551
+ 212 0066 902F     		.short	12176
+ 213 0068 0A2E     		.short	11786
+ 214 006a 752C     		.short	11381
+ 215 006c D32A     		.short	10963
+ 216 006e 2329     		.short	10531
+ 217 0070 6727     		.short	10087
+ 218 0072 9E25     		.short	9630
+ 219 0074 CA23     		.short	9162
+ 220 0076 EA21     		.short	8682
+ 221 0078 0020     		.short	8192
+ 222 007a 0C1E     		.short	7692
+ 223 007c 0E1C     		.short	7182
+ 224 007e 081A     		.short	6664
+ 225 0080 FA17     		.short	6138
+ 226 0082 E415     		.short	5604
+ 227 0084 C713     		.short	5063
+ 228 0086 A411     		.short	4516
+ 229 0088 7C0F     		.short	3964
+ 230 008a 4E0D     		.short	3406
+ 231 008c 1D0B     		.short	2845
+ 232 008e E808     		.short	2280
+ARM GAS  /tmp/ccezFcIf.s 			page 5
+
+
+ 233 0090 B106     		.short	1713
+ 234 0092 7704     		.short	1143
+ 235 0094 3C02     		.short	572
+ 236 0096 0000     		.short	0
+ 237 0098 C4FD     		.short	-572
+ 238 009a 89FB     		.short	-1143
+ 239 009c 4FF9     		.short	-1713
+ 240 009e 18F7     		.short	-2280
+ 241 00a0 E3F4     		.short	-2845
+ 242 00a2 B2F2     		.short	-3406
+ 243 00a4 84F0     		.short	-3964
+ 244 00a6 5CEE     		.short	-4516
+ 245 00a8 39EC     		.short	-5063
+ 246 00aa 1CEA     		.short	-5604
+ 247 00ac 06E8     		.short	-6138
+ 248 00ae F8E5     		.short	-6664
+ 249 00b0 F2E3     		.short	-7182
+ 250 00b2 F4E1     		.short	-7692
+ 251 00b4 00E0     		.short	-8192
+ 252 00b6 16DE     		.short	-8682
+ 253 00b8 36DC     		.short	-9162
+ 254 00ba 62DA     		.short	-9630
+ 255 00bc 99D8     		.short	-10087
+ 256 00be DDD6     		.short	-10531
+ 257 00c0 2DD5     		.short	-10963
+ 258 00c2 8BD3     		.short	-11381
+ 259 00c4 F6D1     		.short	-11786
+ 260 00c6 70D0     		.short	-12176
+ 261 00c8 F9CE     		.short	-12551
+ 262 00ca 91CD     		.short	-12911
+ 263 00cc 39CC     		.short	-13255
+ 264 00ce F1CA     		.short	-13583
+ 265 00d0 BAC9     		.short	-13894
+ 266 00d2 93C8     		.short	-14189
+ 267 00d4 7EC7     		.short	-14466
+ 268 00d6 7AC6     		.short	-14726
+ 269 00d8 88C5     		.short	-14968
+ 270 00da A9C4     		.short	-15191
+ 271 00dc DCC3     		.short	-15396
+ 272 00de 22C3     		.short	-15582
+ 273 00e0 7BC2     		.short	-15749
+ 274 00e2 E7C1     		.short	-15897
+ 275 00e4 66C1     		.short	-16026
+ 276 00e6 F9C0     		.short	-16135
+ 277 00e8 9FC0     		.short	-16225
+ 278 00ea 5AC0     		.short	-16294
+ 279 00ec 28C0     		.short	-16344
+ 280 00ee 0AC0     		.short	-16374
+ 281 00f0 00C0     		.short	-16384
+ 282 00f2 0AC0     		.short	-16374
+ 283 00f4 28C0     		.short	-16344
+ 284 00f6 5AC0     		.short	-16294
+ 285 00f8 9FC0     		.short	-16225
+ 286 00fa F9C0     		.short	-16135
+ 287 00fc 66C1     		.short	-16026
+ 288 00fe E7C1     		.short	-15897
+ 289 0100 7BC2     		.short	-15749
+ARM GAS  /tmp/ccezFcIf.s 			page 6
+
+
+ 290 0102 22C3     		.short	-15582
+ 291 0104 DCC3     		.short	-15396
+ 292 0106 A9C4     		.short	-15191
+ 293 0108 88C5     		.short	-14968
+ 294 010a 7AC6     		.short	-14726
+ 295 010c 7EC7     		.short	-14466
+ 296 010e 93C8     		.short	-14189
+ 297 0110 BAC9     		.short	-13894
+ 298 0112 F1CA     		.short	-13583
+ 299 0114 39CC     		.short	-13255
+ 300 0116 91CD     		.short	-12911
+ 301 0118 F9CE     		.short	-12551
+ 302 011a 70D0     		.short	-12176
+ 303 011c F6D1     		.short	-11786
+ 304 011e 8BD3     		.short	-11381
+ 305 0120 2DD5     		.short	-10963
+ 306 0122 DDD6     		.short	-10531
+ 307 0124 99D8     		.short	-10087
+ 308 0126 62DA     		.short	-9630
+ 309 0128 36DC     		.short	-9162
+ 310 012a 16DE     		.short	-8682
+ 311 012c 00E0     		.short	-8192
+ 312 012e F4E1     		.short	-7692
+ 313 0130 F2E3     		.short	-7182
+ 314 0132 F8E5     		.short	-6664
+ 315 0134 06E8     		.short	-6138
+ 316 0136 1CEA     		.short	-5604
+ 317 0138 39EC     		.short	-5063
+ 318 013a 5CEE     		.short	-4516
+ 319 013c 84F0     		.short	-3964
+ 320 013e B2F2     		.short	-3406
+ 321 0140 E3F4     		.short	-2845
+ 322 0142 18F7     		.short	-2280
+ 323 0144 4FF9     		.short	-1713
+ 324 0146 89FB     		.short	-1143
+ 325 0148 C4FD     		.short	-572
+ 326 014a 0000     		.short	0
+ 327 014c 3C02     		.short	572
+ 328 014e 7704     		.short	1143
+ 329 0150 B106     		.short	1713
+ 330 0152 E808     		.short	2280
+ 331 0154 1D0B     		.short	2845
+ 332 0156 4E0D     		.short	3406
+ 333 0158 7C0F     		.short	3964
+ 334 015a A411     		.short	4516
+ 335 015c C713     		.short	5063
+ 336 015e E415     		.short	5604
+ 337 0160 FA17     		.short	6138
+ 338 0162 081A     		.short	6664
+ 339 0164 0E1C     		.short	7182
+ 340 0166 0C1E     		.short	7692
+ 341 0168 0020     		.short	8192
+ 342 016a 6D37     		.short	14189
+ 343 016c 4636     		.short	13894
+ 344 016e 0F35     		.short	13583
+ 345 0170 C733     		.short	13255
+ 346 0172 6F32     		.short	12911
+ARM GAS  /tmp/ccezFcIf.s 			page 7
+
+
+ 347 0174 0731     		.short	12551
+ 348 0176 902F     		.short	12176
+ 349 0178 0A2E     		.short	11786
+ 350 017a 752C     		.short	11381
+ 351 017c D32A     		.short	10963
+ 352 017e 2329     		.short	10531
+ 353 0180 6727     		.short	10087
+ 354 0182 9E25     		.short	9630
+ 355 0184 CA23     		.short	9162
+ 356 0186 EA21     		.short	8682
+ 357 0188 0020     		.short	8192
+ 358 018a 0C1E     		.short	7692
+ 359 018c 0E1C     		.short	7182
+ 360 018e 081A     		.short	6664
+ 361 0190 FA17     		.short	6138
+ 362 0192 E415     		.short	5604
+ 363 0194 C713     		.short	5063
+ 364 0196 A411     		.short	4516
+ 365 0198 7C0F     		.short	3964
+ 366 019a 4E0D     		.short	3406
+ 367 019c 1D0B     		.short	2845
+ 368 019e E808     		.short	2280
+ 369 01a0 B106     		.short	1713
+ 370 01a2 7704     		.short	1143
+ 371 01a4 3C02     		.short	572
+ 372 01a6 0000     		.short	0
+ 373 01a8 C4FD     		.short	-572
+ 374 01aa 89FB     		.short	-1143
+ 375 01ac 4FF9     		.short	-1713
+ 376 01ae 18F7     		.short	-2280
+ 377 01b0 E3F4     		.short	-2845
+ 378 01b2 B2F2     		.short	-3406
+ 379 01b4 84F0     		.short	-3964
+ 380 01b6 5CEE     		.short	-4516
+ 381 01b8 39EC     		.short	-5063
+ 382 01ba 1CEA     		.short	-5604
+ 383 01bc 06E8     		.short	-6138
+ 384 01be F8E5     		.short	-6664
+ 385 01c0 F2E3     		.short	-7182
+ 386 01c2 F4E1     		.short	-7692
+ 387 01c4 00E0     		.short	-8192
+ 388 01c6 16DE     		.short	-8682
+ 389 01c8 36DC     		.short	-9162
+ 390 01ca 62DA     		.short	-9630
+ 391 01cc 99D8     		.short	-10087
+ 392 01ce DDD6     		.short	-10531
+ 393 01d0 2DD5     		.short	-10963
+ 394 01d2 8BD3     		.short	-11381
+ 395 01d4 F6D1     		.short	-11786
+ 396 01d6 70D0     		.short	-12176
+ 397 01d8 F9CE     		.short	-12551
+ 398 01da 91CD     		.short	-12911
+ 399 01dc 39CC     		.short	-13255
+ 400 01de F1CA     		.short	-13583
+ 401 01e0 BAC9     		.short	-13894
+ 402 01e2 93C8     		.short	-14189
+ 403 01e4 7EC7     		.short	-14466
+ARM GAS  /tmp/ccezFcIf.s 			page 8
+
+
+ 404 01e6 7AC6     		.short	-14726
+ 405 01e8 88C5     		.short	-14968
+ 406 01ea A9C4     		.short	-15191
+ 407 01ec DCC3     		.short	-15396
+ 408 01ee 22C3     		.short	-15582
+ 409 01f0 7BC2     		.short	-15749
+ 410 01f2 E7C1     		.short	-15897
+ 411 01f4 66C1     		.short	-16026
+ 412 01f6 F9C0     		.short	-16135
+ 413 01f8 9FC0     		.short	-16225
+ 414 01fa 5AC0     		.short	-16294
+ 415 01fc 28C0     		.short	-16344
+ 416 01fe 0AC0     		.short	-16374
+ 417 0200 00C0     		.short	-16384
+ 418 0202 0AC0     		.short	-16374
+ 419 0204 28C0     		.short	-16344
+ 420 0206 5AC0     		.short	-16294
+ 421 0208 9FC0     		.short	-16225
+ 422 020a F9C0     		.short	-16135
+ 423 020c 66C1     		.short	-16026
+ 424 020e E7C1     		.short	-15897
+ 425 0210 7BC2     		.short	-15749
+ 426 0212 22C3     		.short	-15582
+ 427 0214 DCC3     		.short	-15396
+ 428 0216 A9C4     		.short	-15191
+ 429 0218 88C5     		.short	-14968
+ 430 021a 7AC6     		.short	-14726
+ 431 021c 7EC7     		.short	-14466
+ 432 021e 93C8     		.short	-14189
+ 433 0220 BAC9     		.short	-13894
+ 434 0222 F1CA     		.short	-13583
+ 435 0224 39CC     		.short	-13255
+ 436 0226 91CD     		.short	-12911
+ 437 0228 F9CE     		.short	-12551
+ 438 022a 70D0     		.short	-12176
+ 439 022c F6D1     		.short	-11786
+ 440 022e 8BD3     		.short	-11381
+ 441 0230 2DD5     		.short	-10963
+ 442 0232 DDD6     		.short	-10531
+ 443 0234 99D8     		.short	-10087
+ 444 0236 62DA     		.short	-9630
+ 445 0238 36DC     		.short	-9162
+ 446 023a 16DE     		.short	-8682
+ 447 023c 00E0     		.short	-8192
+ 448 023e F4E1     		.short	-7692
+ 449 0240 F2E3     		.short	-7182
+ 450 0242 F8E5     		.short	-6664
+ 451 0244 06E8     		.short	-6138
+ 452 0246 1CEA     		.short	-5604
+ 453 0248 39EC     		.short	-5063
+ 454 024a 5CEE     		.short	-4516
+ 455 024c 84F0     		.short	-3964
+ 456 024e B2F2     		.short	-3406
+ 457 0250 E3F4     		.short	-2845
+ 458 0252 18F7     		.short	-2280
+ 459 0254 4FF9     		.short	-1713
+ 460 0256 89FB     		.short	-1143
+ARM GAS  /tmp/ccezFcIf.s 			page 9
+
+
+ 461 0258 C4FD     		.short	-572
+ 462 025a 0000     		.short	0
+ 463 025c 3C02     		.short	572
+ 464 025e 7704     		.short	1143
+ 465 0260 B106     		.short	1713
+ 466 0262 E808     		.short	2280
+ 467 0264 1D0B     		.short	2845
+ 468 0266 4E0D     		.short	3406
+ 469 0268 7C0F     		.short	3964
+ 470 026a A411     		.short	4516
+ 471 026c C713     		.short	5063
+ 472 026e E415     		.short	5604
+ 473 0270 FA17     		.short	6138
+ 474 0272 081A     		.short	6664
+ 475 0274 0E1C     		.short	7182
+ 476 0276 0C1E     		.short	7692
+ 477 0278 0020     		.short	8192
+ 478 027a EA21     		.short	8682
+ 479 027c CA23     		.short	9162
+ 480 027e 9E25     		.short	9630
+ 481 0280 6727     		.short	10087
+ 482 0282 2329     		.short	10531
+ 483 0284 D32A     		.short	10963
+ 484 0286 752C     		.short	11381
+ 485 0288 0A2E     		.short	11786
+ 486 028a 902F     		.short	12176
+ 487 028c 0731     		.short	12551
+ 488 028e 6F32     		.short	12911
+ 489 0290 C733     		.short	13255
+ 490 0292 0F35     		.short	13583
+ 491 0294 4636     		.short	13894
+ 492 0296 6D37     		.short	14189
+ 493 0298 8238     		.short	14466
+ 494 029a 8639     		.short	14726
+ 495 029c 783A     		.short	14968
+ 496 029e 573B     		.short	15191
+ 497 02a0 243C     		.short	15396
+ 498 02a2 DE3C     		.short	15582
+ 499 02a4 853D     		.short	15749
+ 500 02a6 193E     		.short	15897
+ 501 02a8 9A3E     		.short	16026
+ 502 02aa 073F     		.short	16135
+ 503 02ac 613F     		.short	16225
+ 504 02ae A63F     		.short	16294
+ 505 02b0 D83F     		.short	16344
+ 506 02b2 F63F     		.short	16374
+ 507 02b4 0040     		.short	16384
+ 508 02b6 F63F     		.short	16374
+ 509 02b8 D83F     		.short	16344
+ 510 02ba A63F     		.short	16294
+ 511 02bc 613F     		.short	16225
+ 512 02be 073F     		.short	16135
+ 513 02c0 9A3E     		.short	16026
+ 514 02c2 193E     		.short	15897
+ 515 02c4 853D     		.short	15749
+ 516 02c6 DE3C     		.short	15582
+ 517 02c8 243C     		.short	15396
+ARM GAS  /tmp/ccezFcIf.s 			page 10
+
+
+ 518 02ca 573B     		.short	15191
+ 519 02cc 783A     		.short	14968
+ 520 02ce 8639     		.short	14726
+ 521 02d0 8238     		.short	14466
+ 522 02d2 6D37     		.short	14189
+ 523 02d4 DDCC     		.short	-13091
+ 524 02d6 BECA     		.short	-13634
+ 525 02d8 D2C8     		.short	-14126
+ 526 02da 1BC7     		.short	-14565
+ 527 02dc 97C5     		.short	-14953
+ 528 02de 47C4     		.short	-15289
+ 529 02e0 27C3     		.short	-15577
+ 530 02e2 38C2     		.short	-15816
+ 531 02e4 77C1     		.short	-16009
+ 532 02e6 E1C0     		.short	-16159
+ 533 02e8 73C0     		.short	-16269
+ 534 02ea 2CC0     		.short	-16340
+ 535 02ec 07C0     		.short	-16377
+ 536 02ee 01C0     		.short	-16383
+ 537 02f0 16C0     		.short	-16362
+ 538 02f2 43C0     		.short	-16317
+ 539 02f4 83C0     		.short	-16253
+ 540 02f6 D4C0     		.short	-16172
+ 541 02f8 31C1     		.short	-16079
+ 542 02fa 97C1     		.short	-15977
+ 543 02fc 02C2     		.short	-15870
+ 544 02fe 6EC2     		.short	-15762
+ 545 0300 D8C2     		.short	-15656
+ 546 0302 3DC3     		.short	-15555
+ 547 0304 9BC3     		.short	-15461
+ 548 0306 EFC3     		.short	-15377
+ 549 0308 36C4     		.short	-15306
+ 550 030a 70C4     		.short	-15248
+ 551 030c 9AC4     		.short	-15206
+ 552 030e B4C4     		.short	-15180
+ 553 0310 BCC4     		.short	-15172
+ 554 0312 B4C4     		.short	-15180
+ 555 0314 9AC4     		.short	-15206
+ 556 0316 70C4     		.short	-15248
+ 557 0318 36C4     		.short	-15306
+ 558 031a EFC3     		.short	-15377
+ 559 031c 9BC3     		.short	-15461
+ 560 031e 3DC3     		.short	-15555
+ 561 0320 D8C2     		.short	-15656
+ 562 0322 6EC2     		.short	-15762
+ 563 0324 02C2     		.short	-15870
+ 564 0326 97C1     		.short	-15977
+ 565 0328 31C1     		.short	-16079
+ 566 032a D4C0     		.short	-16172
+ 567 032c 83C0     		.short	-16253
+ 568 032e 43C0     		.short	-16317
+ 569 0330 16C0     		.short	-16362
+ 570 0332 01C0     		.short	-16383
+ 571 0334 07C0     		.short	-16377
+ 572 0336 2CC0     		.short	-16340
+ 573 0338 73C0     		.short	-16269
+ 574 033a E1C0     		.short	-16159
+ARM GAS  /tmp/ccezFcIf.s 			page 11
+
+
+ 575 033c 77C1     		.short	-16009
+ 576 033e 38C2     		.short	-15816
+ 577 0340 27C3     		.short	-15577
+ 578 0342 47C4     		.short	-15289
+ 579 0344 97C5     		.short	-14953
+ 580 0346 1BC7     		.short	-14565
+ 581 0348 D2C8     		.short	-14126
+ 582 034a BECA     		.short	-13634
+ 583 034c DDCC     		.short	-13091
+ 584 034e 30CF     		.short	-12496
+ 585 0350 B7D1     		.short	-11849
+ 586 0352 6ED4     		.short	-11154
+ 587 0354 55D7     		.short	-10411
+ 588 0356 69DA     		.short	-9623
+ 589 0358 A9DD     		.short	-8791
+ 590 035a 0FE1     		.short	-7921
+ 591 035c 9AE4     		.short	-7014
+ 592 035e 45E8     		.short	-6075
+ 593 0360 0DEC     		.short	-5107
+ 594 0362 EDEF     		.short	-4115
+ 595 0364 E0F3     		.short	-3104
+ 596 0366 E3F7     		.short	-2077
+ 597 0368 EFFB     		.short	-1041
+ 598 036a 0000     		.short	0
+ 599 036c 1104     		.short	1041
+ 600 036e 1D08     		.short	2077
+ 601 0370 200C     		.short	3104
+ 602 0372 1310     		.short	4115
+ 603 0374 F313     		.short	5107
+ 604 0376 BB17     		.short	6075
+ 605 0378 661B     		.short	7014
+ 606 037a F11E     		.short	7921
+ 607 037c 5722     		.short	8791
+ 608 037e 9725     		.short	9623
+ 609 0380 AB28     		.short	10411
+ 610 0382 922B     		.short	11154
+ 611 0384 492E     		.short	11849
+ 612 0386 D030     		.short	12496
+ 613 0388 2333     		.short	13091
+ 614 038a 4235     		.short	13634
+ 615 038c 2E37     		.short	14126
+ 616 038e E538     		.short	14565
+ 617 0390 693A     		.short	14953
+ 618 0392 B93B     		.short	15289
+ 619 0394 D93C     		.short	15577
+ 620 0396 C83D     		.short	15816
+ 621 0398 893E     		.short	16009
+ 622 039a 1F3F     		.short	16159
+ 623 039c 8D3F     		.short	16269
+ 624 039e D43F     		.short	16340
+ 625 03a0 F93F     		.short	16377
+ 626 03a2 FF3F     		.short	16383
+ 627 03a4 EA3F     		.short	16362
+ 628 03a6 BD3F     		.short	16317
+ 629 03a8 7D3F     		.short	16253
+ 630 03aa 2C3F     		.short	16172
+ 631 03ac CF3E     		.short	16079
+ARM GAS  /tmp/ccezFcIf.s 			page 12
+
+
+ 632 03ae 693E     		.short	15977
+ 633 03b0 FE3D     		.short	15870
+ 634 03b2 923D     		.short	15762
+ 635 03b4 283D     		.short	15656
+ 636 03b6 C33C     		.short	15555
+ 637 03b8 653C     		.short	15461
+ 638 03ba 113C     		.short	15377
+ 639 03bc CA3B     		.short	15306
+ 640 03be 903B     		.short	15248
+ 641 03c0 663B     		.short	15206
+ 642 03c2 4C3B     		.short	15180
+ 643 03c4 443B     		.short	15172
+ 644 03c6 4C3B     		.short	15180
+ 645 03c8 663B     		.short	15206
+ 646 03ca 903B     		.short	15248
+ 647 03cc CA3B     		.short	15306
+ 648 03ce 113C     		.short	15377
+ 649 03d0 653C     		.short	15461
+ 650 03d2 C33C     		.short	15555
+ 651 03d4 283D     		.short	15656
+ 652 03d6 923D     		.short	15762
+ 653 03d8 FE3D     		.short	15870
+ 654 03da 693E     		.short	15977
+ 655 03dc CF3E     		.short	16079
+ 656 03de 2C3F     		.short	16172
+ 657 03e0 7D3F     		.short	16253
+ 658 03e2 BD3F     		.short	16317
+ 659 03e4 EA3F     		.short	16362
+ 660 03e6 FF3F     		.short	16383
+ 661 03e8 F93F     		.short	16377
+ 662 03ea D43F     		.short	16340
+ 663 03ec 8D3F     		.short	16269
+ 664 03ee 1F3F     		.short	16159
+ 665 03f0 893E     		.short	16009
+ 666 03f2 C83D     		.short	15816
+ 667 03f4 D93C     		.short	15577
+ 668 03f6 B93B     		.short	15289
+ 669 03f8 693A     		.short	14953
+ 670 03fa E538     		.short	14565
+ 671 03fc 2E37     		.short	14126
+ 672 03fe 4235     		.short	13634
+ 673 0400 2333     		.short	13091
+ 674 0402 D030     		.short	12496
+ 675 0404 492E     		.short	11849
+ 676 0406 922B     		.short	11154
+ 677 0408 AB28     		.short	10411
+ 678 040a 9725     		.short	9623
+ 679 040c 5722     		.short	8791
+ 680 040e F11E     		.short	7921
+ 681 0410 661B     		.short	7014
+ 682 0412 BB17     		.short	6075
+ 683 0414 F313     		.short	5107
+ 684 0416 1310     		.short	4115
+ 685 0418 200C     		.short	3104
+ 686 041a 1D08     		.short	2077
+ 687 041c 1104     		.short	1041
+ 688 041e 0000     		.short	0
+ARM GAS  /tmp/ccezFcIf.s 			page 13
+
+
+ 689 0420 EFFB     		.short	-1041
+ 690 0422 E3F7     		.short	-2077
+ 691 0424 E0F3     		.short	-3104
+ 692 0426 EDEF     		.short	-4115
+ 693 0428 0DEC     		.short	-5107
+ 694 042a 45E8     		.short	-6075
+ 695 042c 9AE4     		.short	-7014
+ 696 042e 0FE1     		.short	-7921
+ 697 0430 A9DD     		.short	-8791
+ 698 0432 69DA     		.short	-9623
+ 699 0434 55D7     		.short	-10411
+ 700 0436 6ED4     		.short	-11154
+ 701 0438 B7D1     		.short	-11849
+ 702 043a 30CF     		.short	-12496
+ 703 043c DDCC     		.short	-13091
+ 704 043e 443B     		.short	15172
+ 705 0440 4C3B     		.short	15180
+ 706 0442 663B     		.short	15206
+ 707 0444 903B     		.short	15248
+ 708 0446 CA3B     		.short	15306
+ 709 0448 113C     		.short	15377
+ 710 044a 653C     		.short	15461
+ 711 044c C33C     		.short	15555
+ 712 044e 283D     		.short	15656
+ 713 0450 923D     		.short	15762
+ 714 0452 FE3D     		.short	15870
+ 715 0454 693E     		.short	15977
+ 716 0456 CF3E     		.short	16079
+ 717 0458 2C3F     		.short	16172
+ 718 045a 7D3F     		.short	16253
+ 719 045c BD3F     		.short	16317
+ 720 045e EA3F     		.short	16362
+ 721 0460 FF3F     		.short	16383
+ 722 0462 F93F     		.short	16377
+ 723 0464 D43F     		.short	16340
+ 724 0466 8D3F     		.short	16269
+ 725 0468 1F3F     		.short	16159
+ 726 046a 893E     		.short	16009
+ 727 046c C83D     		.short	15816
+ 728 046e D93C     		.short	15577
+ 729 0470 B93B     		.short	15289
+ 730 0472 693A     		.short	14953
+ 731 0474 E538     		.short	14565
+ 732 0476 2E37     		.short	14126
+ 733 0478 4235     		.short	13634
+ 734 047a 2333     		.short	13091
+ 735 047c D030     		.short	12496
+ 736 047e 492E     		.short	11849
+ 737 0480 922B     		.short	11154
+ 738 0482 AB28     		.short	10411
+ 739 0484 9725     		.short	9623
+ 740 0486 5722     		.short	8791
+ 741 0488 F11E     		.short	7921
+ 742 048a 661B     		.short	7014
+ 743 048c BB17     		.short	6075
+ 744 048e F313     		.short	5107
+ 745 0490 1310     		.short	4115
+ARM GAS  /tmp/ccezFcIf.s 			page 14
+
+
+ 746 0492 200C     		.short	3104
+ 747 0494 1D08     		.short	2077
+ 748 0496 1104     		.short	1041
+ 749 0498 0000     		.short	0
+ 750 049a EFFB     		.short	-1041
+ 751 049c E3F7     		.short	-2077
+ 752 049e E0F3     		.short	-3104
+ 753 04a0 EDEF     		.short	-4115
+ 754 04a2 0DEC     		.short	-5107
+ 755 04a4 45E8     		.short	-6075
+ 756 04a6 9AE4     		.short	-7014
+ 757 04a8 0FE1     		.short	-7921
+ 758 04aa A9DD     		.short	-8791
+ 759 04ac 69DA     		.short	-9623
+ 760 04ae 55D7     		.short	-10411
+ 761 04b0 6ED4     		.short	-11154
+ 762 04b2 B7D1     		.short	-11849
+ 763 04b4 30CF     		.short	-12496
+ 764 04b6 DDCC     		.short	-13091
+ 765 04b8 BECA     		.short	-13634
+ 766 04ba D2C8     		.short	-14126
+ 767 04bc 1BC7     		.short	-14565
+ 768 04be 97C5     		.short	-14953
+ 769 04c0 47C4     		.short	-15289
+ 770 04c2 27C3     		.short	-15577
+ 771 04c4 38C2     		.short	-15816
+ 772 04c6 77C1     		.short	-16009
+ 773 04c8 E1C0     		.short	-16159
+ 774 04ca 73C0     		.short	-16269
+ 775 04cc 2CC0     		.short	-16340
+ 776 04ce 07C0     		.short	-16377
+ 777 04d0 01C0     		.short	-16383
+ 778 04d2 16C0     		.short	-16362
+ 779 04d4 43C0     		.short	-16317
+ 780 04d6 83C0     		.short	-16253
+ 781 04d8 D4C0     		.short	-16172
+ 782 04da 31C1     		.short	-16079
+ 783 04dc 97C1     		.short	-15977
+ 784 04de 02C2     		.short	-15870
+ 785 04e0 6EC2     		.short	-15762
+ 786 04e2 D8C2     		.short	-15656
+ 787 04e4 3DC3     		.short	-15555
+ 788 04e6 9BC3     		.short	-15461
+ 789 04e8 EFC3     		.short	-15377
+ 790 04ea 36C4     		.short	-15306
+ 791 04ec 70C4     		.short	-15248
+ 792 04ee 9AC4     		.short	-15206
+ 793 04f0 B4C4     		.short	-15180
+ 794 04f2 BCC4     		.short	-15172
+ 795 04f4 B4C4     		.short	-15180
+ 796 04f6 9AC4     		.short	-15206
+ 797 04f8 70C4     		.short	-15248
+ 798 04fa 36C4     		.short	-15306
+ 799 04fc EFC3     		.short	-15377
+ 800 04fe 9BC3     		.short	-15461
+ 801 0500 3DC3     		.short	-15555
+ 802 0502 D8C2     		.short	-15656
+ARM GAS  /tmp/ccezFcIf.s 			page 15
+
+
+ 803 0504 6EC2     		.short	-15762
+ 804 0506 02C2     		.short	-15870
+ 805 0508 97C1     		.short	-15977
+ 806 050a 31C1     		.short	-16079
+ 807 050c D4C0     		.short	-16172
+ 808 050e 83C0     		.short	-16253
+ 809 0510 43C0     		.short	-16317
+ 810 0512 16C0     		.short	-16362
+ 811 0514 01C0     		.short	-16383
+ 812 0516 07C0     		.short	-16377
+ 813 0518 2CC0     		.short	-16340
+ 814 051a 73C0     		.short	-16269
+ 815 051c E1C0     		.short	-16159
+ 816 051e 77C1     		.short	-16009
+ 817 0520 38C2     		.short	-15816
+ 818 0522 27C3     		.short	-15577
+ 819 0524 47C4     		.short	-15289
+ 820 0526 97C5     		.short	-14953
+ 821 0528 1BC7     		.short	-14565
+ 822 052a D2C8     		.short	-14126
+ 823 052c BECA     		.short	-13634
+ 824 052e DDCC     		.short	-13091
+ 825 0530 30CF     		.short	-12496
+ 826 0532 B7D1     		.short	-11849
+ 827 0534 6ED4     		.short	-11154
+ 828 0536 55D7     		.short	-10411
+ 829 0538 69DA     		.short	-9623
+ 830 053a A9DD     		.short	-8791
+ 831 053c 0FE1     		.short	-7921
+ 832 053e 9AE4     		.short	-7014
+ 833 0540 45E8     		.short	-6075
+ 834 0542 0DEC     		.short	-5107
+ 835 0544 EDEF     		.short	-4115
+ 836 0546 E0F3     		.short	-3104
+ 837 0548 E3F7     		.short	-2077
+ 838 054a EFFB     		.short	-1041
+ 839 054c 0000     		.short	0
+ 840 054e 1104     		.short	1041
+ 841 0550 1D08     		.short	2077
+ 842 0552 200C     		.short	3104
+ 843 0554 1310     		.short	4115
+ 844 0556 F313     		.short	5107
+ 845 0558 BB17     		.short	6075
+ 846 055a 661B     		.short	7014
+ 847 055c F11E     		.short	7921
+ 848 055e 5722     		.short	8791
+ 849 0560 9725     		.short	9623
+ 850 0562 AB28     		.short	10411
+ 851 0564 922B     		.short	11154
+ 852 0566 492E     		.short	11849
+ 853 0568 D030     		.short	12496
+ 854 056a 2333     		.short	13091
+ 855 056c 4235     		.short	13634
+ 856 056e 2E37     		.short	14126
+ 857 0570 E538     		.short	14565
+ 858 0572 693A     		.short	14953
+ 859 0574 B93B     		.short	15289
+ARM GAS  /tmp/ccezFcIf.s 			page 16
+
+
+ 860 0576 D93C     		.short	15577
+ 861 0578 C83D     		.short	15816
+ 862 057a 893E     		.short	16009
+ 863 057c 1F3F     		.short	16159
+ 864 057e 8D3F     		.short	16269
+ 865 0580 D43F     		.short	16340
+ 866 0582 F93F     		.short	16377
+ 867 0584 FF3F     		.short	16383
+ 868 0586 EA3F     		.short	16362
+ 869 0588 BD3F     		.short	16317
+ 870 058a 7D3F     		.short	16253
+ 871 058c 2C3F     		.short	16172
+ 872 058e CF3E     		.short	16079
+ 873 0590 693E     		.short	15977
+ 874 0592 FE3D     		.short	15870
+ 875 0594 923D     		.short	15762
+ 876 0596 283D     		.short	15656
+ 877 0598 C33C     		.short	15555
+ 878 059a 653C     		.short	15461
+ 879 059c 113C     		.short	15377
+ 880 059e CA3B     		.short	15306
+ 881 05a0 903B     		.short	15248
+ 882 05a2 663B     		.short	15206
+ 883 05a4 4C3B     		.short	15180
+ 884 05a6 443B     		.short	15172
+ 885 05a8 DDCC     		.short	-13091
+ 886 05aa 30CF     		.short	-12496
+ 887 05ac B7D1     		.short	-11849
+ 888 05ae 6ED4     		.short	-11154
+ 889 05b0 55D7     		.short	-10411
+ 890 05b2 69DA     		.short	-9623
+ 891 05b4 A9DD     		.short	-8791
+ 892 05b6 0FE1     		.short	-7921
+ 893 05b8 9AE4     		.short	-7014
+ 894 05ba 45E8     		.short	-6075
+ 895 05bc 0DEC     		.short	-5107
+ 896 05be EDEF     		.short	-4115
+ 897 05c0 E0F3     		.short	-3104
+ 898 05c2 E3F7     		.short	-2077
+ 899 05c4 EFFB     		.short	-1041
+ 900 05c6 0000     		.short	0
+ 901 05c8 1104     		.short	1041
+ 902 05ca 1D08     		.short	2077
+ 903 05cc 200C     		.short	3104
+ 904 05ce 1310     		.short	4115
+ 905 05d0 F313     		.short	5107
+ 906 05d2 BB17     		.short	6075
+ 907 05d4 661B     		.short	7014
+ 908 05d6 F11E     		.short	7921
+ 909 05d8 5722     		.short	8791
+ 910 05da 9725     		.short	9623
+ 911 05dc AB28     		.short	10411
+ 912 05de 922B     		.short	11154
+ 913 05e0 492E     		.short	11849
+ 914 05e2 D030     		.short	12496
+ 915 05e4 2333     		.short	13091
+ 916 05e6 4235     		.short	13634
+ARM GAS  /tmp/ccezFcIf.s 			page 17
+
+
+ 917 05e8 2E37     		.short	14126
+ 918 05ea E538     		.short	14565
+ 919 05ec 693A     		.short	14953
+ 920 05ee B93B     		.short	15289
+ 921 05f0 D93C     		.short	15577
+ 922 05f2 C83D     		.short	15816
+ 923 05f4 893E     		.short	16009
+ 924 05f6 1F3F     		.short	16159
+ 925 05f8 8D3F     		.short	16269
+ 926 05fa D43F     		.short	16340
+ 927 05fc F93F     		.short	16377
+ 928 05fe FF3F     		.short	16383
+ 929 0600 EA3F     		.short	16362
+ 930 0602 BD3F     		.short	16317
+ 931 0604 7D3F     		.short	16253
+ 932 0606 2C3F     		.short	16172
+ 933 0608 CF3E     		.short	16079
+ 934 060a 693E     		.short	15977
+ 935 060c FE3D     		.short	15870
+ 936 060e 923D     		.short	15762
+ 937 0610 283D     		.short	15656
+ 938 0612 C33C     		.short	15555
+ 939 0614 653C     		.short	15461
+ 940 0616 113C     		.short	15377
+ 941 0618 CA3B     		.short	15306
+ 942 061a 903B     		.short	15248
+ 943 061c 663B     		.short	15206
+ 944 061e 4C3B     		.short	15180
+ 945 0620 443B     		.short	15172
+ 946 0622 4C3B     		.short	15180
+ 947 0624 663B     		.short	15206
+ 948 0626 903B     		.short	15248
+ 949 0628 CA3B     		.short	15306
+ 950 062a 113C     		.short	15377
+ 951 062c 653C     		.short	15461
+ 952 062e C33C     		.short	15555
+ 953 0630 283D     		.short	15656
+ 954 0632 923D     		.short	15762
+ 955 0634 FE3D     		.short	15870
+ 956 0636 693E     		.short	15977
+ 957 0638 CF3E     		.short	16079
+ 958 063a 2C3F     		.short	16172
+ 959 063c 7D3F     		.short	16253
+ 960 063e BD3F     		.short	16317
+ 961 0640 EA3F     		.short	16362
+ 962 0642 FF3F     		.short	16383
+ 963 0644 F93F     		.short	16377
+ 964 0646 D43F     		.short	16340
+ 965 0648 8D3F     		.short	16269
+ 966 064a 1F3F     		.short	16159
+ 967 064c 893E     		.short	16009
+ 968 064e C83D     		.short	15816
+ 969 0650 D93C     		.short	15577
+ 970 0652 B93B     		.short	15289
+ 971 0654 693A     		.short	14953
+ 972 0656 E538     		.short	14565
+ 973 0658 2E37     		.short	14126
+ARM GAS  /tmp/ccezFcIf.s 			page 18
+
+
+ 974 065a 4235     		.short	13634
+ 975 065c 2333     		.short	13091
+ 976 065e D030     		.short	12496
+ 977 0660 492E     		.short	11849
+ 978 0662 922B     		.short	11154
+ 979 0664 AB28     		.short	10411
+ 980 0666 9725     		.short	9623
+ 981 0668 5722     		.short	8791
+ 982 066a F11E     		.short	7921
+ 983 066c 661B     		.short	7014
+ 984 066e BB17     		.short	6075
+ 985 0670 F313     		.short	5107
+ 986 0672 1310     		.short	4115
+ 987 0674 200C     		.short	3104
+ 988 0676 1D08     		.short	2077
+ 989 0678 1104     		.short	1041
+ 990 067a 0000     		.short	0
+ 991 067c EFFB     		.short	-1041
+ 992 067e E3F7     		.short	-2077
+ 993 0680 E0F3     		.short	-3104
+ 994 0682 EDEF     		.short	-4115
+ 995 0684 0DEC     		.short	-5107
+ 996 0686 45E8     		.short	-6075
+ 997 0688 9AE4     		.short	-7014
+ 998 068a 0FE1     		.short	-7921
+ 999 068c A9DD     		.short	-8791
+ 1000 068e 69DA     		.short	-9623
+ 1001 0690 55D7     		.short	-10411
+ 1002 0692 6ED4     		.short	-11154
+ 1003 0694 B7D1     		.short	-11849
+ 1004 0696 30CF     		.short	-12496
+ 1005 0698 DDCC     		.short	-13091
+ 1006 069a BECA     		.short	-13634
+ 1007 069c D2C8     		.short	-14126
+ 1008 069e 1BC7     		.short	-14565
+ 1009 06a0 97C5     		.short	-14953
+ 1010 06a2 47C4     		.short	-15289
+ 1011 06a4 27C3     		.short	-15577
+ 1012 06a6 38C2     		.short	-15816
+ 1013 06a8 77C1     		.short	-16009
+ 1014 06aa E1C0     		.short	-16159
+ 1015 06ac 73C0     		.short	-16269
+ 1016 06ae 2CC0     		.short	-16340
+ 1017 06b0 07C0     		.short	-16377
+ 1018 06b2 01C0     		.short	-16383
+ 1019 06b4 16C0     		.short	-16362
+ 1020 06b6 43C0     		.short	-16317
+ 1021 06b8 83C0     		.short	-16253
+ 1022 06ba D4C0     		.short	-16172
+ 1023 06bc 31C1     		.short	-16079
+ 1024 06be 97C1     		.short	-15977
+ 1025 06c0 02C2     		.short	-15870
+ 1026 06c2 6EC2     		.short	-15762
+ 1027 06c4 D8C2     		.short	-15656
+ 1028 06c6 3DC3     		.short	-15555
+ 1029 06c8 9BC3     		.short	-15461
+ 1030 06ca EFC3     		.short	-15377
+ARM GAS  /tmp/ccezFcIf.s 			page 19
+
+
+ 1031 06cc 36C4     		.short	-15306
+ 1032 06ce 70C4     		.short	-15248
+ 1033 06d0 9AC4     		.short	-15206
+ 1034 06d2 B4C4     		.short	-15180
+ 1035 06d4 BCC4     		.short	-15172
+ 1036 06d6 B4C4     		.short	-15180
+ 1037 06d8 9AC4     		.short	-15206
+ 1038 06da 70C4     		.short	-15248
+ 1039 06dc 36C4     		.short	-15306
+ 1040 06de EFC3     		.short	-15377
+ 1041 06e0 9BC3     		.short	-15461
+ 1042 06e2 3DC3     		.short	-15555
+ 1043 06e4 D8C2     		.short	-15656
+ 1044 06e6 6EC2     		.short	-15762
+ 1045 06e8 02C2     		.short	-15870
+ 1046 06ea 97C1     		.short	-15977
+ 1047 06ec 31C1     		.short	-16079
+ 1048 06ee D4C0     		.short	-16172
+ 1049 06f0 83C0     		.short	-16253
+ 1050 06f2 43C0     		.short	-16317
+ 1051 06f4 16C0     		.short	-16362
+ 1052 06f6 01C0     		.short	-16383
+ 1053 06f8 07C0     		.short	-16377
+ 1054 06fa 2CC0     		.short	-16340
+ 1055 06fc 73C0     		.short	-16269
+ 1056 06fe E1C0     		.short	-16159
+ 1057 0700 77C1     		.short	-16009
+ 1058 0702 38C2     		.short	-15816
+ 1059 0704 27C3     		.short	-15577
+ 1060 0706 47C4     		.short	-15289
+ 1061 0708 97C5     		.short	-14953
+ 1062 070a 1BC7     		.short	-14565
+ 1063 070c D2C8     		.short	-14126
+ 1064 070e BECA     		.short	-13634
+ 1065 0710 DDCC     		.short	-13091
+ 1066 0712 FFFF     		.short	-1
+ 1067 0714 F3FF     		.short	-13
+ 1068 0716 CCFF     		.short	-52
+ 1069 0718 8AFF     		.short	-118
+ 1070 071a 2EFF     		.short	-210
+ 1071 071c B7FE     		.short	-329
+ 1072 071e 26FE     		.short	-474
+ 1073 0720 7AFD     		.short	-646
+ 1074 0722 B3FC     		.short	-845
+ 1075 0724 D1FB     		.short	-1071
+ 1076 0726 D3FA     		.short	-1325
+ 1077 0728 BAF9     		.short	-1606
+ 1078 072a 84F8     		.short	-1916
+ 1079 072c 31F7     		.short	-2255
+ 1080 072e C1F5     		.short	-2623
+ 1081 0730 34F4     		.short	-3020
+ 1082 0732 88F2     		.short	-3448
+ 1083 0734 BEF0     		.short	-3906
+ 1084 0736 D4EE     		.short	-4396
+ 1085 0738 CAEC     		.short	-4918
+ 1086 073a 9EEA     		.short	-5474
+ 1087 073c 51E8     		.short	-6063
+ARM GAS  /tmp/ccezFcIf.s 			page 20
+
+
+ 1088 073e E0E5     		.short	-6688
+ 1089 0740 4BE3     		.short	-7349
+ 1090 0742 91E0     		.short	-8047
+ 1091 0744 B0DD     		.short	-8784
+ 1092 0746 A6DA     		.short	-9562
+ 1093 0748 73D7     		.short	-10381
+ 1094 074a 13D4     		.short	-11245
+ 1095 074c 85D0     		.short	-12155
+ 1096 074e C6CC     		.short	-13114
+ 1097 0750 D5C8     		.short	-14123
+ 1098 0752 ADC4     		.short	-15187
+ 1099 0754 4BC0     		.short	-16309
+ 1100 0756 ABBB     		.short	-17493
+ 1101 0758 C8B6     		.short	-18744
+ 1102 075a 9EB1     		.short	-20066
+ 1103 075c 25AC     		.short	-21467
+ 1104 075e 55A6     		.short	-22955
+ 1105 0760 25A0     		.short	-24539
+ 1106 0762 8B99     		.short	-26229
+ 1107 0764 7692     		.short	-28042
+ 1108 0766 D58A     		.short	-29995
+ 1109 0768 8E82     		.short	-32114
+ 1110 076a 8179     		.short	31105
+ 1111 076c 7C6F     		.short	28540
+ 1112 076e 3764     		.short	25655
+ 1113 0770 3357     		.short	22323
+ 1114 0772 8047     		.short	18304
+ 1115 0774 AE32     		.short	12974
+ 1116 0776 FF0100FF 		.ascii	"\377\001\000\377\000\001\000\377\001\001\377\000\001"
+ 1116      000100FF 
+ 1116      0101FF00 
+ 1116      01
+ 1117 0783 00FF0001 		.ascii	"\000\377\000\001\377"
+ 1117      FF
+ 1118 0788 00020001 		.ascii	"\000\002\000\001\004\003\005\000"
+ 1118      04030500 
+ 1119              		.text
+ 1120              	.Letext0:
+ 1121              		.file 2 "Inc/rtwtypes.h"
+ 1122              		.file 3 "Inc/BLDC_controller.h"
+ARM GAS  /tmp/ccezFcIf.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 BLDC_controller_data.c
+     /tmp/ccezFcIf.s:23     .data.rtP_Left:00000000 rtP_Left
+     /tmp/ccezFcIf.s:20     .data.rtP_Left:00000000 $d
+     /tmp/ccezFcIf.s:160    .rodata.rtConstP:00000000 rtConstP
+     /tmp/ccezFcIf.s:157    .rodata.rtConstP:00000000 $d
+
+NO UNDEFINED SYMBOLS

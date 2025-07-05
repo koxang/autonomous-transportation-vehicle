@@ -1,0 +1,2115 @@
+ARM GAS  /tmp/ccI9vT92.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/main.c"
+  18              		.section	.text.SystemClock_Config,"ax",%progbits
+  19              		.align	1
+  20              		.global	SystemClock_Config
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	SystemClock_Config:
+  26              	.LFB67:
+   1:Src/main.c    **** /*
+   2:Src/main.c    **** * This file is part of the hoverboard-firmware-hack project.
+   3:Src/main.c    **** *
+   4:Src/main.c    **** * Copyright (C) 2017-2018 Rene Hopf <renehopf@mac.com>
+   5:Src/main.c    **** * Copyright (C) 2017-2018 Nico Stute <crinq@crinq.de>
+   6:Src/main.c    **** * Copyright (C) 2017-2018 Niklas Fauth <niklas.fauth@kit.fail>
+   7:Src/main.c    **** * Copyright (C) 2019-2020 Emanuel FERU <aerdronix@gmail.com>
+   8:Src/main.c    **** *
+   9:Src/main.c    **** * This program is free software: you can redistribute it and/or modify
+  10:Src/main.c    **** * it under the terms of the GNU General Public License as published by
+  11:Src/main.c    **** * the Free Software Foundation, either version 3 of the License, or
+  12:Src/main.c    **** * (at your option) any later version.
+  13:Src/main.c    **** *
+  14:Src/main.c    **** * This program is distributed in the hope that it will be useful,
+  15:Src/main.c    **** * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:Src/main.c    **** * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:Src/main.c    **** * GNU General Public License for more details.
+  18:Src/main.c    **** *
+  19:Src/main.c    **** * You should have received a copy of the GNU General Public License
+  20:Src/main.c    **** * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  21:Src/main.c    **** */
+  22:Src/main.c    **** 
+  23:Src/main.c    **** #include <stdio.h>
+  24:Src/main.c    **** #include <stdlib.h> // for abs()
+  25:Src/main.c    **** #include "stm32f1xx_hal.h"
+  26:Src/main.c    **** #include "defines.h"
+  27:Src/main.c    **** #include "setup.h"
+  28:Src/main.c    **** #include "config.h"
+  29:Src/main.c    **** #include "util.h"
+  30:Src/main.c    **** #include "BLDC_controller.h"      /* BLDC's header file */
+  31:Src/main.c    **** #include "rtwtypes.h"
+  32:Src/main.c    **** #include "comms.h"
+ARM GAS  /tmp/ccI9vT92.s 			page 2
+
+
+  33:Src/main.c    **** 
+  34:Src/main.c    **** #if defined(DEBUG_I2C_LCD) || defined(SUPPORT_LCD)
+  35:Src/main.c    **** #include "hd44780.h"
+  36:Src/main.c    **** #endif
+  37:Src/main.c    **** 
+  38:Src/main.c    **** void SystemClock_Config(void);
+  39:Src/main.c    **** 
+  40:Src/main.c    **** //------------------------------------------------------------------------
+  41:Src/main.c    **** // Global variables set externally
+  42:Src/main.c    **** //------------------------------------------------------------------------
+  43:Src/main.c    **** extern TIM_HandleTypeDef htim_left;
+  44:Src/main.c    **** extern TIM_HandleTypeDef htim_right;
+  45:Src/main.c    **** extern ADC_HandleTypeDef hadc1;
+  46:Src/main.c    **** extern ADC_HandleTypeDef hadc2;
+  47:Src/main.c    **** extern volatile adc_buf_t adc_buffer;
+  48:Src/main.c    **** #if defined(DEBUG_I2C_LCD) || defined(SUPPORT_LCD)
+  49:Src/main.c    ****   extern LCD_PCF8574_HandleTypeDef lcd;
+  50:Src/main.c    ****   extern uint8_t LCDerrorFlag;
+  51:Src/main.c    **** #endif
+  52:Src/main.c    **** 
+  53:Src/main.c    **** extern UART_HandleTypeDef huart2;
+  54:Src/main.c    **** extern UART_HandleTypeDef huart3;
+  55:Src/main.c    **** 
+  56:Src/main.c    **** volatile uint8_t uart_buf[200];
+  57:Src/main.c    **** 
+  58:Src/main.c    **** // Matlab defines - from auto-code generation
+  59:Src/main.c    **** //---------------
+  60:Src/main.c    **** extern P    rtP_Left;                   /* Block parameters (auto storage) */
+  61:Src/main.c    **** extern P    rtP_Right;                  /* Block parameters (auto storage) */
+  62:Src/main.c    **** extern ExtY rtY_Left;                   /* External outputs */
+  63:Src/main.c    **** extern ExtY rtY_Right;                  /* External outputs */
+  64:Src/main.c    **** extern ExtU rtU_Left;                   /* External inputs */
+  65:Src/main.c    **** extern ExtU rtU_Right;                  /* External inputs */
+  66:Src/main.c    **** //---------------
+  67:Src/main.c    **** 
+  68:Src/main.c    **** extern uint8_t     inIdx;               // input index used for dual-inputs
+  69:Src/main.c    **** extern uint8_t     inIdx_prev;
+  70:Src/main.c    **** extern InputStruct input1[];            // input structure
+  71:Src/main.c    **** extern InputStruct input2[];            // input structure
+  72:Src/main.c    **** 
+  73:Src/main.c    **** extern int16_t speedAvg;                // Average measured speed
+  74:Src/main.c    **** extern int16_t speedAvgAbs;             // Average measured speed in absolute
+  75:Src/main.c    **** extern volatile uint32_t timeoutCntGen; // Timeout counter for the General timeout (PPM, PWM, Nunch
+  76:Src/main.c    **** extern volatile uint8_t  timeoutFlgGen; // Timeout Flag for the General timeout (PPM, PWM, Nunchuk)
+  77:Src/main.c    **** extern uint8_t timeoutFlgADC;           // Timeout Flag for for ADC Protection: 0 = OK, 1 = Problem
+  78:Src/main.c    **** extern uint8_t timeoutFlgSerial;        // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem 
+  79:Src/main.c    **** 
+  80:Src/main.c    **** extern volatile int pwml;               // global variable for pwm left. -1000 to 1000
+  81:Src/main.c    **** extern volatile int pwmr;               // global variable for pwm right. -1000 to 1000
+  82:Src/main.c    **** 
+  83:Src/main.c    **** extern uint8_t enable;                  // global variable for motor enable
+  84:Src/main.c    **** 
+  85:Src/main.c    **** extern int16_t batVoltage;              // global variable for battery voltage
+  86:Src/main.c    **** 
+  87:Src/main.c    **** #if defined(SIDEBOARD_SERIAL_USART2)
+  88:Src/main.c    **** extern SerialSideboard Sideboard_L;
+  89:Src/main.c    **** #endif
+ARM GAS  /tmp/ccI9vT92.s 			page 3
+
+
+  90:Src/main.c    **** #if defined(SIDEBOARD_SERIAL_USART3)
+  91:Src/main.c    **** extern SerialSideboard Sideboard_R;
+  92:Src/main.c    **** #endif
+  93:Src/main.c    **** #if (defined(CONTROL_PPM_LEFT) && defined(DEBUG_SERIAL_USART3)) || (defined(CONTROL_PPM_RIGHT) && d
+  94:Src/main.c    **** extern volatile uint16_t ppm_captured_value[PPM_NUM_CHANNELS+1];
+  95:Src/main.c    **** #endif
+  96:Src/main.c    **** #if (defined(CONTROL_PWM_LEFT) && defined(DEBUG_SERIAL_USART3)) || (defined(CONTROL_PWM_RIGHT) && d
+  97:Src/main.c    **** extern volatile uint16_t pwm_captured_ch1_value;
+  98:Src/main.c    **** extern volatile uint16_t pwm_captured_ch2_value;
+  99:Src/main.c    **** #endif
+ 100:Src/main.c    **** 
+ 101:Src/main.c    **** 
+ 102:Src/main.c    **** //------------------------------------------------------------------------
+ 103:Src/main.c    **** // Global variables set here in main.c
+ 104:Src/main.c    **** //------------------------------------------------------------------------
+ 105:Src/main.c    **** uint8_t backwardDrive;
+ 106:Src/main.c    **** extern volatile uint32_t buzzerTimer;
+ 107:Src/main.c    **** volatile uint32_t main_loop_counter;
+ 108:Src/main.c    **** int16_t batVoltageCalib;         // global variable for calibrated battery voltage
+ 109:Src/main.c    **** int16_t board_temp_deg_c;        // global variable for calibrated temperature in degrees Celsius
+ 110:Src/main.c    **** int16_t left_dc_curr;            // global variable for Left DC Link current 
+ 111:Src/main.c    **** int16_t right_dc_curr;           // global variable for Right DC Link current
+ 112:Src/main.c    **** int16_t dc_curr;                 // global variable for Total DC Link current 
+ 113:Src/main.c    **** int16_t cmdL;                    // global variable for Left Command 
+ 114:Src/main.c    **** int16_t cmdR;                    // global variable for Right Command 
+ 115:Src/main.c    **** 
+ 116:Src/main.c    **** //------------------------------------------------------------------------
+ 117:Src/main.c    **** // Local variables
+ 118:Src/main.c    **** //------------------------------------------------------------------------
+ 119:Src/main.c    **** #if defined(FEEDBACK_SERIAL_USART2) || defined(FEEDBACK_SERIAL_USART3)
+ 120:Src/main.c    **** typedef struct{
+ 121:Src/main.c    ****   uint16_t  start;
+ 122:Src/main.c    ****   int16_t   cmd1;
+ 123:Src/main.c    ****   int16_t   cmd2;
+ 124:Src/main.c    ****   int16_t   speedR_meas;
+ 125:Src/main.c    ****   int16_t   speedL_meas;
+ 126:Src/main.c    ****   int16_t   batVoltage;
+ 127:Src/main.c    ****   int16_t   boardTemp;
+ 128:Src/main.c    ****   uint16_t  cmdLed;
+ 129:Src/main.c    ****   uint16_t  checksum;
+ 130:Src/main.c    **** } SerialFeedback;
+ 131:Src/main.c    **** static SerialFeedback Feedback;
+ 132:Src/main.c    **** #endif
+ 133:Src/main.c    **** #if defined(FEEDBACK_SERIAL_USART2)
+ 134:Src/main.c    **** static uint8_t sideboard_leds_L;
+ 135:Src/main.c    **** #endif
+ 136:Src/main.c    **** #if defined(FEEDBACK_SERIAL_USART3)
+ 137:Src/main.c    **** static uint8_t sideboard_leds_R;
+ 138:Src/main.c    **** #endif
+ 139:Src/main.c    **** 
+ 140:Src/main.c    **** #ifdef VARIANT_TRANSPOTTER
+ 141:Src/main.c    ****   uint8_t  nunchuk_connected;
+ 142:Src/main.c    ****   extern float    setDistance;  
+ 143:Src/main.c    **** 
+ 144:Src/main.c    ****   static uint8_t  checkRemote = 0;
+ 145:Src/main.c    ****   static uint16_t distance;
+ 146:Src/main.c    ****   static float    steering;
+ARM GAS  /tmp/ccI9vT92.s 			page 4
+
+
+ 147:Src/main.c    ****   static int      distanceErr;  
+ 148:Src/main.c    ****   static int      lastDistance = 0;
+ 149:Src/main.c    ****   static uint16_t transpotter_counter = 0;
+ 150:Src/main.c    **** #endif
+ 151:Src/main.c    **** 
+ 152:Src/main.c    **** static int16_t    speed;                // local variable for speed. -1000 to 1000
+ 153:Src/main.c    **** #ifndef VARIANT_TRANSPOTTER
+ 154:Src/main.c    ****   static int16_t  steer;                // local variable for steering. -1000 to 1000
+ 155:Src/main.c    ****   static int16_t  steerRateFixdt;       // local fixed-point variable for steering rate limiter
+ 156:Src/main.c    ****   static int16_t  speedRateFixdt;       // local fixed-point variable for speed rate limiter
+ 157:Src/main.c    ****   static int32_t  steerFixdt;           // local fixed-point variable for steering low-pass filter
+ 158:Src/main.c    ****   static int32_t  speedFixdt;           // local fixed-point variable for speed low-pass filter
+ 159:Src/main.c    **** #endif
+ 160:Src/main.c    **** 
+ 161:Src/main.c    **** static uint32_t    buzzerTimer_prev = 0;
+ 162:Src/main.c    **** static uint32_t    inactivity_timeout_counter;
+ 163:Src/main.c    **** static MultipleTap MultipleTapBrake;    // define multiple tap functionality for the Brake pedal
+ 164:Src/main.c    **** 
+ 165:Src/main.c    **** static uint16_t rate = RATE; // Adjustable rate to support multiple drive modes on startup
+ 166:Src/main.c    **** 
+ 167:Src/main.c    **** #ifdef MULTI_MODE_DRIVE
+ 168:Src/main.c    ****   static uint8_t drive_mode;
+ 169:Src/main.c    ****   static uint16_t max_speed;
+ 170:Src/main.c    **** #endif
+ 171:Src/main.c    **** 
+ 172:Src/main.c    **** 
+ 173:Src/main.c    **** int main(void) {
+ 174:Src/main.c    **** 
+ 175:Src/main.c    ****   HAL_Init();
+ 176:Src/main.c    ****   __HAL_RCC_AFIO_CLK_ENABLE();
+ 177:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 178:Src/main.c    ****   /* System interrupt init*/
+ 179:Src/main.c    ****   /* MemoryManagement_IRQn interrupt configuration */
+ 180:Src/main.c    ****   HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
+ 181:Src/main.c    ****   /* BusFault_IRQn interrupt configuration */
+ 182:Src/main.c    ****   HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
+ 183:Src/main.c    ****   /* UsageFault_IRQn interrupt configuration */
+ 184:Src/main.c    ****   HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
+ 185:Src/main.c    ****   /* SVCall_IRQn interrupt configuration */
+ 186:Src/main.c    ****   HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
+ 187:Src/main.c    ****   /* DebugMonitor_IRQn interrupt configuration */
+ 188:Src/main.c    ****   HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
+ 189:Src/main.c    ****   /* PendSV_IRQn interrupt configuration */
+ 190:Src/main.c    ****   HAL_NVIC_SetPriority(PendSV_IRQn, 0, 0);
+ 191:Src/main.c    ****   /* SysTick_IRQn interrupt configuration */
+ 192:Src/main.c    ****   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+ 193:Src/main.c    **** 
+ 194:Src/main.c    ****   SystemClock_Config();
+ 195:Src/main.c    **** 
+ 196:Src/main.c    ****   __HAL_RCC_DMA1_CLK_DISABLE();
+ 197:Src/main.c    ****   MX_GPIO_Init();
+ 198:Src/main.c    ****   MX_TIM_Init();
+ 199:Src/main.c    ****   MX_ADC1_Init();
+ 200:Src/main.c    ****   MX_ADC2_Init();
+ 201:Src/main.c    ****   BLDC_Init();        // BLDC Controller Init
+ 202:Src/main.c    **** 
+ 203:Src/main.c    ****   HAL_GPIO_WritePin(OFF_PORT, OFF_PIN, GPIO_PIN_SET);   // Activate Latch
+ARM GAS  /tmp/ccI9vT92.s 			page 5
+
+
+ 204:Src/main.c    ****   Input_Lim_Init();   // Input Limitations Init
+ 205:Src/main.c    ****   Input_Init();       // Input Init
+ 206:Src/main.c    **** 
+ 207:Src/main.c    ****   HAL_ADC_Start(&hadc1);
+ 208:Src/main.c    ****   HAL_ADC_Start(&hadc2);
+ 209:Src/main.c    **** 
+ 210:Src/main.c    ****   poweronMelody();
+ 211:Src/main.c    ****   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+ 212:Src/main.c    ****   
+ 213:Src/main.c    ****   int32_t board_temp_adcFixdt = adc_buffer.temp << 16;  // Fixed-point filter output initialized wi
+ 214:Src/main.c    ****   int16_t board_temp_adcFilt  = adc_buffer.temp;
+ 215:Src/main.c    **** 
+ 216:Src/main.c    ****   #ifdef MULTI_MODE_DRIVE
+ 217:Src/main.c    ****     if (adc_buffer.l_tx2 > input1[0].min + 50 && adc_buffer.l_rx2 > input2[0].min + 50) {
+ 218:Src/main.c    ****       drive_mode = 2;
+ 219:Src/main.c    ****       max_speed = MULTI_MODE_DRIVE_M3_MAX;
+ 220:Src/main.c    ****       rate = MULTI_MODE_DRIVE_M3_RATE;
+ 221:Src/main.c    ****       rtP_Left.n_max = rtP_Right.n_max = MULTI_MODE_M3_N_MOT_MAX << 4;
+ 222:Src/main.c    ****       rtP_Left.i_max = rtP_Right.i_max = (MULTI_MODE_M3_I_MOT_MAX * A2BIT_CONV) << 4;
+ 223:Src/main.c    ****     } else if (adc_buffer.l_tx2 > input1[0].min + 50) {
+ 224:Src/main.c    ****       drive_mode = 1;
+ 225:Src/main.c    ****       max_speed = MULTI_MODE_DRIVE_M2_MAX;
+ 226:Src/main.c    ****       rate = MULTI_MODE_DRIVE_M2_RATE;
+ 227:Src/main.c    ****       rtP_Left.n_max = rtP_Right.n_max = MULTI_MODE_M2_N_MOT_MAX << 4;
+ 228:Src/main.c    ****       rtP_Left.i_max = rtP_Right.i_max = (MULTI_MODE_M2_I_MOT_MAX * A2BIT_CONV) << 4;
+ 229:Src/main.c    ****     } else {
+ 230:Src/main.c    ****       drive_mode = 0;
+ 231:Src/main.c    ****       max_speed = MULTI_MODE_DRIVE_M1_MAX;
+ 232:Src/main.c    ****       rate = MULTI_MODE_DRIVE_M1_RATE;
+ 233:Src/main.c    ****       rtP_Left.n_max = rtP_Right.n_max = MULTI_MODE_M1_N_MOT_MAX << 4;
+ 234:Src/main.c    ****       rtP_Left.i_max = rtP_Right.i_max = (MULTI_MODE_M1_I_MOT_MAX * A2BIT_CONV) << 4;
+ 235:Src/main.c    ****     }
+ 236:Src/main.c    **** 
+ 237:Src/main.c    ****     printf("Drive mode %i selected: max_speed:%i acc_rate:%i \r\n", drive_mode, max_speed, rate);
+ 238:Src/main.c    ****   #endif
+ 239:Src/main.c    **** 
+ 240:Src/main.c    ****   // Loop until button is released
+ 241:Src/main.c    ****   while(HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN)) { HAL_Delay(10); }
+ 242:Src/main.c    **** 
+ 243:Src/main.c    ****   #ifdef MULTI_MODE_DRIVE
+ 244:Src/main.c    ****     // Wait until triggers are released. Exit if timeout elapses (to unblock if the inputs are not 
+ 245:Src/main.c    ****     int iTimeout = 0;
+ 246:Src/main.c    ****     while((adc_buffer.l_rx2 + adc_buffer.l_tx2) >= (input1[0].min + input2[0].min) && iTimeout++ < 
+ 247:Src/main.c    ****       HAL_Delay(10);
+ 248:Src/main.c    ****     }
+ 249:Src/main.c    ****   #endif
+ 250:Src/main.c    **** 
+ 251:Src/main.c    ****   while(1) {
+ 252:Src/main.c    ****     if (buzzerTimer - buzzerTimer_prev > 16*DELAY_IN_MAIN_LOOP) {   // 1 ms = 16 ticks buzzerTimer
+ 253:Src/main.c    **** 
+ 254:Src/main.c    ****     readCommand();                        // Read Command: input1[inIdx].cmd, input2[inIdx].cmd
+ 255:Src/main.c    ****     calcAvgSpeed();                       // Calculate average measured speed: speedAvg, speedAvgAb
+ 256:Src/main.c    **** 
+ 257:Src/main.c    ****     #ifndef VARIANT_TRANSPOTTER
+ 258:Src/main.c    ****       // ####### MOTOR ENABLING: Only if the initial input is very small (for SAFETY) #######
+ 259:Src/main.c    ****       if (enable == 0 && !rtY_Left.z_errCode && !rtY_Right.z_errCode && 
+ 260:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ARM GAS  /tmp/ccI9vT92.s 			page 6
+
+
+ 261:Src/main.c    ****         beepShort(6);                     // make 2 beeps indicating the motor enable
+ 262:Src/main.c    ****         beepShort(4); HAL_Delay(100);
+ 263:Src/main.c    ****         steerFixdt = speedFixdt = 0;      // reset filters
+ 264:Src/main.c    ****         enable = 1;                       // enable motors
+ 265:Src/main.c    ****         #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 266:Src/main.c    ****         printf("-- Motors enabled --\r\n");
+ 267:Src/main.c    ****         #endif
+ 268:Src/main.c    ****       }
+ 269:Src/main.c    **** 
+ 270:Src/main.c    ****       // ####### VARIANT_HOVERCAR #######
+ 271:Src/main.c    ****       #if defined(VARIANT_HOVERCAR) || defined(VARIANT_SKATEBOARD) || defined(ELECTRIC_BRAKE_ENABLE
+ 272:Src/main.c    ****         uint16_t speedBlend;                                        // Calculate speed Blend, a num
+ 273:Src/main.c    ****         speedBlend = (uint16_t)(((CLAMP(speedAvgAbs,10,60) - 10) << 15) / 50); // speedBlend [0,1] 
+ 274:Src/main.c    ****       #endif
+ 275:Src/main.c    **** 
+ 276:Src/main.c    ****       #ifdef STANDSTILL_HOLD_ENABLE
+ 277:Src/main.c    ****         standstillHold();                                           // Apply Standstill Hold functi
+ 278:Src/main.c    ****       #endif
+ 279:Src/main.c    **** 
+ 280:Src/main.c    ****       #ifdef VARIANT_HOVERCAR
+ 281:Src/main.c    ****       if (inIdx == CONTROL_ADC) {                                   // Only use use implementation 
+ 282:Src/main.c    ****         if (speedAvgAbs < 60) {                                     // Check if Hovercar is physica
+ 283:Src/main.c    ****           multipleTapDet(input1[inIdx].cmd, HAL_GetTick(), &MultipleTapBrake); // Brake pedal in th
+ 284:Src/main.c    ****         }
+ 285:Src/main.c    **** 
+ 286:Src/main.c    ****         if (input1[inIdx].cmd > 30) {                               // If Brake pedal (input1) is p
+ 287:Src/main.c    ****           input2[inIdx].cmd = (int16_t)((input2[inIdx].cmd * speedBlend) >> 15);
+ 288:Src/main.c    ****           cruiseControl((uint8_t)rtP_Left.b_cruiseCtrlEna);         // Cruise control deactivated b
+ 289:Src/main.c    ****         }
+ 290:Src/main.c    ****       }
+ 291:Src/main.c    ****       #endif
+ 292:Src/main.c    **** 
+ 293:Src/main.c    ****       #ifdef ELECTRIC_BRAKE_ENABLE
+ 294:Src/main.c    ****         electricBrake(speedBlend, MultipleTapBrake.b_multipleTap);  // Apply Electric Brake. Only a
+ 295:Src/main.c    ****       #endif
+ 296:Src/main.c    **** 
+ 297:Src/main.c    ****       #ifdef VARIANT_HOVERCAR
+ 298:Src/main.c    ****       if (inIdx == CONTROL_ADC) {                                   // Only use use implementation 
+ 299:Src/main.c    ****         if (speedAvg > 0) {                                         // Make sure the Brake pedal is
+ 300:Src/main.c    ****           input1[inIdx].cmd = (int16_t)((-input1[inIdx].cmd * speedBlend) >> 15);
+ 301:Src/main.c    ****         } else {
+ 302:Src/main.c    ****           input1[inIdx].cmd = (int16_t)(( input1[inIdx].cmd * speedBlend) >> 15);
+ 303:Src/main.c    ****         }
+ 304:Src/main.c    ****       }
+ 305:Src/main.c    ****       #endif
+ 306:Src/main.c    **** 
+ 307:Src/main.c    ****       #ifdef VARIANT_SKATEBOARD
+ 308:Src/main.c    ****         if (input2[inIdx].cmd < 0) {                                // When Throttle is negative, i
+ 309:Src/main.c    ****           if (speedAvg > 0) {                                       // Make sure the braking is opp
+ 310:Src/main.c    ****             input2[inIdx].cmd  = (int16_t)(( input2[inIdx].cmd * speedBlend) >> 15);
+ 311:Src/main.c    ****           } else {
+ 312:Src/main.c    ****             input2[inIdx].cmd  = (int16_t)((-input2[inIdx].cmd * speedBlend) >> 15);
+ 313:Src/main.c    ****           }
+ 314:Src/main.c    ****         }
+ 315:Src/main.c    ****       #endif
+ 316:Src/main.c    **** 
+ 317:Src/main.c    ****       // ####### LOW-PASS FILTER #######
+ARM GAS  /tmp/ccI9vT92.s 			page 7
+
+
+ 318:Src/main.c    ****       rateLimiter16(input1[inIdx].cmd, rate, &steerRateFixdt);
+ 319:Src/main.c    ****       rateLimiter16(input2[inIdx].cmd, rate, &speedRateFixdt);
+ 320:Src/main.c    ****       filtLowPass32(steerRateFixdt >> 4, FILTER, &steerFixdt);
+ 321:Src/main.c    ****       filtLowPass32(speedRateFixdt >> 4, FILTER, &speedFixdt);
+ 322:Src/main.c    ****       steer = (int16_t)(steerFixdt >> 16);  // convert fixed-point to integer
+ 323:Src/main.c    ****       speed = (int16_t)(speedFixdt >> 16);  // convert fixed-point to integer
+ 324:Src/main.c    **** 
+ 325:Src/main.c    ****       // ####### VARIANT_HOVERCAR #######
+ 326:Src/main.c    ****       #ifdef VARIANT_HOVERCAR
+ 327:Src/main.c    ****       if (inIdx == CONTROL_ADC) {               // Only use use implementation below if pedals are 
+ 328:Src/main.c    **** 
+ 329:Src/main.c    ****         #ifdef MULTI_MODE_DRIVE
+ 330:Src/main.c    ****         if (speed >= max_speed) {
+ 331:Src/main.c    ****           speed = max_speed;
+ 332:Src/main.c    ****         }
+ 333:Src/main.c    ****         #endif
+ 334:Src/main.c    **** 
+ 335:Src/main.c    ****         if (!MultipleTapBrake.b_multipleTap) {  // Check driving direction
+ 336:Src/main.c    ****           speed = steer + speed;                // Forward driving: in this case steer = Brake, spe
+ 337:Src/main.c    ****         } else {
+ 338:Src/main.c    ****           speed = steer - speed;                // Reverse driving: in this case steer = Brake, spe
+ 339:Src/main.c    ****         }
+ 340:Src/main.c    ****         steer = 0;                              // Do not apply steering to avoid side effects if S
+ 341:Src/main.c    ****       }
+ 342:Src/main.c    ****       #endif
+ 343:Src/main.c    **** 
+ 344:Src/main.c    ****       #if defined(TANK_STEERING) && !defined(VARIANT_HOVERCAR) && !defined(VARIANT_SKATEBOARD) 
+ 345:Src/main.c    ****         // Tank steering (no mixing)
+ 346:Src/main.c    ****         cmdL = steer; 
+ 347:Src/main.c    ****         cmdR = speed;
+ 348:Src/main.c    ****       #else 
+ 349:Src/main.c    ****         // ####### MIXER #######
+ 350:Src/main.c    ****         mixerFcn(speed << 4, steer << 4, &cmdR, &cmdL);   // This function implements the equations
+ 351:Src/main.c    ****       #endif
+ 352:Src/main.c    **** 
+ 353:Src/main.c    **** 
+ 354:Src/main.c    ****       // ####### SET OUTPUTS (if the target change is less than +/- 100) #######
+ 355:Src/main.c    ****       #ifdef INVERT_R_DIRECTION
+ 356:Src/main.c    ****         pwmr = cmdR;
+ 357:Src/main.c    ****       #else
+ 358:Src/main.c    ****         pwmr = -cmdR;
+ 359:Src/main.c    ****       #endif
+ 360:Src/main.c    ****       #ifdef INVERT_L_DIRECTION
+ 361:Src/main.c    ****         pwml = -cmdL;
+ 362:Src/main.c    ****       #else
+ 363:Src/main.c    ****         pwml = cmdL;
+ 364:Src/main.c    ****       #endif
+ 365:Src/main.c    ****     #endif
+ 366:Src/main.c    **** 
+ 367:Src/main.c    ****     #ifdef VARIANT_TRANSPOTTER
+ 368:Src/main.c    ****       distance    = CLAMP(input1[inIdx].cmd - 180, 0, 4095);
+ 369:Src/main.c    ****       steering    = (input2[inIdx].cmd - 2048) / 2048.0;
+ 370:Src/main.c    ****       distanceErr = distance - (int)(setDistance * 1345);
+ 371:Src/main.c    **** 
+ 372:Src/main.c    ****       if (nunchuk_connected == 0) {
+ 373:Src/main.c    ****         cmdL = cmdL * 0.8f + (CLAMP(distanceErr + (steering*((float)MAX(ABS(distanceErr), 50)) * RO
+ 374:Src/main.c    ****         cmdR = cmdR * 0.8f + (CLAMP(distanceErr - (steering*((float)MAX(ABS(distanceErr), 50)) * RO
+ARM GAS  /tmp/ccI9vT92.s 			page 8
+
+
+ 375:Src/main.c    ****         if (distanceErr > 0) {
+ 376:Src/main.c    ****           enable = 1;
+ 377:Src/main.c    ****         }
+ 378:Src/main.c    ****         if (distanceErr > -300) {
+ 379:Src/main.c    ****           #ifdef INVERT_R_DIRECTION
+ 380:Src/main.c    ****             pwmr = cmdR;
+ 381:Src/main.c    ****           #else
+ 382:Src/main.c    ****             pwmr = -cmdR;
+ 383:Src/main.c    ****           #endif
+ 384:Src/main.c    ****           #ifdef INVERT_L_DIRECTION
+ 385:Src/main.c    ****             pwml = -cmdL;
+ 386:Src/main.c    ****           #else
+ 387:Src/main.c    ****             pwml = cmdL;
+ 388:Src/main.c    ****           #endif
+ 389:Src/main.c    **** 
+ 390:Src/main.c    ****           if (checkRemote) {
+ 391:Src/main.c    ****             if (!HAL_GPIO_ReadPin(LED_PORT, LED_PIN)) {
+ 392:Src/main.c    ****               //enable = 1;
+ 393:Src/main.c    ****             } else {
+ 394:Src/main.c    ****               enable = 0;
+ 395:Src/main.c    ****             }
+ 396:Src/main.c    ****           }
+ 397:Src/main.c    ****         } else {
+ 398:Src/main.c    ****           enable = 0;
+ 399:Src/main.c    ****         }
+ 400:Src/main.c    ****         timeoutCntGen = 0;
+ 401:Src/main.c    ****         timeoutFlgGen = 0;
+ 402:Src/main.c    ****       }
+ 403:Src/main.c    **** 
+ 404:Src/main.c    ****       if (timeoutFlgGen) {
+ 405:Src/main.c    ****         pwml = 0;
+ 406:Src/main.c    ****         pwmr = 0;
+ 407:Src/main.c    ****         enable = 0;
+ 408:Src/main.c    ****         #ifdef SUPPORT_LCD
+ 409:Src/main.c    ****           LCD_SetLocation(&lcd,  0, 0); LCD_WriteString(&lcd, "Len:");
+ 410:Src/main.c    ****           LCD_SetLocation(&lcd,  8, 0); LCD_WriteString(&lcd, "m(");
+ 411:Src/main.c    ****           LCD_SetLocation(&lcd, 14, 0); LCD_WriteString(&lcd, "m)");
+ 412:Src/main.c    ****         #endif
+ 413:Src/main.c    ****         HAL_Delay(1000);
+ 414:Src/main.c    ****         nunchuk_connected = 0;
+ 415:Src/main.c    ****       }
+ 416:Src/main.c    **** 
+ 417:Src/main.c    ****       if ((distance / 1345.0) - setDistance > 0.5 && (lastDistance / 1345.0) - setDistance > 0.5) {
+ 418:Src/main.c    ****         enable = 0;
+ 419:Src/main.c    ****         beepLong(5);
+ 420:Src/main.c    ****         #ifdef SUPPORT_LCD
+ 421:Src/main.c    ****           LCD_ClearDisplay(&lcd);
+ 422:Src/main.c    ****           HAL_Delay(5);
+ 423:Src/main.c    ****           LCD_SetLocation(&lcd, 0, 0); LCD_WriteString(&lcd, "Emergency Off!");
+ 424:Src/main.c    ****           LCD_SetLocation(&lcd, 0, 1); LCD_WriteString(&lcd, "Keeper too fast.");
+ 425:Src/main.c    ****         #endif
+ 426:Src/main.c    ****         poweroff();
+ 427:Src/main.c    ****       }
+ 428:Src/main.c    **** 
+ 429:Src/main.c    ****       #ifdef SUPPORT_NUNCHUK
+ 430:Src/main.c    ****         if (transpotter_counter % 500 == 0) {
+ 431:Src/main.c    ****           if (nunchuk_connected == 0 && enable == 0) {
+ARM GAS  /tmp/ccI9vT92.s 			page 9
+
+
+ 432:Src/main.c    ****               if(Nunchuk_Read() == NUNCHUK_CONNECTED) {
+ 433:Src/main.c    ****                 #ifdef SUPPORT_LCD
+ 434:Src/main.c    ****                   LCD_SetLocation(&lcd, 0, 0); LCD_WriteString(&lcd, "Nunchuk Control");
+ 435:Src/main.c    ****                 #endif
+ 436:Src/main.c    ****                 nunchuk_connected = 1;
+ 437:Src/main.c    **** 	      }
+ 438:Src/main.c    **** 	    } else {
+ 439:Src/main.c    ****               nunchuk_connected = 0;
+ 440:Src/main.c    **** 	    }
+ 441:Src/main.c    ****           }
+ 442:Src/main.c    ****         }   
+ 443:Src/main.c    ****       #endif
+ 444:Src/main.c    **** 
+ 445:Src/main.c    ****       #ifdef SUPPORT_LCD
+ 446:Src/main.c    ****         if (transpotter_counter % 100 == 0) {
+ 447:Src/main.c    ****           if (LCDerrorFlag == 1 && enable == 0) {
+ 448:Src/main.c    **** 
+ 449:Src/main.c    ****           } else {
+ 450:Src/main.c    ****             if (nunchuk_connected == 0) {
+ 451:Src/main.c    ****               LCD_SetLocation(&lcd,  4, 0); LCD_WriteFloat(&lcd,distance/1345.0,2);
+ 452:Src/main.c    ****               LCD_SetLocation(&lcd, 10, 0); LCD_WriteFloat(&lcd,setDistance,2);
+ 453:Src/main.c    ****             }
+ 454:Src/main.c    ****             LCD_SetLocation(&lcd,  4, 1); LCD_WriteFloat(&lcd,batVoltage, 1);
+ 455:Src/main.c    ****             // LCD_SetLocation(&lcd, 11, 1); LCD_WriteFloat(&lcd,MAX(ABS(currentR), ABS(currentL)),
+ 456:Src/main.c    ****           }
+ 457:Src/main.c    ****         }
+ 458:Src/main.c    ****       #endif
+ 459:Src/main.c    ****       transpotter_counter++;
+ 460:Src/main.c    ****     #endif
+ 461:Src/main.c    **** 
+ 462:Src/main.c    ****     // ####### SIDEBOARDS HANDLING #######
+ 463:Src/main.c    ****     #if defined(SIDEBOARD_SERIAL_USART2)
+ 464:Src/main.c    ****       sideboardSensors((uint8_t)Sideboard_L.sensors);
+ 465:Src/main.c    ****     #endif
+ 466:Src/main.c    ****     #if defined(FEEDBACK_SERIAL_USART2)
+ 467:Src/main.c    ****       sideboardLeds(&sideboard_leds_L);
+ 468:Src/main.c    ****     #endif
+ 469:Src/main.c    ****     #if defined(SIDEBOARD_SERIAL_USART3)
+ 470:Src/main.c    ****       sideboardSensors((uint8_t)Sideboard_R.sensors);
+ 471:Src/main.c    ****     #endif
+ 472:Src/main.c    ****     #if defined(FEEDBACK_SERIAL_USART3)
+ 473:Src/main.c    ****       sideboardLeds(&sideboard_leds_R);
+ 474:Src/main.c    ****     #endif
+ 475:Src/main.c    ****     
+ 476:Src/main.c    **** 
+ 477:Src/main.c    ****     // ####### CALC BOARD TEMPERATURE #######
+ 478:Src/main.c    ****     filtLowPass32(adc_buffer.temp, TEMP_FILT_COEF, &board_temp_adcFixdt);
+ 479:Src/main.c    ****     board_temp_adcFilt  = (int16_t)(board_temp_adcFixdt >> 16);  // convert fixed-point to integer
+ 480:Src/main.c    ****     board_temp_deg_c    = (TEMP_CAL_HIGH_DEG_C - TEMP_CAL_LOW_DEG_C) * (board_temp_adcFilt - TEMP_C
+ 481:Src/main.c    **** 
+ 482:Src/main.c    ****     // ####### CALC CALIBRATED BATTERY VOLTAGE #######
+ 483:Src/main.c    ****     batVoltageCalib = batVoltage * BAT_CALIB_REAL_VOLTAGE / BAT_CALIB_ADC;
+ 484:Src/main.c    **** 
+ 485:Src/main.c    ****     // ####### CALC DC LINK CURRENT #######
+ 486:Src/main.c    ****     left_dc_curr  = -(rtU_Left.i_DCLink * 100) / A2BIT_CONV;   // Left DC Link Current * 100 
+ 487:Src/main.c    ****     right_dc_curr = -(rtU_Right.i_DCLink * 100) / A2BIT_CONV;  // Right DC Link Current * 100
+ 488:Src/main.c    ****     dc_curr       = left_dc_curr + right_dc_curr;            // Total DC Link Current * 100
+ARM GAS  /tmp/ccI9vT92.s 			page 10
+
+
+ 489:Src/main.c    **** 
+ 490:Src/main.c    ****     // ####### DEBUG SERIAL OUT #######
+ 491:Src/main.c    ****     #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 492:Src/main.c    ****       if (main_loop_counter % 25 == 0) {    // Send data periodically every 125 ms      
+ 493:Src/main.c    ****         #if defined(DEBUG_SERIAL_PROTOCOL)
+ 494:Src/main.c    ****           process_debug();
+ 495:Src/main.c    ****         #else
+ 496:Src/main.c    ****           printf("in1:%i in2:%i cmdL:%i cmdR:%i BatADC:%i BatV:%i TempADC:%i Temp:%i \r\n",
+ 497:Src/main.c    ****             input1[inIdx].raw,        // 1: INPUT1
+ 498:Src/main.c    ****             input2[inIdx].raw,        // 2: INPUT2
+ 499:Src/main.c    ****             cmdL,                     // 3: output command: [-1000, 1000]
+ 500:Src/main.c    ****             cmdR,                     // 4: output command: [-1000, 1000]
+ 501:Src/main.c    ****             adc_buffer.batt1,         // 5: for battery voltage calibration
+ 502:Src/main.c    ****             batVoltageCalib,          // 6: for verifying battery voltage calibration
+ 503:Src/main.c    ****             board_temp_adcFilt,       // 7: for board temperature calibration
+ 504:Src/main.c    ****             board_temp_deg_c);        // 8: for verifying board temperature calibration
+ 505:Src/main.c    ****         #endif
+ 506:Src/main.c    ****       }
+ 507:Src/main.c    ****     #endif
+ 508:Src/main.c    **** 
+ 509:Src/main.c    ****     // ####### FEEDBACK SERIAL OUT #######
+ 510:Src/main.c    ****     #if defined(FEEDBACK_SERIAL_USART2) || defined(FEEDBACK_SERIAL_USART3)
+ 511:Src/main.c    ****       if (main_loop_counter % 2 == 0) {    // Send data periodically every 10 ms
+ 512:Src/main.c    ****         Feedback.start	        = (uint16_t)SERIAL_START_FRAME;
+ 513:Src/main.c    ****         Feedback.cmd1           = (int16_t)input1[inIdx].cmd;
+ 514:Src/main.c    ****         Feedback.cmd2           = (int16_t)input2[inIdx].cmd;
+ 515:Src/main.c    ****         Feedback.speedR_meas	  = (int16_t)rtY_Right.n_mot;
+ 516:Src/main.c    ****         Feedback.speedL_meas	  = (int16_t)rtY_Left.n_mot;
+ 517:Src/main.c    ****         Feedback.batVoltage	    = (int16_t)batVoltageCalib;
+ 518:Src/main.c    ****         Feedback.boardTemp	    = (int16_t)board_temp_deg_c;
+ 519:Src/main.c    **** 
+ 520:Src/main.c    ****         #if defined(FEEDBACK_SERIAL_USART2)
+ 521:Src/main.c    ****           if(__HAL_DMA_GET_COUNTER(huart2.hdmatx) == 0) {
+ 522:Src/main.c    ****             Feedback.cmdLed     = (uint16_t)sideboard_leds_L;
+ 523:Src/main.c    ****             Feedback.checksum   = (uint16_t)(Feedback.start ^ Feedback.cmd1 ^ Feedback.cmd2 ^ Feedb
+ 524:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 525:Src/main.c    **** 
+ 526:Src/main.c    ****             HAL_UART_Transmit_DMA(&huart2, (uint8_t *)&Feedback, sizeof(Feedback));
+ 527:Src/main.c    ****           }
+ 528:Src/main.c    ****         #endif
+ 529:Src/main.c    ****         #if defined(FEEDBACK_SERIAL_USART3)
+ 530:Src/main.c    ****           if(__HAL_DMA_GET_COUNTER(huart3.hdmatx) == 0) {
+ 531:Src/main.c    ****             Feedback.cmdLed     = (uint16_t)sideboard_leds_R;
+ 532:Src/main.c    ****             Feedback.checksum   = (uint16_t)(Feedback.start ^ Feedback.cmd1 ^ Feedback.cmd2 ^ Feedb
+ 533:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 534:Src/main.c    **** 
+ 535:Src/main.c    ****             HAL_UART_Transmit_DMA(&huart3, (uint8_t *)&Feedback, sizeof(Feedback));
+ 536:Src/main.c    ****           }
+ 537:Src/main.c    ****         #endif
+ 538:Src/main.c    ****       }
+ 539:Src/main.c    ****     #endif
+ 540:Src/main.c    **** 
+ 541:Src/main.c    ****     // ####### POWEROFF BY POWER-BUTTON #######
+ 542:Src/main.c    ****     poweroffPressCheck();
+ 543:Src/main.c    **** 
+ 544:Src/main.c    ****     // ####### BEEP AND EMERGENCY POWEROFF #######
+ 545:Src/main.c    ****     if (TEMP_POWEROFF_ENABLE && board_temp_deg_c >= TEMP_POWEROFF && speedAvgAbs < 20){  // powerof
+ARM GAS  /tmp/ccI9vT92.s 			page 11
+
+
+ 546:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 547:Src/main.c    ****         printf("Powering off, temperature is too high\r\n");
+ 548:Src/main.c    ****       #endif
+ 549:Src/main.c    ****       poweroff();
+ 550:Src/main.c    ****     } else if ( BAT_DEAD_ENABLE && batVoltage < BAT_DEAD && speedAvgAbs < 20){
+ 551:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 552:Src/main.c    ****         printf("Powering off, battery voltage is too low\r\n");
+ 553:Src/main.c    ****       #endif
+ 554:Src/main.c    ****       poweroff();
+ 555:Src/main.c    ****     } else if (rtY_Left.z_errCode || rtY_Right.z_errCode) {                                        
+ 556:Src/main.c    ****       enable = 0;
+ 557:Src/main.c    ****       beepCount(1, 24, 1);
+ 558:Src/main.c    ****     } else if (timeoutFlgADC) {                                                                    
+ 559:Src/main.c    ****       beepCount(2, 24, 1);
+ 560:Src/main.c    ****     } else if (timeoutFlgSerial) {                                                                 
+ 561:Src/main.c    ****       beepCount(3, 24, 1);
+ 562:Src/main.c    ****     } else if (timeoutFlgGen) {                                                                    
+ 563:Src/main.c    ****       beepCount(4, 24, 1);
+ 564:Src/main.c    ****     } else if (TEMP_WARNING_ENABLE && board_temp_deg_c >= TEMP_WARNING) {                          
+ 565:Src/main.c    ****       beepCount(5, 24, 1);
+ 566:Src/main.c    ****     } else if (BAT_LVL1_ENABLE && batVoltage < BAT_LVL1) {                                         
+ 567:Src/main.c    ****       beepCount(0, 10, 6);
+ 568:Src/main.c    ****     } else if (BAT_LVL2_ENABLE && batVoltage < BAT_LVL2) {                                         
+ 569:Src/main.c    ****       beepCount(0, 10, 30);
+ 570:Src/main.c    ****     } else if (BEEPS_BACKWARD && (((cmdR < -50 || cmdL < -50) && speedAvg < 0) || MultipleTapBrake.
+ 571:Src/main.c    ****       beepCount(0, 5, 1);
+ 572:Src/main.c    ****       backwardDrive = 1;
+ 573:Src/main.c    ****     } else {  // do not beep
+ 574:Src/main.c    ****       beepCount(0, 0, 0);
+ 575:Src/main.c    ****       backwardDrive = 0;
+ 576:Src/main.c    ****     }
+ 577:Src/main.c    **** 
+ 578:Src/main.c    **** 
+ 579:Src/main.c    ****     inactivity_timeout_counter++;
+ 580:Src/main.c    **** 
+ 581:Src/main.c    ****     // ####### INACTIVITY TIMEOUT #######
+ 582:Src/main.c    ****     if (abs(cmdL) > 50 || abs(cmdR) > 50) {
+ 583:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 584:Src/main.c    ****     }
+ 585:Src/main.c    **** 
+ 586:Src/main.c    ****     #if defined(CRUISE_CONTROL_SUPPORT) || defined(STANDSTILL_HOLD_ENABLE)
+ 587:Src/main.c    ****       if ((abs(rtP_Left.n_cruiseMotTgt)  > 50 && rtP_Left.b_cruiseCtrlEna) || 
+ 588:Src/main.c    ****           (abs(rtP_Right.n_cruiseMotTgt) > 50 && rtP_Right.b_cruiseCtrlEna)) {
+ 589:Src/main.c    ****         inactivity_timeout_counter = 0;
+ 590:Src/main.c    ****       }
+ 591:Src/main.c    ****     #endif
+ 592:Src/main.c    **** 
+ 593:Src/main.c    ****     if (inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 60 * 1000) / (DELAY_IN_MAIN_LOOP + 1)) {
+ 594:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 595:Src/main.c    ****         printf("Powering off, wheels were inactive for too long\r\n");
+ 596:Src/main.c    ****       #endif
+ 597:Src/main.c    ****       poweroff();
+ 598:Src/main.c    ****     }
+ 599:Src/main.c    **** 
+ 600:Src/main.c    **** 
+ 601:Src/main.c    ****     // HAL_GPIO_TogglePin(LED_PORT, LED_PIN);                 // This is to measure the main() loop
+ 602:Src/main.c    ****     // Update states
+ARM GAS  /tmp/ccI9vT92.s 			page 12
+
+
+ 603:Src/main.c    ****     inIdx_prev = inIdx;
+ 604:Src/main.c    ****     buzzerTimer_prev = buzzerTimer;
+ 605:Src/main.c    ****     main_loop_counter++;
+ 606:Src/main.c    ****     }
+ 607:Src/main.c    ****   }
+ 608:Src/main.c    **** }
+ 609:Src/main.c    **** 
+ 610:Src/main.c    **** 
+ 611:Src/main.c    **** // ===========================================================
+ 612:Src/main.c    **** /** System Clock Configuration
+ 613:Src/main.c    **** */
+ 614:Src/main.c    **** void SystemClock_Config(void) {
+  27              		.loc 1 614 31 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 88
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 30B5     		push	{r4, r5, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 12
+  34              		.cfi_offset 4, -12
+  35              		.cfi_offset 5, -8
+  36              		.cfi_offset 14, -4
+  37 0002 97B0     		sub	sp, sp, #92
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 104
+ 615:Src/main.c    ****   RCC_OscInitTypeDef RCC_OscInitStruct;
+  40              		.loc 1 615 3 view .LVU1
+ 616:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  41              		.loc 1 616 3 view .LVU2
+ 617:Src/main.c    ****   RCC_PeriphCLKInitTypeDef PeriphClkInit;
+  42              		.loc 1 617 3 view .LVU3
+ 618:Src/main.c    **** 
+ 619:Src/main.c    ****   /**Initializes the CPU, AHB and APB busses clocks
+ 620:Src/main.c    ****     */
+ 621:Src/main.c    ****   RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_HSI;
+  43              		.loc 1 621 3 view .LVU4
+  44              		.loc 1 621 41 is_stmt 0 view .LVU5
+  45 0004 0225     		movs	r5, #2
+  46 0006 0C95     		str	r5, [sp, #48]
+ 622:Src/main.c    ****   RCC_OscInitStruct.HSIState            = RCC_HSI_ON;
+  47              		.loc 1 622 3 is_stmt 1 view .LVU6
+  48              		.loc 1 622 41 is_stmt 0 view .LVU7
+  49 0008 0123     		movs	r3, #1
+  50 000a 1093     		str	r3, [sp, #64]
+ 623:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = 16;
+  51              		.loc 1 623 3 is_stmt 1 view .LVU8
+  52              		.loc 1 623 41 is_stmt 0 view .LVU9
+  53 000c 1023     		movs	r3, #16
+  54 000e 1193     		str	r3, [sp, #68]
+ 624:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  55              		.loc 1 624 3 is_stmt 1 view .LVU10
+  56              		.loc 1 624 41 is_stmt 0 view .LVU11
+  57 0010 1395     		str	r5, [sp, #76]
+ 625:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_HSI_DIV2;
+  58              		.loc 1 625 3 is_stmt 1 view .LVU12
+  59              		.loc 1 625 41 is_stmt 0 view .LVU13
+  60 0012 0024     		movs	r4, #0
+ARM GAS  /tmp/ccI9vT92.s 			page 13
+
+
+  61 0014 1494     		str	r4, [sp, #80]
+ 626:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLMUL          = RCC_PLL_MUL16;
+  62              		.loc 1 626 3 is_stmt 1 view .LVU14
+  63              		.loc 1 626 41 is_stmt 0 view .LVU15
+  64 0016 4FF46013 		mov	r3, #3670016
+  65 001a 1593     		str	r3, [sp, #84]
+ 627:Src/main.c    ****   HAL_RCC_OscConfig(&RCC_OscInitStruct);
+  66              		.loc 1 627 3 is_stmt 1 view .LVU16
+  67 001c 0CA8     		add	r0, sp, #48
+  68 001e FFF7FEFF 		bl	HAL_RCC_OscConfig
+  69              	.LVL0:
+ 628:Src/main.c    **** 
+ 629:Src/main.c    ****   /**Initializes the CPU, AHB and APB busses clocks
+ 630:Src/main.c    ****     */
+ 631:Src/main.c    ****   RCC_ClkInitStruct.ClockType           = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE
+  70              		.loc 1 631 3 view .LVU17
+  71              		.loc 1 631 41 is_stmt 0 view .LVU18
+  72 0022 0F23     		movs	r3, #15
+  73 0024 0793     		str	r3, [sp, #28]
+ 632:Src/main.c    ****   RCC_ClkInitStruct.SYSCLKSource        = RCC_SYSCLKSOURCE_PLLCLK;
+  74              		.loc 1 632 3 is_stmt 1 view .LVU19
+  75              		.loc 1 632 41 is_stmt 0 view .LVU20
+  76 0026 0895     		str	r5, [sp, #32]
+ 633:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider       = RCC_SYSCLK_DIV1;
+  77              		.loc 1 633 3 is_stmt 1 view .LVU21
+  78              		.loc 1 633 41 is_stmt 0 view .LVU22
+  79 0028 0994     		str	r4, [sp, #36]
+ 634:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider      = RCC_HCLK_DIV2;
+  80              		.loc 1 634 3 is_stmt 1 view .LVU23
+  81              		.loc 1 634 41 is_stmt 0 view .LVU24
+  82 002a 4FF48063 		mov	r3, #1024
+  83 002e 0A93     		str	r3, [sp, #40]
+ 635:Src/main.c    ****   RCC_ClkInitStruct.APB2CLKDivider      = RCC_HCLK_DIV1;
+  84              		.loc 1 635 3 is_stmt 1 view .LVU25
+  85              		.loc 1 635 41 is_stmt 0 view .LVU26
+  86 0030 0B94     		str	r4, [sp, #44]
+ 636:Src/main.c    **** 
+ 637:Src/main.c    ****   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+  87              		.loc 1 637 3 is_stmt 1 view .LVU27
+  88 0032 2946     		mov	r1, r5
+  89 0034 07A8     		add	r0, sp, #28
+  90 0036 FFF7FEFF 		bl	HAL_RCC_ClockConfig
+  91              	.LVL1:
+ 638:Src/main.c    **** 
+ 639:Src/main.c    ****   PeriphClkInit.PeriphClockSelection    = RCC_PERIPHCLK_ADC;
+  92              		.loc 1 639 3 view .LVU28
+  93              		.loc 1 639 41 is_stmt 0 view .LVU29
+  94 003a 0195     		str	r5, [sp, #4]
+ 640:Src/main.c    ****   // PeriphClkInit.AdcClockSelection    = RCC_ADCPCLK2_DIV8;  // 8 MHz
+ 641:Src/main.c    ****   PeriphClkInit.AdcClockSelection       = RCC_ADCPCLK2_DIV4;  // 16 MHz
+  95              		.loc 1 641 3 is_stmt 1 view .LVU30
+  96              		.loc 1 641 41 is_stmt 0 view .LVU31
+  97 003c 4FF48043 		mov	r3, #16384
+  98 0040 0393     		str	r3, [sp, #12]
+ 642:Src/main.c    ****   HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
+  99              		.loc 1 642 3 is_stmt 1 view .LVU32
+ 100 0042 01A8     		add	r0, sp, #4
+ARM GAS  /tmp/ccI9vT92.s 			page 14
+
+
+ 101 0044 FFF7FEFF 		bl	HAL_RCCEx_PeriphCLKConfig
+ 102              	.LVL2:
+ 643:Src/main.c    **** 
+ 644:Src/main.c    ****   /**Configure the Systick interrupt time
+ 645:Src/main.c    ****     */
+ 646:Src/main.c    ****   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
+ 103              		.loc 1 646 3 view .LVU33
+ 104              		.loc 1 646 22 is_stmt 0 view .LVU34
+ 105 0048 FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ 106              	.LVL3:
+ 107              		.loc 1 646 3 discriminator 1 view .LVU35
+ 108 004c 084B     		ldr	r3, .L3
+ 109 004e A3FB0030 		umull	r3, r0, r3, r0
+ 110 0052 8009     		lsrs	r0, r0, #6
+ 111 0054 FFF7FEFF 		bl	HAL_SYSTICK_Config
+ 112              	.LVL4:
+ 647:Src/main.c    **** 
+ 648:Src/main.c    ****   /**Configure the Systick
+ 649:Src/main.c    ****     */
+ 650:Src/main.c    ****   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+ 113              		.loc 1 650 3 is_stmt 1 view .LVU36
+ 114 0058 0420     		movs	r0, #4
+ 115 005a FFF7FEFF 		bl	HAL_SYSTICK_CLKSourceConfig
+ 116              	.LVL5:
+ 651:Src/main.c    **** 
+ 652:Src/main.c    ****   /* SysTick_IRQn interrupt configuration */
+ 653:Src/main.c    ****   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+ 117              		.loc 1 653 3 view .LVU37
+ 118 005e 2246     		mov	r2, r4
+ 119 0060 2146     		mov	r1, r4
+ 120 0062 4FF0FF30 		mov	r0, #-1
+ 121 0066 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 122              	.LVL6:
+ 654:Src/main.c    **** }
+ 123              		.loc 1 654 1 is_stmt 0 view .LVU38
+ 124 006a 17B0     		add	sp, sp, #92
+ 125              	.LCFI2:
+ 126              		.cfi_def_cfa_offset 12
+ 127              		@ sp needed
+ 128 006c 30BD     		pop	{r4, r5, pc}
+ 129              	.L4:
+ 130 006e 00BF     		.align	2
+ 131              	.L3:
+ 132 0070 D34D6210 		.word	274877907
+ 133              		.cfi_endproc
+ 134              	.LFE67:
+ 136              		.section	.text.main,"ax",%progbits
+ 137              		.align	1
+ 138              		.global	main
+ 139              		.syntax unified
+ 140              		.thumb
+ 141              		.thumb_func
+ 143              	main:
+ 144              	.LFB66:
+ 173:Src/main.c    **** 
+ 145              		.loc 1 173 16 is_stmt 1 view -0
+ 146              		.cfi_startproc
+ARM GAS  /tmp/ccI9vT92.s 			page 15
+
+
+ 147              		@ args = 0, pretend = 0, frame = 8
+ 148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 150              	.LCFI3:
+ 151              		.cfi_def_cfa_offset 20
+ 152              		.cfi_offset 4, -20
+ 153              		.cfi_offset 5, -16
+ 154              		.cfi_offset 6, -12
+ 155              		.cfi_offset 7, -8
+ 156              		.cfi_offset 14, -4
+ 157 0002 83B0     		sub	sp, sp, #12
+ 158              	.LCFI4:
+ 159              		.cfi_def_cfa_offset 32
+ 175:Src/main.c    ****   __HAL_RCC_AFIO_CLK_ENABLE();
+ 160              		.loc 1 175 3 view .LVU40
+ 161 0004 FFF7FEFF 		bl	HAL_Init
+ 162              	.LVL7:
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 163              		.loc 1 176 3 view .LVU41
+ 164              	.LBB2:
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 165              		.loc 1 176 3 view .LVU42
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 166              		.loc 1 176 3 view .LVU43
+ 167 0008 364C     		ldr	r4, .L33
+ 168 000a A369     		ldr	r3, [r4, #24]
+ 169 000c 43F00103 		orr	r3, r3, #1
+ 170 0010 A361     		str	r3, [r4, #24]
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 171              		.loc 1 176 3 view .LVU44
+ 172 0012 A369     		ldr	r3, [r4, #24]
+ 173 0014 03F00103 		and	r3, r3, #1
+ 174 0018 0093     		str	r3, [sp]
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 175              		.loc 1 176 3 view .LVU45
+ 176 001a 009B     		ldr	r3, [sp]
+ 177              	.LBE2:
+ 176:Src/main.c    ****   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+ 178              		.loc 1 176 3 view .LVU46
+ 177:Src/main.c    ****   /* System interrupt init*/
+ 179              		.loc 1 177 3 view .LVU47
+ 180 001c 0320     		movs	r0, #3
+ 181 001e FFF7FEFF 		bl	HAL_NVIC_SetPriorityGrouping
+ 182              	.LVL8:
+ 180:Src/main.c    ****   /* BusFault_IRQn interrupt configuration */
+ 183              		.loc 1 180 3 view .LVU48
+ 184 0022 0022     		movs	r2, #0
+ 185 0024 1146     		mov	r1, r2
+ 186 0026 6FF00B00 		mvn	r0, #11
+ 187 002a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 188              	.LVL9:
+ 182:Src/main.c    ****   /* UsageFault_IRQn interrupt configuration */
+ 189              		.loc 1 182 3 view .LVU49
+ 190 002e 0022     		movs	r2, #0
+ 191 0030 1146     		mov	r1, r2
+ 192 0032 6FF00A00 		mvn	r0, #10
+ 193 0036 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ARM GAS  /tmp/ccI9vT92.s 			page 16
+
+
+ 194              	.LVL10:
+ 184:Src/main.c    ****   /* SVCall_IRQn interrupt configuration */
+ 195              		.loc 1 184 3 view .LVU50
+ 196 003a 0022     		movs	r2, #0
+ 197 003c 1146     		mov	r1, r2
+ 198 003e 6FF00900 		mvn	r0, #9
+ 199 0042 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 200              	.LVL11:
+ 186:Src/main.c    ****   /* DebugMonitor_IRQn interrupt configuration */
+ 201              		.loc 1 186 3 view .LVU51
+ 202 0046 0022     		movs	r2, #0
+ 203 0048 1146     		mov	r1, r2
+ 204 004a 6FF00400 		mvn	r0, #4
+ 205 004e FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 206              	.LVL12:
+ 188:Src/main.c    ****   /* PendSV_IRQn interrupt configuration */
+ 207              		.loc 1 188 3 view .LVU52
+ 208 0052 0022     		movs	r2, #0
+ 209 0054 1146     		mov	r1, r2
+ 210 0056 6FF00300 		mvn	r0, #3
+ 211 005a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 212              	.LVL13:
+ 190:Src/main.c    ****   /* SysTick_IRQn interrupt configuration */
+ 213              		.loc 1 190 3 view .LVU53
+ 214 005e 0022     		movs	r2, #0
+ 215 0060 1146     		mov	r1, r2
+ 216 0062 6FF00100 		mvn	r0, #1
+ 217 0066 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 218              	.LVL14:
+ 192:Src/main.c    **** 
+ 219              		.loc 1 192 3 view .LVU54
+ 220 006a 0022     		movs	r2, #0
+ 221 006c 1146     		mov	r1, r2
+ 222 006e 4FF0FF30 		mov	r0, #-1
+ 223 0072 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 224              	.LVL15:
+ 194:Src/main.c    **** 
+ 225              		.loc 1 194 3 view .LVU55
+ 226 0076 FFF7FEFF 		bl	SystemClock_Config
+ 227              	.LVL16:
+ 196:Src/main.c    ****   MX_GPIO_Init();
+ 228              		.loc 1 196 3 view .LVU56
+ 229 007a 6369     		ldr	r3, [r4, #20]
+ 230 007c 23F00103 		bic	r3, r3, #1
+ 231 0080 6361     		str	r3, [r4, #20]
+ 197:Src/main.c    ****   MX_TIM_Init();
+ 232              		.loc 1 197 3 view .LVU57
+ 233 0082 FFF7FEFF 		bl	MX_GPIO_Init
+ 234              	.LVL17:
+ 198:Src/main.c    ****   MX_ADC1_Init();
+ 235              		.loc 1 198 3 view .LVU58
+ 236 0086 FFF7FEFF 		bl	MX_TIM_Init
+ 237              	.LVL18:
+ 199:Src/main.c    ****   MX_ADC2_Init();
+ 238              		.loc 1 199 3 view .LVU59
+ 239 008a FFF7FEFF 		bl	MX_ADC1_Init
+ 240              	.LVL19:
+ARM GAS  /tmp/ccI9vT92.s 			page 17
+
+
+ 200:Src/main.c    ****   BLDC_Init();        // BLDC Controller Init
+ 241              		.loc 1 200 3 view .LVU60
+ 242 008e FFF7FEFF 		bl	MX_ADC2_Init
+ 243              	.LVL20:
+ 201:Src/main.c    **** 
+ 244              		.loc 1 201 3 view .LVU61
+ 245 0092 FFF7FEFF 		bl	BLDC_Init
+ 246              	.LVL21:
+ 203:Src/main.c    ****   Input_Lim_Init();   // Input Limitations Init
+ 247              		.loc 1 203 3 view .LVU62
+ 248 0096 0122     		movs	r2, #1
+ 249 0098 2021     		movs	r1, #32
+ 250 009a 1348     		ldr	r0, .L33+4
+ 251 009c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 252              	.LVL22:
+ 204:Src/main.c    ****   Input_Init();       // Input Init
+ 253              		.loc 1 204 3 view .LVU63
+ 254 00a0 FFF7FEFF 		bl	Input_Lim_Init
+ 255              	.LVL23:
+ 205:Src/main.c    **** 
+ 256              		.loc 1 205 3 view .LVU64
+ 257 00a4 FFF7FEFF 		bl	Input_Init
+ 258              	.LVL24:
+ 207:Src/main.c    ****   HAL_ADC_Start(&hadc2);
+ 259              		.loc 1 207 3 view .LVU65
+ 260 00a8 1048     		ldr	r0, .L33+8
+ 261 00aa FFF7FEFF 		bl	HAL_ADC_Start
+ 262              	.LVL25:
+ 208:Src/main.c    **** 
+ 263              		.loc 1 208 3 view .LVU66
+ 264 00ae 1048     		ldr	r0, .L33+12
+ 265 00b0 FFF7FEFF 		bl	HAL_ADC_Start
+ 266              	.LVL26:
+ 210:Src/main.c    ****   HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+ 267              		.loc 1 210 3 view .LVU67
+ 268 00b4 FFF7FEFF 		bl	poweronMelody
+ 269              	.LVL27:
+ 211:Src/main.c    ****   
+ 270              		.loc 1 211 3 view .LVU68
+ 271 00b8 0122     		movs	r2, #1
+ 272 00ba 0421     		movs	r1, #4
+ 273 00bc 0D48     		ldr	r0, .L33+16
+ 274 00be FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 275              	.LVL28:
+ 213:Src/main.c    ****   int16_t board_temp_adcFilt  = adc_buffer.temp;
+ 276              		.loc 1 213 3 view .LVU69
+ 213:Src/main.c    ****   int16_t board_temp_adcFilt  = adc_buffer.temp;
+ 277              		.loc 1 213 43 is_stmt 0 view .LVU70
+ 278 00c2 0D4A     		ldr	r2, .L33+20
+ 279 00c4 138A     		ldrh	r3, [r2, #16]
+ 213:Src/main.c    ****   int16_t board_temp_adcFilt  = adc_buffer.temp;
+ 280              		.loc 1 213 49 view .LVU71
+ 281 00c6 1B04     		lsls	r3, r3, #16
+ 213:Src/main.c    ****   int16_t board_temp_adcFilt  = adc_buffer.temp;
+ 282              		.loc 1 213 11 view .LVU72
+ 283 00c8 0193     		str	r3, [sp, #4]
+ 214:Src/main.c    **** 
+ARM GAS  /tmp/ccI9vT92.s 			page 18
+
+
+ 284              		.loc 1 214 3 is_stmt 1 view .LVU73
+ 214:Src/main.c    **** 
+ 285              		.loc 1 214 43 is_stmt 0 view .LVU74
+ 286 00ca 138A     		ldrh	r3, [r2, #16]
+ 287              	.LVL29:
+ 241:Src/main.c    **** 
+ 288              		.loc 1 241 3 is_stmt 1 view .LVU75
+ 241:Src/main.c    **** 
+ 289              		.loc 1 241 8 is_stmt 0 view .LVU76
+ 290 00cc 02E0     		b	.L6
+ 291              	.L7:
+ 241:Src/main.c    **** 
+ 292              		.loc 1 241 54 is_stmt 1 discriminator 2 view .LVU77
+ 293 00ce 0A20     		movs	r0, #10
+ 294 00d0 FFF7FEFF 		bl	HAL_Delay
+ 295              	.LVL30:
+ 296              	.L6:
+ 241:Src/main.c    **** 
+ 297              		.loc 1 241 9 discriminator 1 view .LVU78
+ 298 00d4 0221     		movs	r1, #2
+ 299 00d6 0448     		ldr	r0, .L33+4
+ 300 00d8 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 301              	.LVL31:
+ 302 00dc 0028     		cmp	r0, #0
+ 303 00de F6D1     		bne	.L7
+ 304 00e0 11E1     		b	.L8
+ 305              	.L34:
+ 306 00e2 00BF     		.align	2
+ 307              	.L33:
+ 308 00e4 00100240 		.word	1073876992
+ 309 00e8 00080140 		.word	1073809408
+ 310 00ec 00000000 		.word	hadc1
+ 311 00f0 00000000 		.word	hadc2
+ 312 00f4 000C0140 		.word	1073810432
+ 313 00f8 00000000 		.word	adc_buffer
+ 314              	.LVL32:
+ 315              	.L9:
+ 318:Src/main.c    ****       rateLimiter16(input2[inIdx].cmd, rate, &speedRateFixdt);
+ 316              		.loc 1 318 7 view .LVU79
+ 317 00fc B24C     		ldr	r4, .L35
+ 318 00fe B34D     		ldr	r5, .L35+4
+ 319 0100 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 320 0102 C3EBC303 		rsb	r3, r3, r3, lsl #3
+ 321 0106 B24A     		ldr	r2, .L35+8
+ 322 0108 02EB4303 		add	r3, r2, r3, lsl #1
+ 323 010c 2246     		mov	r2, r4
+ 324 010e 4FF4F071 		mov	r1, #480
+ 325 0112 B3F90200 		ldrsh	r0, [r3, #2]
+ 326 0116 FFF7FEFF 		bl	rateLimiter16
+ 327              	.LVL33:
+ 319:Src/main.c    ****       filtLowPass32(steerRateFixdt >> 4, FILTER, &steerFixdt);
+ 328              		.loc 1 319 7 view .LVU80
+ 329 011a AE4E     		ldr	r6, .L35+12
+ 330 011c 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 331 011e C3EBC303 		rsb	r3, r3, r3, lsl #3
+ 332 0122 AD4A     		ldr	r2, .L35+16
+ 333 0124 02EB4303 		add	r3, r2, r3, lsl #1
+ARM GAS  /tmp/ccI9vT92.s 			page 19
+
+
+ 334 0128 3246     		mov	r2, r6
+ 335 012a 4FF4F071 		mov	r1, #480
+ 336 012e B3F90200 		ldrsh	r0, [r3, #2]
+ 337 0132 FFF7FEFF 		bl	rateLimiter16
+ 338              	.LVL34:
+ 320:Src/main.c    ****       filtLowPass32(speedRateFixdt >> 4, FILTER, &speedFixdt);
+ 339              		.loc 1 320 7 view .LVU81
+ 340 0136 A94D     		ldr	r5, .L35+20
+ 341 0138 B4F90000 		ldrsh	r0, [r4]
+ 342 013c 2A46     		mov	r2, r5
+ 343 013e 41F69911 		movw	r1, #6553
+ 344 0142 0011     		asrs	r0, r0, #4
+ 345 0144 FFF7FEFF 		bl	filtLowPass32
+ 346              	.LVL35:
+ 321:Src/main.c    ****       steer = (int16_t)(steerFixdt >> 16);  // convert fixed-point to integer
+ 347              		.loc 1 321 7 view .LVU82
+ 348 0148 A54C     		ldr	r4, .L35+24
+ 349 014a B6F90000 		ldrsh	r0, [r6]
+ 350 014e 2246     		mov	r2, r4
+ 351 0150 41F69911 		movw	r1, #6553
+ 352 0154 0011     		asrs	r0, r0, #4
+ 353 0156 FFF7FEFF 		bl	filtLowPass32
+ 354              	.LVL36:
+ 322:Src/main.c    ****       speed = (int16_t)(speedFixdt >> 16);  // convert fixed-point to integer
+ 355              		.loc 1 322 7 view .LVU83
+ 322:Src/main.c    ****       speed = (int16_t)(speedFixdt >> 16);  // convert fixed-point to integer
+ 356              		.loc 1 322 15 is_stmt 0 view .LVU84
+ 357 015a B5F90210 		ldrsh	r1, [r5, #2]
+ 322:Src/main.c    ****       speed = (int16_t)(speedFixdt >> 16);  // convert fixed-point to integer
+ 358              		.loc 1 322 13 view .LVU85
+ 359 015e A14B     		ldr	r3, .L35+28
+ 360 0160 1980     		strh	r1, [r3]	@ movhi
+ 323:Src/main.c    **** 
+ 361              		.loc 1 323 7 is_stmt 1 view .LVU86
+ 323:Src/main.c    **** 
+ 362              		.loc 1 323 15 is_stmt 0 view .LVU87
+ 363 0162 B4F90200 		ldrsh	r0, [r4, #2]
+ 323:Src/main.c    **** 
+ 364              		.loc 1 323 13 view .LVU88
+ 365 0166 A04B     		ldr	r3, .L35+32
+ 366 0168 1880     		strh	r0, [r3]	@ movhi
+ 350:Src/main.c    ****       #endif
+ 367              		.loc 1 350 9 is_stmt 1 view .LVU89
+ 368 016a A04C     		ldr	r4, .L35+36
+ 369 016c A04D     		ldr	r5, .L35+40
+ 370 016e 0901     		lsls	r1, r1, #4
+ 371 0170 0001     		lsls	r0, r0, #4
+ 372 0172 2346     		mov	r3, r4
+ 373 0174 2A46     		mov	r2, r5
+ 374 0176 09B2     		sxth	r1, r1
+ 375 0178 00B2     		sxth	r0, r0
+ 376 017a FFF7FEFF 		bl	mixerFcn
+ 377              	.LVL37:
+ 358:Src/main.c    ****       #endif
+ 378              		.loc 1 358 9 view .LVU90
+ 358:Src/main.c    ****       #endif
+ 379              		.loc 1 358 16 is_stmt 0 view .LVU91
+ARM GAS  /tmp/ccI9vT92.s 			page 20
+
+
+ 380 017e B5F90030 		ldrsh	r3, [r5]
+ 381 0182 5B42     		rsbs	r3, r3, #0
+ 358:Src/main.c    ****       #endif
+ 382              		.loc 1 358 14 view .LVU92
+ 383 0184 9B4A     		ldr	r2, .L35+44
+ 384 0186 1360     		str	r3, [r2]
+ 363:Src/main.c    ****       #endif
+ 385              		.loc 1 363 9 is_stmt 1 view .LVU93
+ 363:Src/main.c    ****       #endif
+ 386              		.loc 1 363 14 is_stmt 0 view .LVU94
+ 387 0188 B4F90020 		ldrsh	r2, [r4]
+ 388 018c 9A4B     		ldr	r3, .L35+48
+ 389 018e 1A60     		str	r2, [r3]
+ 473:Src/main.c    ****     #endif
+ 390              		.loc 1 473 7 is_stmt 1 view .LVU95
+ 391 0190 9A48     		ldr	r0, .L35+52
+ 392 0192 FFF7FEFF 		bl	sideboardLeds
+ 393              	.LVL38:
+ 478:Src/main.c    ****     board_temp_adcFilt  = (int16_t)(board_temp_adcFixdt >> 16);  // convert fixed-point to integer
+ 394              		.loc 1 478 5 view .LVU96
+ 478:Src/main.c    ****     board_temp_adcFilt  = (int16_t)(board_temp_adcFixdt >> 16);  // convert fixed-point to integer
+ 395              		.loc 1 478 29 is_stmt 0 view .LVU97
+ 396 0196 9A4B     		ldr	r3, .L35+56
+ 397 0198 188A     		ldrh	r0, [r3, #16]
+ 478:Src/main.c    ****     board_temp_adcFilt  = (int16_t)(board_temp_adcFixdt >> 16);  // convert fixed-point to integer
+ 398              		.loc 1 478 5 view .LVU98
+ 399 019a 01AA     		add	r2, sp, #4
+ 400 019c 40F28F21 		movw	r1, #655
+ 401 01a0 80B2     		uxth	r0, r0
+ 402 01a2 FFF7FEFF 		bl	filtLowPass32
+ 403              	.LVL39:
+ 479:Src/main.c    ****     board_temp_deg_c    = (TEMP_CAL_HIGH_DEG_C - TEMP_CAL_LOW_DEG_C) * (board_temp_adcFilt - TEMP_C
+ 404              		.loc 1 479 5 is_stmt 1 view .LVU99
+ 479:Src/main.c    ****     board_temp_deg_c    = (TEMP_CAL_HIGH_DEG_C - TEMP_CAL_LOW_DEG_C) * (board_temp_adcFilt - TEMP_C
+ 405              		.loc 1 479 25 is_stmt 0 view .LVU100
+ 406 01a6 BDF90630 		ldrsh	r3, [sp, #6]
+ 407              	.LVL40:
+ 480:Src/main.c    **** 
+ 408              		.loc 1 480 5 is_stmt 1 view .LVU101
+ 480:Src/main.c    **** 
+ 409              		.loc 1 480 92 is_stmt 0 view .LVU102
+ 410 01aa A3F27763 		subw	r3, r3, #1655
+ 411              	.LVL41:
+ 480:Src/main.c    **** 
+ 412              		.loc 1 480 70 view .LVU103
+ 413 01ae 03EB8312 		add	r2, r3, r3, lsl #6
+ 414 01b2 03EB4203 		add	r3, r3, r2, lsl #1
+ 415              	.LVL42:
+ 480:Src/main.c    **** 
+ 416              		.loc 1 480 112 view .LVU104
+ 417 01b6 934A     		ldr	r2, .L35+60
+ 418 01b8 82FB0312 		smull	r1, r2, r2, r3
+ 419 01bc DB17     		asrs	r3, r3, #31
+ 420 01be A3EB6203 		sub	r3, r3, r2, asr #1
+ 480:Src/main.c    **** 
+ 421              		.loc 1 480 153 view .LVU105
+ 422 01c2 03F5B373 		add	r3, r3, #358
+ARM GAS  /tmp/ccI9vT92.s 			page 21
+
+
+ 423 01c6 1BB2     		sxth	r3, r3
+ 480:Src/main.c    **** 
+ 424              		.loc 1 480 25 view .LVU106
+ 425 01c8 8F4A     		ldr	r2, .L35+64
+ 426 01ca 1380     		strh	r3, [r2]	@ movhi
+ 483:Src/main.c    **** 
+ 427              		.loc 1 483 5 is_stmt 1 view .LVU107
+ 483:Src/main.c    **** 
+ 428              		.loc 1 483 34 is_stmt 0 view .LVU108
+ 429 01cc 8F4A     		ldr	r2, .L35+68
+ 430 01ce B2F90020 		ldrsh	r2, [r2]
+ 431 01d2 40F68271 		movw	r1, #3970
+ 432 01d6 01FB02F2 		mul	r2, r1, r2
+ 483:Src/main.c    **** 
+ 433              		.loc 1 483 59 view .LVU109
+ 434 01da 01F1AF41 		add	r1, r1, #1468006400
+ 435 01de 01F5B301 		add	r1, r1, #5865472
+ 436 01e2 01F24F11 		addw	r1, r1, #335
+ 437 01e6 81FB0201 		smull	r0, r1, r1, r2
+ 438 01ea D217     		asrs	r2, r2, #31
+ 439 01ec C2EB6122 		rsb	r2, r2, r1, asr #9
+ 483:Src/main.c    **** 
+ 440              		.loc 1 483 21 view .LVU110
+ 441 01f0 12B2     		sxth	r2, r2
+ 442 01f2 8749     		ldr	r1, .L35+72
+ 443 01f4 0A80     		strh	r2, [r1]	@ movhi
+ 486:Src/main.c    ****     right_dc_curr = -(rtU_Right.i_DCLink * 100) / A2BIT_CONV;  // Right DC Link Current * 100
+ 444              		.loc 1 486 5 is_stmt 1 view .LVU111
+ 486:Src/main.c    ****     right_dc_curr = -(rtU_Right.i_DCLink * 100) / A2BIT_CONV;  // Right DC Link Current * 100
+ 445              		.loc 1 486 31 is_stmt 0 view .LVU112
+ 446 01f6 8749     		ldr	r1, .L35+76
+ 447 01f8 8989     		ldrh	r1, [r1, #12]
+ 486:Src/main.c    ****     right_dc_curr = -(rtU_Right.i_DCLink * 100) / A2BIT_CONV;  // Right DC Link Current * 100
+ 448              		.loc 1 486 48 view .LVU113
+ 449 01fa C1EBC131 		rsb	r1, r1, r1, lsl #15
+ 450 01fe 4900     		lsls	r1, r1, #1
+ 451 0200 88B2     		uxth	r0, r1
+ 486:Src/main.c    ****     right_dc_curr = -(rtU_Right.i_DCLink * 100) / A2BIT_CONV;  // Right DC Link Current * 100
+ 452              		.loc 1 486 19 view .LVU114
+ 453 0202 854C     		ldr	r4, .L35+80
+ 454 0204 2180     		strh	r1, [r4]	@ movhi
+ 487:Src/main.c    ****     dc_curr       = left_dc_curr + right_dc_curr;            // Total DC Link Current * 100
+ 455              		.loc 1 487 5 is_stmt 1 view .LVU115
+ 487:Src/main.c    ****     dc_curr       = left_dc_curr + right_dc_curr;            // Total DC Link Current * 100
+ 456              		.loc 1 487 32 is_stmt 0 view .LVU116
+ 457 0206 8549     		ldr	r1, .L35+84
+ 458 0208 8989     		ldrh	r1, [r1, #12]
+ 487:Src/main.c    ****     dc_curr       = left_dc_curr + right_dc_curr;            // Total DC Link Current * 100
+ 459              		.loc 1 487 49 view .LVU117
+ 460 020a C1EBC131 		rsb	r1, r1, r1, lsl #15
+ 461 020e 4900     		lsls	r1, r1, #1
+ 462 0210 8CB2     		uxth	r4, r1
+ 487:Src/main.c    ****     dc_curr       = left_dc_curr + right_dc_curr;            // Total DC Link Current * 100
+ 463              		.loc 1 487 19 view .LVU118
+ 464 0212 834D     		ldr	r5, .L35+88
+ 465 0214 2980     		strh	r1, [r5]	@ movhi
+ 488:Src/main.c    **** 
+ARM GAS  /tmp/ccI9vT92.s 			page 22
+
+
+ 466              		.loc 1 488 5 is_stmt 1 view .LVU119
+ 488:Src/main.c    **** 
+ 467              		.loc 1 488 34 is_stmt 0 view .LVU120
+ 468 0216 0119     		adds	r1, r0, r4
+ 488:Src/main.c    **** 
+ 469              		.loc 1 488 19 view .LVU121
+ 470 0218 8248     		ldr	r0, .L35+92
+ 471 021a 0180     		strh	r1, [r0]	@ movhi
+ 511:Src/main.c    ****         Feedback.start	        = (uint16_t)SERIAL_START_FRAME;
+ 472              		.loc 1 511 7 is_stmt 1 view .LVU122
+ 511:Src/main.c    ****         Feedback.start	        = (uint16_t)SERIAL_START_FRAME;
+ 473              		.loc 1 511 29 is_stmt 0 view .LVU123
+ 474 021c 8249     		ldr	r1, .L35+96
+ 475 021e 0968     		ldr	r1, [r1]
+ 511:Src/main.c    ****         Feedback.start	        = (uint16_t)SERIAL_START_FRAME;
+ 476              		.loc 1 511 10 view .LVU124
+ 477 0220 11F0010F 		tst	r1, #1
+ 478 0224 24D1     		bne	.L10
+ 512:Src/main.c    ****         Feedback.cmd1           = (int16_t)input1[inIdx].cmd;
+ 479              		.loc 1 512 9 is_stmt 1 view .LVU125
+ 512:Src/main.c    ****         Feedback.cmd1           = (int16_t)input1[inIdx].cmd;
+ 480              		.loc 1 512 32 is_stmt 0 view .LVU126
+ 481 0226 8149     		ldr	r1, .L35+100
+ 482 0228 4AF6CD30 		movw	r0, #43981
+ 483 022c 0880     		strh	r0, [r1]	@ movhi
+ 513:Src/main.c    ****         Feedback.cmd2           = (int16_t)input2[inIdx].cmd;
+ 484              		.loc 1 513 9 is_stmt 1 view .LVU127
+ 513:Src/main.c    ****         Feedback.cmd2           = (int16_t)input2[inIdx].cmd;
+ 485              		.loc 1 513 35 is_stmt 0 view .LVU128
+ 486 022e 6748     		ldr	r0, .L35+4
+ 487 0230 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 513:Src/main.c    ****         Feedback.cmd2           = (int16_t)input2[inIdx].cmd;
+ 488              		.loc 1 513 57 view .LVU129
+ 489 0232 C0EBC005 		rsb	r5, r0, r0, lsl #3
+ 490 0236 664C     		ldr	r4, .L35+8
+ 491 0238 04EB4504 		add	r4, r4, r5, lsl #1
+ 492 023c B4F90260 		ldrsh	r6, [r4, #2]
+ 513:Src/main.c    ****         Feedback.cmd2           = (int16_t)input2[inIdx].cmd;
+ 493              		.loc 1 513 33 view .LVU130
+ 494 0240 4E80     		strh	r6, [r1, #2]	@ movhi
+ 514:Src/main.c    ****         Feedback.speedR_meas	  = (int16_t)rtY_Right.n_mot;
+ 495              		.loc 1 514 9 is_stmt 1 view .LVU131
+ 514:Src/main.c    ****         Feedback.speedR_meas	  = (int16_t)rtY_Right.n_mot;
+ 496              		.loc 1 514 57 is_stmt 0 view .LVU132
+ 497 0242 654C     		ldr	r4, .L35+16
+ 498 0244 04EB4500 		add	r0, r4, r5, lsl #1
+ 499 0248 B0F90250 		ldrsh	r5, [r0, #2]
+ 514:Src/main.c    ****         Feedback.speedR_meas	  = (int16_t)rtY_Right.n_mot;
+ 500              		.loc 1 514 33 view .LVU133
+ 501 024c 8D80     		strh	r5, [r1, #4]	@ movhi
+ 515:Src/main.c    ****         Feedback.speedL_meas	  = (int16_t)rtY_Left.n_mot;
+ 502              		.loc 1 515 9 is_stmt 1 view .LVU134
+ 515:Src/main.c    ****         Feedback.speedL_meas	  = (int16_t)rtY_Left.n_mot;
+ 503              		.loc 1 515 52 is_stmt 0 view .LVU135
+ 504 024e 7848     		ldr	r0, .L35+104
+ 505 0250 B0F90840 		ldrsh	r4, [r0, #8]
+ 515:Src/main.c    ****         Feedback.speedL_meas	  = (int16_t)rtY_Left.n_mot;
+ARM GAS  /tmp/ccI9vT92.s 			page 23
+
+
+ 506              		.loc 1 515 32 view .LVU136
+ 507 0254 CC80     		strh	r4, [r1, #6]	@ movhi
+ 516:Src/main.c    ****         Feedback.batVoltage	    = (int16_t)batVoltageCalib;
+ 508              		.loc 1 516 9 is_stmt 1 view .LVU137
+ 516:Src/main.c    ****         Feedback.batVoltage	    = (int16_t)batVoltageCalib;
+ 509              		.loc 1 516 51 is_stmt 0 view .LVU138
+ 510 0256 7748     		ldr	r0, .L35+108
+ 511 0258 B0F90800 		ldrsh	r0, [r0, #8]
+ 516:Src/main.c    ****         Feedback.batVoltage	    = (int16_t)batVoltageCalib;
+ 512              		.loc 1 516 32 view .LVU139
+ 513 025c 0881     		strh	r0, [r1, #8]	@ movhi
+ 517:Src/main.c    ****         Feedback.boardTemp	    = (int16_t)board_temp_deg_c;
+ 514              		.loc 1 517 9 is_stmt 1 view .LVU140
+ 517:Src/main.c    ****         Feedback.boardTemp	    = (int16_t)board_temp_deg_c;
+ 515              		.loc 1 517 33 is_stmt 0 view .LVU141
+ 516 025e 4A81     		strh	r2, [r1, #10]	@ movhi
+ 518:Src/main.c    **** 
+ 517              		.loc 1 518 9 is_stmt 1 view .LVU142
+ 518:Src/main.c    **** 
+ 518              		.loc 1 518 32 is_stmt 0 view .LVU143
+ 519 0260 8B81     		strh	r3, [r1, #12]	@ movhi
+ 530:Src/main.c    ****             Feedback.cmdLed     = (uint16_t)sideboard_leds_R;
+ 520              		.loc 1 530 11 is_stmt 1 view .LVU144
+ 530:Src/main.c    ****             Feedback.cmdLed     = (uint16_t)sideboard_leds_R;
+ 521              		.loc 1 530 14 is_stmt 0 view .LVU145
+ 522 0262 7549     		ldr	r1, .L35+112
+ 523 0264 096B     		ldr	r1, [r1, #48]
+ 524 0266 0968     		ldr	r1, [r1]
+ 525 0268 4968     		ldr	r1, [r1, #4]
+ 530:Src/main.c    ****             Feedback.cmdLed     = (uint16_t)sideboard_leds_R;
+ 526              		.loc 1 530 13 view .LVU146
+ 527 026a 0029     		cmp	r1, #0
+ 528 026c 00F09380 		beq	.L26
+ 529              	.LVL43:
+ 530              	.L10:
+ 542:Src/main.c    **** 
+ 531              		.loc 1 542 5 is_stmt 1 view .LVU147
+ 532 0270 FFF7FEFF 		bl	poweroffPressCheck
+ 533              	.LVL44:
+ 545:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 534              		.loc 1 545 5 view .LVU148
+ 550:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 535              		.loc 1 550 12 view .LVU149
+ 550:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 536              		.loc 1 550 33 is_stmt 0 view .LVU150
+ 537 0274 654B     		ldr	r3, .L35+68
+ 538 0276 B3F90030 		ldrsh	r3, [r3]
+ 550:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 539              		.loc 1 550 15 view .LVU151
+ 540 027a 40F2F142 		movw	r2, #1265
+ 541 027e 9342     		cmp	r3, r2
+ 542 0280 05DC     		bgt	.L11
+ 550:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 543              		.loc 1 550 73 discriminator 1 view .LVU152
+ 544 0282 6E4A     		ldr	r2, .L35+116
+ 545 0284 B2F90020 		ldrsh	r2, [r2]
+ 550:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ARM GAS  /tmp/ccI9vT92.s 			page 24
+
+
+ 546              		.loc 1 550 58 discriminator 1 view .LVU153
+ 547 0288 132A     		cmp	r2, #19
+ 548 028a 40F39A80 		ble	.L27
+ 549              	.L11:
+ 555:Src/main.c    ****       enable = 0;
+ 550              		.loc 1 555 12 is_stmt 1 view .LVU154
+ 555:Src/main.c    ****       enable = 0;
+ 551              		.loc 1 555 24 is_stmt 0 view .LVU155
+ 552 028e 694A     		ldr	r2, .L35+108
+ 553 0290 9279     		ldrb	r2, [r2, #6]	@ zero_extendqisi2
+ 555:Src/main.c    ****       enable = 0;
+ 554              		.loc 1 555 15 view .LVU156
+ 555 0292 22B9     		cbnz	r2, .L13
+ 555:Src/main.c    ****       enable = 0;
+ 556              		.loc 1 555 47 discriminator 1 view .LVU157
+ 557 0294 664A     		ldr	r2, .L35+104
+ 558 0296 9279     		ldrb	r2, [r2, #6]	@ zero_extendqisi2
+ 555:Src/main.c    ****       enable = 0;
+ 559              		.loc 1 555 35 discriminator 1 view .LVU158
+ 560 0298 002A     		cmp	r2, #0
+ 561 029a 00F0DF80 		beq	.L14
+ 562              	.L13:
+ 556:Src/main.c    ****       beepCount(1, 24, 1);
+ 563              		.loc 1 556 7 is_stmt 1 view .LVU159
+ 556:Src/main.c    ****       beepCount(1, 24, 1);
+ 564              		.loc 1 556 14 is_stmt 0 view .LVU160
+ 565 029e 684B     		ldr	r3, .L35+120
+ 566 02a0 0022     		movs	r2, #0
+ 567 02a2 1A70     		strb	r2, [r3]
+ 557:Src/main.c    ****     } else if (timeoutFlgADC) {                                                                    
+ 568              		.loc 1 557 7 is_stmt 1 view .LVU161
+ 569 02a4 0122     		movs	r2, #1
+ 570 02a6 1821     		movs	r1, #24
+ 571 02a8 1046     		mov	r0, r2
+ 572 02aa FFF7FEFF 		bl	beepCount
+ 573              	.LVL45:
+ 574              	.L12:
+ 579:Src/main.c    **** 
+ 575              		.loc 1 579 5 view .LVU162
+ 579:Src/main.c    **** 
+ 576              		.loc 1 579 31 is_stmt 0 view .LVU163
+ 577 02ae 654A     		ldr	r2, .L35+124
+ 578 02b0 1368     		ldr	r3, [r2]
+ 579 02b2 0133     		adds	r3, r3, #1
+ 580 02b4 1360     		str	r3, [r2]
+ 582:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 581              		.loc 1 582 5 is_stmt 1 view .LVU164
+ 582:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 582              		.loc 1 582 9 is_stmt 0 view .LVU165
+ 583 02b6 4D4B     		ldr	r3, .L35+36
+ 584 02b8 B3F90030 		ldrsh	r3, [r3]
+ 585 02bc 002B     		cmp	r3, #0
+ 586 02be B8BF     		it	lt
+ 587 02c0 5B42     		rsblt	r3, r3, #0
+ 588 02c2 9BB2     		uxth	r3, r3
+ 582:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 589              		.loc 1 582 8 view .LVU166
+ARM GAS  /tmp/ccI9vT92.s 			page 25
+
+
+ 590 02c4 322B     		cmp	r3, #50
+ 591 02c6 08D8     		bhi	.L21
+ 582:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 592              		.loc 1 582 27 discriminator 1 view .LVU167
+ 593 02c8 494B     		ldr	r3, .L35+40
+ 594 02ca B3F90030 		ldrsh	r3, [r3]
+ 595 02ce 002B     		cmp	r3, #0
+ 596 02d0 B8BF     		it	lt
+ 597 02d2 5B42     		rsblt	r3, r3, #0
+ 598 02d4 9BB2     		uxth	r3, r3
+ 582:Src/main.c    ****       inactivity_timeout_counter = 0;
+ 599              		.loc 1 582 24 discriminator 1 view .LVU168
+ 600 02d6 322B     		cmp	r3, #50
+ 601 02d8 02D9     		bls	.L22
+ 602              	.L21:
+ 583:Src/main.c    ****     }
+ 603              		.loc 1 583 7 is_stmt 1 view .LVU169
+ 583:Src/main.c    ****     }
+ 604              		.loc 1 583 34 is_stmt 0 view .LVU170
+ 605 02da 5A4B     		ldr	r3, .L35+124
+ 606 02dc 0022     		movs	r2, #0
+ 607 02de 1A60     		str	r2, [r3]
+ 608              	.L22:
+ 593:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 609              		.loc 1 593 5 is_stmt 1 view .LVU171
+ 593:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 610              		.loc 1 593 36 is_stmt 0 view .LVU172
+ 611 02e0 584B     		ldr	r3, .L35+124
+ 612 02e2 1A68     		ldr	r2, [r3]
+ 593:Src/main.c    ****       #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 613              		.loc 1 593 8 view .LVU173
+ 614 02e4 584B     		ldr	r3, .L35+128
+ 615 02e6 9A42     		cmp	r2, r3
+ 616 02e8 01D9     		bls	.L23
+ 597:Src/main.c    ****     }
+ 617              		.loc 1 597 7 is_stmt 1 view .LVU174
+ 618 02ea FFF7FEFF 		bl	poweroff
+ 619              	.LVL46:
+ 620              	.L23:
+ 603:Src/main.c    ****     buzzerTimer_prev = buzzerTimer;
+ 621              		.loc 1 603 5 view .LVU175
+ 603:Src/main.c    ****     buzzerTimer_prev = buzzerTimer;
+ 622              		.loc 1 603 16 is_stmt 0 view .LVU176
+ 623 02ee 374B     		ldr	r3, .L35+4
+ 624 02f0 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 625 02f2 564B     		ldr	r3, .L35+132
+ 626 02f4 1A70     		strb	r2, [r3]
+ 604:Src/main.c    ****     main_loop_counter++;
+ 627              		.loc 1 604 5 is_stmt 1 view .LVU177
+ 604:Src/main.c    ****     main_loop_counter++;
+ 628              		.loc 1 604 22 is_stmt 0 view .LVU178
+ 629 02f6 564B     		ldr	r3, .L35+136
+ 630 02f8 1A68     		ldr	r2, [r3]
+ 631 02fa 564B     		ldr	r3, .L35+140
+ 632 02fc 1A60     		str	r2, [r3]
+ 605:Src/main.c    ****     }
+ 633              		.loc 1 605 5 is_stmt 1 view .LVU179
+ARM GAS  /tmp/ccI9vT92.s 			page 26
+
+
+ 605:Src/main.c    ****     }
+ 634              		.loc 1 605 22 is_stmt 0 view .LVU180
+ 635 02fe 4A4A     		ldr	r2, .L35+96
+ 636 0300 1368     		ldr	r3, [r2]
+ 637 0302 0133     		adds	r3, r3, #1
+ 638 0304 1360     		str	r3, [r2]
+ 639              	.LVL47:
+ 640              	.L8:
+ 251:Src/main.c    ****     if (buzzerTimer - buzzerTimer_prev > 16*DELAY_IN_MAIN_LOOP) {   // 1 ms = 16 ticks buzzerTimer
+ 641              		.loc 1 251 3 is_stmt 1 view .LVU181
+ 252:Src/main.c    **** 
+ 642              		.loc 1 252 5 view .LVU182
+ 252:Src/main.c    **** 
+ 643              		.loc 1 252 21 is_stmt 0 view .LVU183
+ 644 0306 524B     		ldr	r3, .L35+136
+ 645 0308 1B68     		ldr	r3, [r3]
+ 646 030a 524A     		ldr	r2, .L35+140
+ 647 030c 1268     		ldr	r2, [r2]
+ 648 030e 9B1A     		subs	r3, r3, r2
+ 252:Src/main.c    **** 
+ 649              		.loc 1 252 8 view .LVU184
+ 650 0310 502B     		cmp	r3, #80
+ 651 0312 F8D9     		bls	.L8
+ 254:Src/main.c    ****     calcAvgSpeed();                       // Calculate average measured speed: speedAvg, speedAvgAb
+ 652              		.loc 1 254 5 is_stmt 1 view .LVU185
+ 653 0314 FFF7FEFF 		bl	readCommand
+ 654              	.LVL48:
+ 255:Src/main.c    **** 
+ 655              		.loc 1 255 5 view .LVU186
+ 656 0318 FFF7FEFF 		bl	calcAvgSpeed
+ 657              	.LVL49:
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 658              		.loc 1 259 7 view .LVU187
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 659              		.loc 1 259 18 is_stmt 0 view .LVU188
+ 660 031c 484B     		ldr	r3, .L35+120
+ 661 031e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 662              		.loc 1 259 10 view .LVU189
+ 663 0320 002B     		cmp	r3, #0
+ 664 0322 7FF4EBAE 		bne	.L9
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 665              		.loc 1 259 35 discriminator 1 view .LVU190
+ 666 0326 434B     		ldr	r3, .L35+108
+ 667 0328 9B79     		ldrb	r3, [r3, #6]	@ zero_extendqisi2
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 668              		.loc 1 259 23 discriminator 1 view .LVU191
+ 669 032a 002B     		cmp	r3, #0
+ 670 032c 7FF4E6AE 		bne	.L9
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 671              		.loc 1 259 59 discriminator 2 view .LVU192
+ 672 0330 3F4B     		ldr	r3, .L35+104
+ 673 0332 9B79     		ldrb	r3, [r3, #6]	@ zero_extendqisi2
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 674              		.loc 1 259 46 discriminator 2 view .LVU193
+ 675 0334 002B     		cmp	r3, #0
+ 676 0336 7FF4E1AE 		bne	.L9
+ARM GAS  /tmp/ccI9vT92.s 			page 27
+
+
+ 260:Src/main.c    ****         beepShort(6);                     // make 2 beeps indicating the motor enable
+ 677              		.loc 1 260 11 view .LVU194
+ 678 033a 244B     		ldr	r3, .L35+4
+ 679 033c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 680 033e C2EBC201 		rsb	r1, r2, r2, lsl #3
+ 681 0342 234B     		ldr	r3, .L35+8
+ 682 0344 03EB4103 		add	r3, r3, r1, lsl #1
+ 683 0348 B3F90230 		ldrsh	r3, [r3, #2]
+ 684 034c 002B     		cmp	r3, #0
+ 685 034e B8BF     		it	lt
+ 686 0350 5B42     		rsblt	r3, r3, #0
+ 687 0352 9BB2     		uxth	r3, r3
+ 259:Src/main.c    ****           ABS(input1[inIdx].cmd) < 50 && ABS(input2[inIdx].cmd) < 50){
+ 688              		.loc 1 259 70 discriminator 3 view .LVU195
+ 689 0354 312B     		cmp	r3, #49
+ 690 0356 3FF6D1AE 		bhi	.L9
+ 260:Src/main.c    ****         beepShort(6);                     // make 2 beeps indicating the motor enable
+ 691              		.loc 1 260 42 view .LVU196
+ 692 035a 1F4B     		ldr	r3, .L35+16
+ 693 035c 03EB4103 		add	r3, r3, r1, lsl #1
+ 694 0360 B3F90230 		ldrsh	r3, [r3, #2]
+ 695 0364 002B     		cmp	r3, #0
+ 696 0366 B8BF     		it	lt
+ 697 0368 5B42     		rsblt	r3, r3, #0
+ 698 036a 9BB2     		uxth	r3, r3
+ 260:Src/main.c    ****         beepShort(6);                     // make 2 beeps indicating the motor enable
+ 699              		.loc 1 260 39 view .LVU197
+ 700 036c 312B     		cmp	r3, #49
+ 701 036e 3FF6C5AE 		bhi	.L9
+ 261:Src/main.c    ****         beepShort(4); HAL_Delay(100);
+ 702              		.loc 1 261 9 is_stmt 1 view .LVU198
+ 703 0372 0620     		movs	r0, #6
+ 704 0374 FFF7FEFF 		bl	beepShort
+ 705              	.LVL50:
+ 262:Src/main.c    ****         steerFixdt = speedFixdt = 0;      // reset filters
+ 706              		.loc 1 262 9 view .LVU199
+ 707 0378 0420     		movs	r0, #4
+ 708 037a FFF7FEFF 		bl	beepShort
+ 709              	.LVL51:
+ 262:Src/main.c    ****         steerFixdt = speedFixdt = 0;      // reset filters
+ 710              		.loc 1 262 23 discriminator 1 view .LVU200
+ 711 037e 6420     		movs	r0, #100
+ 712 0380 FFF7FEFF 		bl	HAL_Delay
+ 713              	.LVL52:
+ 263:Src/main.c    ****         enable = 1;                       // enable motors
+ 714              		.loc 1 263 9 view .LVU201
+ 263:Src/main.c    ****         enable = 1;                       // enable motors
+ 715              		.loc 1 263 33 is_stmt 0 view .LVU202
+ 716 0384 0023     		movs	r3, #0
+ 717 0386 164A     		ldr	r2, .L35+24
+ 718 0388 1360     		str	r3, [r2]
+ 263:Src/main.c    ****         enable = 1;                       // enable motors
+ 719              		.loc 1 263 20 view .LVU203
+ 720 038a 144A     		ldr	r2, .L35+20
+ 721 038c 1360     		str	r3, [r2]
+ 264:Src/main.c    ****         #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 722              		.loc 1 264 9 is_stmt 1 view .LVU204
+ARM GAS  /tmp/ccI9vT92.s 			page 28
+
+
+ 264:Src/main.c    ****         #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
+ 723              		.loc 1 264 16 is_stmt 0 view .LVU205
+ 724 038e 2C4B     		ldr	r3, .L35+120
+ 725 0390 0122     		movs	r2, #1
+ 726 0392 1A70     		strb	r2, [r3]
+ 727 0394 B2E6     		b	.L9
+ 728              	.LVL53:
+ 729              	.L26:
+ 531:Src/main.c    ****             Feedback.checksum   = (uint16_t)(Feedback.start ^ Feedback.cmd1 ^ Feedback.cmd2 ^ Feedb
+ 730              		.loc 1 531 13 is_stmt 1 view .LVU206
+ 531:Src/main.c    ****             Feedback.checksum   = (uint16_t)(Feedback.start ^ Feedback.cmd1 ^ Feedback.cmd2 ^ Feedb
+ 731              		.loc 1 531 35 is_stmt 0 view .LVU207
+ 732 0396 1949     		ldr	r1, .L35+52
+ 733 0398 91F800C0 		ldrb	ip, [r1]	@ zero_extendqisi2
+ 531:Src/main.c    ****             Feedback.checksum   = (uint16_t)(Feedback.start ^ Feedback.cmd1 ^ Feedback.cmd2 ^ Feedb
+ 734              		.loc 1 531 33 view .LVU208
+ 735 039c 2349     		ldr	r1, .L35+100
+ 736 039e A1F80EC0 		strh	ip, [r1, #14]	@ movhi
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 737              		.loc 1 532 13 is_stmt 1 view .LVU209
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 738              		.loc 1 532 61 is_stmt 0 view .LVU210
+ 739 03a2 2D4F     		ldr	r7, .L35+144
+ 740 03a4 7740     		eors	r7, r7, r6
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 741              		.loc 1 532 77 view .LVU211
+ 742 03a6 7D40     		eors	r5, r5, r7
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 743              		.loc 1 532 93 view .LVU212
+ 744 03a8 6C40     		eors	r4, r4, r5
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 745              		.loc 1 532 116 view .LVU213
+ 746 03aa 6040     		eors	r0, r0, r4
+ 533:Src/main.c    **** 
+ 747              		.loc 1 533 44 view .LVU214
+ 748 03ac 4240     		eors	r2, r2, r0
+ 533:Src/main.c    **** 
+ 749              		.loc 1 533 66 view .LVU215
+ 750 03ae 5340     		eors	r3, r3, r2
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 751              		.loc 1 532 35 view .LVU216
+ 752 03b0 8CEA030C 		eor	ip, ip, r3
+ 532:Src/main.c    ****                                            ^ Feedback.batVoltage ^ Feedback.boardTemp ^ Feedback.cm
+ 753              		.loc 1 532 33 view .LVU217
+ 754 03b4 A1F810C0 		strh	ip, [r1, #16]	@ movhi
+ 535:Src/main.c    ****           }
+ 755              		.loc 1 535 13 is_stmt 1 view .LVU218
+ 756 03b8 1222     		movs	r2, #18
+ 757 03ba 1F48     		ldr	r0, .L35+112
+ 758 03bc FFF7FEFF 		bl	HAL_UART_Transmit_DMA
+ 759              	.LVL54:
+ 535:Src/main.c    ****           }
+ 760              		.loc 1 535 13 is_stmt 0 view .LVU219
+ 761 03c0 56E7     		b	.L10
+ 762              	.L27:
+ 554:Src/main.c    ****     } else if (rtY_Left.z_errCode || rtY_Right.z_errCode) {                                        
+ 763              		.loc 1 554 7 is_stmt 1 view .LVU220
+ARM GAS  /tmp/ccI9vT92.s 			page 29
+
+
+ 764 03c2 FFF7FEFF 		bl	poweroff
+ 765              	.LVL55:
+ 766 03c6 72E7     		b	.L12
+ 767              	.L36:
+ 768              		.align	2
+ 769              	.L35:
+ 770 03c8 00000000 		.word	steerRateFixdt
+ 771 03cc 00000000 		.word	inIdx
+ 772 03d0 00000000 		.word	input1
+ 773 03d4 00000000 		.word	speedRateFixdt
+ 774 03d8 00000000 		.word	input2
+ 775 03dc 00000000 		.word	steerFixdt
+ 776 03e0 00000000 		.word	speedFixdt
+ 777 03e4 00000000 		.word	steer
+ 778 03e8 00000000 		.word	speed
+ 779 03ec 00000000 		.word	cmdL
+ 780 03f0 00000000 		.word	cmdR
+ 781 03f4 00000000 		.word	pwmr
+ 782 03f8 00000000 		.word	pwml
+ 783 03fc 00000000 		.word	sideboard_leds_R
+ 784 0400 00000000 		.word	adc_buffer
+ 785 0404 6B4CA407 		.word	128207979
+ 786 0408 00000000 		.word	board_temp_deg_c
+ 787 040c 00000000 		.word	batVoltage
+ 788 0410 00000000 		.word	batVoltageCalib
+ 789 0414 00000000 		.word	rtU_Left
+ 790 0418 00000000 		.word	left_dc_curr
+ 791 041c 00000000 		.word	rtU_Right
+ 792 0420 00000000 		.word	right_dc_curr
+ 793 0424 00000000 		.word	dc_curr
+ 794 0428 00000000 		.word	main_loop_counter
+ 795 042c 00000000 		.word	Feedback
+ 796 0430 00000000 		.word	rtY_Right
+ 797 0434 00000000 		.word	rtY_Left
+ 798 0438 00000000 		.word	huart3
+ 799 043c 00000000 		.word	speedAvgAbs
+ 800 0440 00000000 		.word	enable
+ 801 0444 00000000 		.word	inactivity_timeout_counter
+ 802 0448 80380100 		.word	80000
+ 803 044c 00000000 		.word	inIdx_prev
+ 804 0450 00000000 		.word	buzzerTimer
+ 805 0454 00000000 		.word	buzzerTimer_prev
+ 806 0458 CDABFFFF 		.word	-21555
+ 807              	.L14:
+ 558:Src/main.c    ****       beepCount(2, 24, 1);
+ 808              		.loc 1 558 12 view .LVU221
+ 558:Src/main.c    ****       beepCount(2, 24, 1);
+ 809              		.loc 1 558 16 is_stmt 0 view .LVU222
+ 810 045c 234A     		ldr	r2, .L37
+ 811 045e 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 558:Src/main.c    ****       beepCount(2, 24, 1);
+ 812              		.loc 1 558 15 view .LVU223
+ 813 0460 1ABB     		cbnz	r2, .L28
+ 560:Src/main.c    ****       beepCount(3, 24, 1);
+ 814              		.loc 1 560 12 is_stmt 1 view .LVU224
+ 560:Src/main.c    ****       beepCount(3, 24, 1);
+ 815              		.loc 1 560 16 is_stmt 0 view .LVU225
+ARM GAS  /tmp/ccI9vT92.s 			page 30
+
+
+ 816 0462 234A     		ldr	r2, .L37+4
+ 817 0464 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 560:Src/main.c    ****       beepCount(3, 24, 1);
+ 818              		.loc 1 560 15 view .LVU226
+ 819 0466 32BB     		cbnz	r2, .L29
+ 562:Src/main.c    ****       beepCount(4, 24, 1);
+ 820              		.loc 1 562 12 is_stmt 1 view .LVU227
+ 562:Src/main.c    ****       beepCount(4, 24, 1);
+ 821              		.loc 1 562 16 is_stmt 0 view .LVU228
+ 822 0468 224A     		ldr	r2, .L37+8
+ 823 046a 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 562:Src/main.c    ****       beepCount(4, 24, 1);
+ 824              		.loc 1 562 15 view .LVU229
+ 825 046c 4ABB     		cbnz	r2, .L30
+ 564:Src/main.c    ****       beepCount(5, 24, 1);
+ 826              		.loc 1 564 12 is_stmt 1 view .LVU230
+ 566:Src/main.c    ****       beepCount(0, 10, 6);
+ 827              		.loc 1 566 12 view .LVU231
+ 566:Src/main.c    ****       beepCount(0, 10, 6);
+ 828              		.loc 1 566 15 is_stmt 0 view .LVU232
+ 829 046e 40F22252 		movw	r2, #1314
+ 830 0472 9342     		cmp	r3, r2
+ 831 0474 2BDD     		ble	.L31
+ 568:Src/main.c    ****       beepCount(0, 10, 30);
+ 832              		.loc 1 568 12 is_stmt 1 view .LVU233
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 833              		.loc 1 570 12 view .LVU234
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 834              		.loc 1 570 42 is_stmt 0 view .LVU235
+ 835 0476 204B     		ldr	r3, .L37+12
+ 836 0478 B3F90030 		ldrsh	r3, [r3]
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 837              		.loc 1 570 15 view .LVU236
+ 838 047c 13F1320F 		cmn	r3, #50
+ 839 0480 05DB     		blt	.L19
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 840              		.loc 1 570 56 discriminator 2 view .LVU237
+ 841 0482 1E4B     		ldr	r3, .L37+16
+ 842 0484 B3F90030 		ldrsh	r3, [r3]
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 843              		.loc 1 570 48 discriminator 2 view .LVU238
+ 844 0488 13F1320F 		cmn	r3, #50
+ 845 048c 04DA     		bge	.L20
+ 846              	.L19:
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 847              		.loc 1 570 75 discriminator 3 view .LVU239
+ 848 048e 1C4B     		ldr	r3, .L37+20
+ 849 0490 B3F90030 		ldrsh	r3, [r3]
+ 570:Src/main.c    ****       beepCount(0, 5, 1);
+ 850              		.loc 1 570 63 discriminator 3 view .LVU240
+ 851 0494 002B     		cmp	r3, #0
+ 852 0496 20DB     		blt	.L32
+ 853              	.L20:
+ 574:Src/main.c    ****       backwardDrive = 0;
+ 854              		.loc 1 574 7 is_stmt 1 view .LVU241
+ 855 0498 0022     		movs	r2, #0
+ 856 049a 1146     		mov	r1, r2
+ARM GAS  /tmp/ccI9vT92.s 			page 31
+
+
+ 857 049c 1046     		mov	r0, r2
+ 858 049e FFF7FEFF 		bl	beepCount
+ 859              	.LVL56:
+ 575:Src/main.c    ****     }
+ 860              		.loc 1 575 7 view .LVU242
+ 575:Src/main.c    ****     }
+ 861              		.loc 1 575 21 is_stmt 0 view .LVU243
+ 862 04a2 184B     		ldr	r3, .L37+24
+ 863 04a4 0022     		movs	r2, #0
+ 864 04a6 1A70     		strb	r2, [r3]
+ 865 04a8 01E7     		b	.L12
+ 866              	.L28:
+ 559:Src/main.c    ****     } else if (timeoutFlgSerial) {                                                                 
+ 867              		.loc 1 559 7 is_stmt 1 view .LVU244
+ 868 04aa 0122     		movs	r2, #1
+ 869 04ac 1821     		movs	r1, #24
+ 870 04ae 0220     		movs	r0, #2
+ 871 04b0 FFF7FEFF 		bl	beepCount
+ 872              	.LVL57:
+ 873 04b4 FBE6     		b	.L12
+ 874              	.L29:
+ 561:Src/main.c    ****     } else if (timeoutFlgGen) {                                                                    
+ 875              		.loc 1 561 7 view .LVU245
+ 876 04b6 0122     		movs	r2, #1
+ 877 04b8 1821     		movs	r1, #24
+ 878 04ba 0320     		movs	r0, #3
+ 879 04bc FFF7FEFF 		bl	beepCount
+ 880              	.LVL58:
+ 881 04c0 F5E6     		b	.L12
+ 882              	.L30:
+ 563:Src/main.c    ****     } else if (TEMP_WARNING_ENABLE && board_temp_deg_c >= TEMP_WARNING) {                          
+ 883              		.loc 1 563 7 view .LVU246
+ 884 04c2 0122     		movs	r2, #1
+ 885 04c4 1821     		movs	r1, #24
+ 886 04c6 0420     		movs	r0, #4
+ 887 04c8 FFF7FEFF 		bl	beepCount
+ 888              	.LVL59:
+ 889 04cc EFE6     		b	.L12
+ 890              	.L31:
+ 567:Src/main.c    ****     } else if (BAT_LVL2_ENABLE && batVoltage < BAT_LVL2) {                                         
+ 891              		.loc 1 567 7 view .LVU247
+ 892 04ce 0622     		movs	r2, #6
+ 893 04d0 0A21     		movs	r1, #10
+ 894 04d2 0020     		movs	r0, #0
+ 895 04d4 FFF7FEFF 		bl	beepCount
+ 896              	.LVL60:
+ 897 04d8 E9E6     		b	.L12
+ 898              	.L32:
+ 571:Src/main.c    ****       backwardDrive = 1;
+ 899              		.loc 1 571 7 view .LVU248
+ 900 04da 0122     		movs	r2, #1
+ 901 04dc 0521     		movs	r1, #5
+ 902 04de 0020     		movs	r0, #0
+ 903 04e0 FFF7FEFF 		bl	beepCount
+ 904              	.LVL61:
+ 572:Src/main.c    ****     } else {  // do not beep
+ 905              		.loc 1 572 7 view .LVU249
+ARM GAS  /tmp/ccI9vT92.s 			page 32
+
+
+ 572:Src/main.c    ****     } else {  // do not beep
+ 906              		.loc 1 572 21 is_stmt 0 view .LVU250
+ 907 04e4 074B     		ldr	r3, .L37+24
+ 908 04e6 0122     		movs	r2, #1
+ 909 04e8 1A70     		strb	r2, [r3]
+ 910 04ea E0E6     		b	.L12
+ 911              	.L38:
+ 912              		.align	2
+ 913              	.L37:
+ 914 04ec 00000000 		.word	timeoutFlgADC
+ 915 04f0 00000000 		.word	timeoutFlgSerial
+ 916 04f4 00000000 		.word	timeoutFlgGen
+ 917 04f8 00000000 		.word	cmdR
+ 918 04fc 00000000 		.word	cmdL
+ 919 0500 00000000 		.word	speedAvg
+ 920 0504 00000000 		.word	backwardDrive
+ 921              		.cfi_endproc
+ 922              	.LFE66:
+ 924              		.section	.bss.inactivity_timeout_counter,"aw",%nobits
+ 925              		.align	2
+ 928              	inactivity_timeout_counter:
+ 929 0000 00000000 		.space	4
+ 930              		.section	.bss.buzzerTimer_prev,"aw",%nobits
+ 931              		.align	2
+ 934              	buzzerTimer_prev:
+ 935 0000 00000000 		.space	4
+ 936              		.section	.bss.speedFixdt,"aw",%nobits
+ 937              		.align	2
+ 940              	speedFixdt:
+ 941 0000 00000000 		.space	4
+ 942              		.section	.bss.steerFixdt,"aw",%nobits
+ 943              		.align	2
+ 946              	steerFixdt:
+ 947 0000 00000000 		.space	4
+ 948              		.section	.bss.speedRateFixdt,"aw",%nobits
+ 949              		.align	1
+ 952              	speedRateFixdt:
+ 953 0000 0000     		.space	2
+ 954              		.section	.bss.steerRateFixdt,"aw",%nobits
+ 955              		.align	1
+ 958              	steerRateFixdt:
+ 959 0000 0000     		.space	2
+ 960              		.section	.bss.steer,"aw",%nobits
+ 961              		.align	1
+ 964              	steer:
+ 965 0000 0000     		.space	2
+ 966              		.section	.bss.speed,"aw",%nobits
+ 967              		.align	1
+ 970              	speed:
+ 971 0000 0000     		.space	2
+ 972              		.section	.bss.sideboard_leds_R,"aw",%nobits
+ 975              	sideboard_leds_R:
+ 976 0000 00       		.space	1
+ 977              		.section	.bss.Feedback,"aw",%nobits
+ 978              		.align	2
+ 981              	Feedback:
+ 982 0000 00000000 		.space	18
+ARM GAS  /tmp/ccI9vT92.s 			page 33
+
+
+ 982      00000000 
+ 982      00000000 
+ 982      00000000 
+ 982      0000
+ 983              		.global	cmdR
+ 984              		.section	.bss.cmdR,"aw",%nobits
+ 985              		.align	1
+ 988              	cmdR:
+ 989 0000 0000     		.space	2
+ 990              		.global	cmdL
+ 991              		.section	.bss.cmdL,"aw",%nobits
+ 992              		.align	1
+ 995              	cmdL:
+ 996 0000 0000     		.space	2
+ 997              		.global	dc_curr
+ 998              		.section	.bss.dc_curr,"aw",%nobits
+ 999              		.align	1
+ 1002              	dc_curr:
+ 1003 0000 0000     		.space	2
+ 1004              		.global	right_dc_curr
+ 1005              		.section	.bss.right_dc_curr,"aw",%nobits
+ 1006              		.align	1
+ 1009              	right_dc_curr:
+ 1010 0000 0000     		.space	2
+ 1011              		.global	left_dc_curr
+ 1012              		.section	.bss.left_dc_curr,"aw",%nobits
+ 1013              		.align	1
+ 1016              	left_dc_curr:
+ 1017 0000 0000     		.space	2
+ 1018              		.global	board_temp_deg_c
+ 1019              		.section	.bss.board_temp_deg_c,"aw",%nobits
+ 1020              		.align	1
+ 1023              	board_temp_deg_c:
+ 1024 0000 0000     		.space	2
+ 1025              		.global	batVoltageCalib
+ 1026              		.section	.bss.batVoltageCalib,"aw",%nobits
+ 1027              		.align	1
+ 1030              	batVoltageCalib:
+ 1031 0000 0000     		.space	2
+ 1032              		.global	main_loop_counter
+ 1033              		.section	.bss.main_loop_counter,"aw",%nobits
+ 1034              		.align	2
+ 1037              	main_loop_counter:
+ 1038 0000 00000000 		.space	4
+ 1039              		.global	backwardDrive
+ 1040              		.section	.bss.backwardDrive,"aw",%nobits
+ 1043              	backwardDrive:
+ 1044 0000 00       		.space	1
+ 1045              		.global	uart_buf
+ 1046              		.section	.bss.uart_buf,"aw",%nobits
+ 1047              		.align	2
+ 1050              	uart_buf:
+ 1051 0000 00000000 		.space	200
+ 1051      00000000 
+ 1051      00000000 
+ 1051      00000000 
+ 1051      00000000 
+ARM GAS  /tmp/ccI9vT92.s 			page 34
+
+
+ 1052              		.text
+ 1053              	.Letext0:
+ 1054              		.file 2 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 1055              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1056              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1057              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h"
+ 1058              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h"
+ 1059              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 1060              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1061              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h"
+ 1062              		.file 10 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 1063              		.file 11 "Inc/defines.h"
+ 1064              		.file 12 "Inc/util.h"
+ 1065              		.file 13 "Inc/rtwtypes.h"
+ 1066              		.file 14 "Inc/BLDC_controller.h"
+ 1067              		.file 15 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h"
+ 1068              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 1069              		.file 17 "Inc/setup.h"
+ARM GAS  /tmp/ccI9vT92.s 			page 35
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+     /tmp/ccI9vT92.s:19     .text.SystemClock_Config:00000000 $t
+     /tmp/ccI9vT92.s:25     .text.SystemClock_Config:00000000 SystemClock_Config
+     /tmp/ccI9vT92.s:132    .text.SystemClock_Config:00000070 $d
+     /tmp/ccI9vT92.s:137    .text.main:00000000 $t
+     /tmp/ccI9vT92.s:143    .text.main:00000000 main
+     /tmp/ccI9vT92.s:308    .text.main:000000e4 $d
+     /tmp/ccI9vT92.s:317    .text.main:000000fc $t
+     /tmp/ccI9vT92.s:770    .text.main:000003c8 $d
+     /tmp/ccI9vT92.s:958    .bss.steerRateFixdt:00000000 steerRateFixdt
+     /tmp/ccI9vT92.s:952    .bss.speedRateFixdt:00000000 speedRateFixdt
+     /tmp/ccI9vT92.s:946    .bss.steerFixdt:00000000 steerFixdt
+     /tmp/ccI9vT92.s:940    .bss.speedFixdt:00000000 speedFixdt
+     /tmp/ccI9vT92.s:964    .bss.steer:00000000 steer
+     /tmp/ccI9vT92.s:970    .bss.speed:00000000 speed
+     /tmp/ccI9vT92.s:995    .bss.cmdL:00000000 cmdL
+     /tmp/ccI9vT92.s:988    .bss.cmdR:00000000 cmdR
+     /tmp/ccI9vT92.s:975    .bss.sideboard_leds_R:00000000 sideboard_leds_R
+     /tmp/ccI9vT92.s:1023   .bss.board_temp_deg_c:00000000 board_temp_deg_c
+     /tmp/ccI9vT92.s:1030   .bss.batVoltageCalib:00000000 batVoltageCalib
+     /tmp/ccI9vT92.s:1016   .bss.left_dc_curr:00000000 left_dc_curr
+     /tmp/ccI9vT92.s:1009   .bss.right_dc_curr:00000000 right_dc_curr
+     /tmp/ccI9vT92.s:1002   .bss.dc_curr:00000000 dc_curr
+     /tmp/ccI9vT92.s:1037   .bss.main_loop_counter:00000000 main_loop_counter
+     /tmp/ccI9vT92.s:981    .bss.Feedback:00000000 Feedback
+     /tmp/ccI9vT92.s:928    .bss.inactivity_timeout_counter:00000000 inactivity_timeout_counter
+     /tmp/ccI9vT92.s:934    .bss.buzzerTimer_prev:00000000 buzzerTimer_prev
+     /tmp/ccI9vT92.s:810    .text.main:0000045c $t
+     /tmp/ccI9vT92.s:914    .text.main:000004ec $d
+     /tmp/ccI9vT92.s:1043   .bss.backwardDrive:00000000 backwardDrive
+     /tmp/ccI9vT92.s:925    .bss.inactivity_timeout_counter:00000000 $d
+     /tmp/ccI9vT92.s:931    .bss.buzzerTimer_prev:00000000 $d
+     /tmp/ccI9vT92.s:937    .bss.speedFixdt:00000000 $d
+     /tmp/ccI9vT92.s:943    .bss.steerFixdt:00000000 $d
+     /tmp/ccI9vT92.s:949    .bss.speedRateFixdt:00000000 $d
+     /tmp/ccI9vT92.s:955    .bss.steerRateFixdt:00000000 $d
+     /tmp/ccI9vT92.s:961    .bss.steer:00000000 $d
+     /tmp/ccI9vT92.s:967    .bss.speed:00000000 $d
+     /tmp/ccI9vT92.s:976    .bss.sideboard_leds_R:00000000 $d
+     /tmp/ccI9vT92.s:978    .bss.Feedback:00000000 $d
+     /tmp/ccI9vT92.s:985    .bss.cmdR:00000000 $d
+     /tmp/ccI9vT92.s:992    .bss.cmdL:00000000 $d
+     /tmp/ccI9vT92.s:999    .bss.dc_curr:00000000 $d
+     /tmp/ccI9vT92.s:1006   .bss.right_dc_curr:00000000 $d
+     /tmp/ccI9vT92.s:1013   .bss.left_dc_curr:00000000 $d
+     /tmp/ccI9vT92.s:1020   .bss.board_temp_deg_c:00000000 $d
+     /tmp/ccI9vT92.s:1027   .bss.batVoltageCalib:00000000 $d
+     /tmp/ccI9vT92.s:1034   .bss.main_loop_counter:00000000 $d
+     /tmp/ccI9vT92.s:1044   .bss.backwardDrive:00000000 $d
+     /tmp/ccI9vT92.s:1050   .bss.uart_buf:00000000 uart_buf
+     /tmp/ccI9vT92.s:1047   .bss.uart_buf:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_RCCEx_PeriphCLKConfig
+ARM GAS  /tmp/ccI9vT92.s 			page 36
+
+
+HAL_RCC_GetHCLKFreq
+HAL_SYSTICK_Config
+HAL_SYSTICK_CLKSourceConfig
+HAL_NVIC_SetPriority
+HAL_Init
+HAL_NVIC_SetPriorityGrouping
+MX_GPIO_Init
+MX_TIM_Init
+MX_ADC1_Init
+MX_ADC2_Init
+BLDC_Init
+HAL_GPIO_WritePin
+Input_Lim_Init
+Input_Init
+HAL_ADC_Start
+poweronMelody
+HAL_Delay
+HAL_GPIO_ReadPin
+hadc1
+hadc2
+adc_buffer
+rateLimiter16
+filtLowPass32
+mixerFcn
+sideboardLeds
+poweroffPressCheck
+beepCount
+poweroff
+readCommand
+calcAvgSpeed
+beepShort
+HAL_UART_Transmit_DMA
+inIdx
+input1
+input2
+pwmr
+pwml
+batVoltage
+rtU_Left
+rtU_Right
+rtY_Right
+rtY_Left
+huart3
+speedAvgAbs
+enable
+inIdx_prev
+buzzerTimer
+timeoutFlgADC
+timeoutFlgSerial
+timeoutFlgGen
+speedAvg

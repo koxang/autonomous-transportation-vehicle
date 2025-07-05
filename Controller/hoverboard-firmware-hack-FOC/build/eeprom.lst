@@ -1,0 +1,2605 @@
+ARM GAS  /tmp/ccK5k7ZA.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"eeprom.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/eeprom.c"
+  18              		.section	.text.EE_VerifyPageFullyErased,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	EE_VerifyPageFullyErased:
+  25              	.LVL0:
+  26              	.LFB67:
+   1:Src/eeprom.c  **** /**
+   2:Src/eeprom.c  ****   ******************************************************************************
+   3:Src/eeprom.c  ****   * @file    EEPROM_Emulation/src/eeprom.c
+   4:Src/eeprom.c  ****   * @author  MCD Application Team
+   5:Src/eeprom.c  ****   * @version V1.3.0
+   6:Src/eeprom.c  ****   * @date    18-December-2015
+   7:Src/eeprom.c  ****   * @brief   This file provides all the EEPROM emulation firmware functions.
+   8:Src/eeprom.c  ****   ******************************************************************************
+   9:Src/eeprom.c  ****   * @attention
+  10:Src/eeprom.c  ****   *
+  11:Src/eeprom.c  ****   * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  12:Src/eeprom.c  ****   *
+  13:Src/eeprom.c  ****   * Redistribution and use in source and binary forms, with or without modification,
+  14:Src/eeprom.c  ****   * are permitted provided that the following conditions are met:
+  15:Src/eeprom.c  ****   *   1. Redistributions of source code must retain the above copyright notice,
+  16:Src/eeprom.c  ****   *      this list of conditions and the following disclaimer.
+  17:Src/eeprom.c  ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  18:Src/eeprom.c  ****   *      this list of conditions and the following disclaimer in the documentation
+  19:Src/eeprom.c  ****   *      and/or other materials provided with the distribution.
+  20:Src/eeprom.c  ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  21:Src/eeprom.c  ****   *      may be used to endorse or promote products derived from this software
+  22:Src/eeprom.c  ****   *      without specific prior written permission.
+  23:Src/eeprom.c  ****   *
+  24:Src/eeprom.c  ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  25:Src/eeprom.c  ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  26:Src/eeprom.c  ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:Src/eeprom.c  ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  28:Src/eeprom.c  ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  29:Src/eeprom.c  ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  30:Src/eeprom.c  ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  31:Src/eeprom.c  ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  32:Src/eeprom.c  ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ARM GAS  /tmp/ccK5k7ZA.s 			page 2
+
+
+  33:Src/eeprom.c  ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:Src/eeprom.c  ****   *
+  35:Src/eeprom.c  ****   ******************************************************************************
+  36:Src/eeprom.c  ****   */
+  37:Src/eeprom.c  **** 
+  38:Src/eeprom.c  **** /** @addtogroup EEPROM_Emulation
+  39:Src/eeprom.c  ****   * @{
+  40:Src/eeprom.c  ****   */
+  41:Src/eeprom.c  **** 
+  42:Src/eeprom.c  **** /* Includes ------------------------------------------------------------------*/
+  43:Src/eeprom.c  **** #include "eeprom.h"
+  44:Src/eeprom.c  **** 
+  45:Src/eeprom.c  **** /* Private typedef -----------------------------------------------------------*/
+  46:Src/eeprom.c  **** /* Private define ------------------------------------------------------------*/
+  47:Src/eeprom.c  **** /* Private macro -------------------------------------------------------------*/
+  48:Src/eeprom.c  **** /* Private variables ---------------------------------------------------------*/
+  49:Src/eeprom.c  **** 
+  50:Src/eeprom.c  **** /* Global variable used to store variable value in read sequence */
+  51:Src/eeprom.c  **** uint16_t DataVar = 0;
+  52:Src/eeprom.c  **** 
+  53:Src/eeprom.c  **** /* Virtual address defined by the user: 0xFFFF value is prohibited */
+  54:Src/eeprom.c  **** extern uint16_t VirtAddVarTab[NB_OF_VAR];
+  55:Src/eeprom.c  **** 
+  56:Src/eeprom.c  **** /* Private function prototypes -----------------------------------------------*/
+  57:Src/eeprom.c  **** /* Private functions ---------------------------------------------------------*/
+  58:Src/eeprom.c  **** static HAL_StatusTypeDef EE_Format(void);
+  59:Src/eeprom.c  **** static uint16_t EE_FindValidPage(uint8_t Operation);
+  60:Src/eeprom.c  **** static uint16_t EE_VerifyPageFullWriteVariable(uint16_t VirtAddress, uint16_t Data);
+  61:Src/eeprom.c  **** static uint16_t EE_PageTransfer(uint16_t VirtAddress, uint16_t Data);
+  62:Src/eeprom.c  **** static uint16_t EE_VerifyPageFullyErased(uint32_t Address);
+  63:Src/eeprom.c  **** 
+  64:Src/eeprom.c  **** /**
+  65:Src/eeprom.c  ****   * @brief  Restore the pages to a known good state in case of page's status
+  66:Src/eeprom.c  ****   *   corruption after a power loss.
+  67:Src/eeprom.c  ****   * @param  None.
+  68:Src/eeprom.c  ****   * @retval - Flash error code: on write Flash error
+  69:Src/eeprom.c  ****   *         - FLASH_COMPLETE: on success
+  70:Src/eeprom.c  ****   */
+  71:Src/eeprom.c  **** uint16_t EE_Init(void)
+  72:Src/eeprom.c  **** {
+  73:Src/eeprom.c  ****   uint16_t pagestatus0 = 6, pagestatus1 = 6;
+  74:Src/eeprom.c  ****   uint16_t varidx = 0;
+  75:Src/eeprom.c  ****   uint16_t eepromstatus = 0, readstatus = 0;
+  76:Src/eeprom.c  ****   int16_t x = -1;
+  77:Src/eeprom.c  ****   HAL_StatusTypeDef  flashstatus;
+  78:Src/eeprom.c  ****   uint32_t page_error = 0;
+  79:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+  80:Src/eeprom.c  **** 
+  81:Src/eeprom.c  **** 
+  82:Src/eeprom.c  ****   /* Get Page0 status */
+  83:Src/eeprom.c  ****   pagestatus0 = (*(__IO uint16_t*)PAGE0_BASE_ADDRESS);
+  84:Src/eeprom.c  ****   /* Get Page1 status */
+  85:Src/eeprom.c  ****   pagestatus1 = (*(__IO uint16_t*)PAGE1_BASE_ADDRESS);
+  86:Src/eeprom.c  **** 
+  87:Src/eeprom.c  ****   /* Fill EraseInit structure*/
+  88:Src/eeprom.c  ****   s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+  89:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ARM GAS  /tmp/ccK5k7ZA.s 			page 3
+
+
+  90:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+  91:Src/eeprom.c  **** 
+  92:Src/eeprom.c  ****   /* Check for invalid header states and repair if necessary */
+  93:Src/eeprom.c  ****   switch (pagestatus0)
+  94:Src/eeprom.c  ****   {
+  95:Src/eeprom.c  ****     case ERASED:
+  96:Src/eeprom.c  ****       if (pagestatus1 == VALID_PAGE) /* Page0 erased, Page1 valid */
+  97:Src/eeprom.c  ****       {
+  98:Src/eeprom.c  ****           /* Erase Page0 */
+  99:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE0_BASE_ADDRESS))
+ 100:Src/eeprom.c  ****         {
+ 101:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 102:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 103:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 104:Src/eeprom.c  ****           {
+ 105:Src/eeprom.c  ****             return flashstatus;
+ 106:Src/eeprom.c  ****           }
+ 107:Src/eeprom.c  ****         }
+ 108:Src/eeprom.c  ****       }
+ 109:Src/eeprom.c  ****       else if (pagestatus1 == RECEIVE_DATA) /* Page0 erased, Page1 receive */
+ 110:Src/eeprom.c  ****       {
+ 111:Src/eeprom.c  ****         /* Erase Page0 */
+ 112:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE0_BASE_ADDRESS))
+ 113:Src/eeprom.c  ****         {
+ 114:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 115:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 116:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 117:Src/eeprom.c  ****           {
+ 118:Src/eeprom.c  ****             return flashstatus;
+ 119:Src/eeprom.c  ****           }
+ 120:Src/eeprom.c  ****         }
+ 121:Src/eeprom.c  ****         /* Mark Page1 as valid */
+ 122:Src/eeprom.c  ****         flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PAGE1_BASE_ADDRESS, VALID_PAGE)
+ 123:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 124:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 125:Src/eeprom.c  ****         {
+ 126:Src/eeprom.c  ****           return flashstatus;
+ 127:Src/eeprom.c  ****         }
+ 128:Src/eeprom.c  ****       }
+ 129:Src/eeprom.c  ****       else /* First EEPROM access (Page0&1 are erased) or invalid state -> format EEPROM */
+ 130:Src/eeprom.c  ****       {
+ 131:Src/eeprom.c  ****         /* Erase both Page0 and Page1 and set Page0 as valid page */
+ 132:Src/eeprom.c  ****         flashstatus = EE_Format();
+ 133:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 134:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 135:Src/eeprom.c  ****         {
+ 136:Src/eeprom.c  ****           return flashstatus;
+ 137:Src/eeprom.c  ****         }
+ 138:Src/eeprom.c  ****       }
+ 139:Src/eeprom.c  ****       break;
+ 140:Src/eeprom.c  **** 
+ 141:Src/eeprom.c  ****     case RECEIVE_DATA:
+ 142:Src/eeprom.c  ****       if (pagestatus1 == VALID_PAGE) /* Page0 receive, Page1 valid */
+ 143:Src/eeprom.c  ****       {
+ 144:Src/eeprom.c  ****         /* Transfer data from Page1 to Page0 */
+ 145:Src/eeprom.c  ****         for (varidx = 0; varidx < NB_OF_VAR; varidx++)
+ 146:Src/eeprom.c  ****         {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 4
+
+
+ 147:Src/eeprom.c  ****           if (( *(__IO uint16_t*)(PAGE0_BASE_ADDRESS + 6)) == VirtAddVarTab[varidx])
+ 148:Src/eeprom.c  ****           {
+ 149:Src/eeprom.c  ****             x = varidx;
+ 150:Src/eeprom.c  ****           }
+ 151:Src/eeprom.c  ****           if (varidx != x)
+ 152:Src/eeprom.c  ****           {
+ 153:Src/eeprom.c  ****             /* Read the last variables' updates */
+ 154:Src/eeprom.c  ****             readstatus = EE_ReadVariable(VirtAddVarTab[varidx], &DataVar);
+ 155:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 156:Src/eeprom.c  ****             if (readstatus != 0x1)
+ 157:Src/eeprom.c  ****             {
+ 158:Src/eeprom.c  ****               /* Transfer the variable to the Page0 */
+ 159:Src/eeprom.c  ****               eepromstatus = EE_VerifyPageFullWriteVariable(VirtAddVarTab[varidx], DataVar);
+ 160:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 161:Src/eeprom.c  ****               if (eepromstatus != HAL_OK)
+ 162:Src/eeprom.c  ****               {
+ 163:Src/eeprom.c  ****                 return eepromstatus;
+ 164:Src/eeprom.c  ****               }
+ 165:Src/eeprom.c  ****             }
+ 166:Src/eeprom.c  ****           }
+ 167:Src/eeprom.c  ****         }
+ 168:Src/eeprom.c  ****         /* Mark Page0 as valid */
+ 169:Src/eeprom.c  ****         flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PAGE0_BASE_ADDRESS, VALID_PAGE)
+ 170:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 171:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 172:Src/eeprom.c  ****         {
+ 173:Src/eeprom.c  ****           return flashstatus;
+ 174:Src/eeprom.c  ****         }
+ 175:Src/eeprom.c  ****         s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 176:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 177:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 178:Src/eeprom.c  ****         /* Erase Page1 */
+ 179:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE1_BASE_ADDRESS))
+ 180:Src/eeprom.c  ****         {
+ 181:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 182:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 183:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 184:Src/eeprom.c  ****           {
+ 185:Src/eeprom.c  ****             return flashstatus;
+ 186:Src/eeprom.c  ****           }
+ 187:Src/eeprom.c  ****         }
+ 188:Src/eeprom.c  ****       }
+ 189:Src/eeprom.c  ****       else if (pagestatus1 == ERASED) /* Page0 receive, Page1 erased */
+ 190:Src/eeprom.c  ****       {
+ 191:Src/eeprom.c  ****         s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 192:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 193:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 194:Src/eeprom.c  ****         /* Erase Page1 */
+ 195:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE1_BASE_ADDRESS))
+ 196:Src/eeprom.c  ****         {
+ 197:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 198:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 199:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 200:Src/eeprom.c  ****           {
+ 201:Src/eeprom.c  ****             return flashstatus;
+ 202:Src/eeprom.c  ****           }
+ 203:Src/eeprom.c  ****         }
+ARM GAS  /tmp/ccK5k7ZA.s 			page 5
+
+
+ 204:Src/eeprom.c  ****         /* Mark Page0 as valid */
+ 205:Src/eeprom.c  ****         flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PAGE0_BASE_ADDRESS, VALID_PAGE)
+ 206:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 207:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 208:Src/eeprom.c  ****         {
+ 209:Src/eeprom.c  ****           return flashstatus;
+ 210:Src/eeprom.c  ****         }
+ 211:Src/eeprom.c  ****       }
+ 212:Src/eeprom.c  ****       else /* Invalid state -> format eeprom */
+ 213:Src/eeprom.c  ****       {
+ 214:Src/eeprom.c  ****         /* Erase both Page0 and Page1 and set Page0 as valid page */
+ 215:Src/eeprom.c  ****         flashstatus = EE_Format();
+ 216:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 217:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 218:Src/eeprom.c  ****         {
+ 219:Src/eeprom.c  ****           return flashstatus;
+ 220:Src/eeprom.c  ****         }
+ 221:Src/eeprom.c  ****       }
+ 222:Src/eeprom.c  ****       break;
+ 223:Src/eeprom.c  **** 
+ 224:Src/eeprom.c  ****     case VALID_PAGE:
+ 225:Src/eeprom.c  ****       if (pagestatus1 == VALID_PAGE) /* Invalid state -> format eeprom */
+ 226:Src/eeprom.c  ****       {
+ 227:Src/eeprom.c  ****         /* Erase both Page0 and Page1 and set Page0 as valid page */
+ 228:Src/eeprom.c  ****         flashstatus = EE_Format();
+ 229:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 230:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 231:Src/eeprom.c  ****         {
+ 232:Src/eeprom.c  ****           return flashstatus;
+ 233:Src/eeprom.c  ****         }
+ 234:Src/eeprom.c  ****       }
+ 235:Src/eeprom.c  ****       else if (pagestatus1 == ERASED) /* Page0 valid, Page1 erased */
+ 236:Src/eeprom.c  ****       {
+ 237:Src/eeprom.c  ****         s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 238:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 239:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 240:Src/eeprom.c  ****         /* Erase Page1 */
+ 241:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE1_BASE_ADDRESS))
+ 242:Src/eeprom.c  ****         {
+ 243:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 244:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 245:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 246:Src/eeprom.c  ****           {
+ 247:Src/eeprom.c  ****             return flashstatus;
+ 248:Src/eeprom.c  ****           }
+ 249:Src/eeprom.c  ****         }
+ 250:Src/eeprom.c  ****       }
+ 251:Src/eeprom.c  ****       else /* Page0 valid, Page1 receive */
+ 252:Src/eeprom.c  ****       {
+ 253:Src/eeprom.c  ****         /* Transfer data from Page0 to Page1 */
+ 254:Src/eeprom.c  ****         for (varidx = 0; varidx < NB_OF_VAR; varidx++)
+ 255:Src/eeprom.c  ****         {
+ 256:Src/eeprom.c  ****           if ((*(__IO uint16_t*)(PAGE1_BASE_ADDRESS + 6)) == VirtAddVarTab[varidx])
+ 257:Src/eeprom.c  ****           {
+ 258:Src/eeprom.c  ****             x = varidx;
+ 259:Src/eeprom.c  ****           }
+ 260:Src/eeprom.c  ****           if (varidx != x)
+ARM GAS  /tmp/ccK5k7ZA.s 			page 6
+
+
+ 261:Src/eeprom.c  ****           {
+ 262:Src/eeprom.c  ****             /* Read the last variables' updates */
+ 263:Src/eeprom.c  ****             readstatus = EE_ReadVariable(VirtAddVarTab[varidx], &DataVar);
+ 264:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 265:Src/eeprom.c  ****             if (readstatus != 0x1)
+ 266:Src/eeprom.c  ****             {
+ 267:Src/eeprom.c  ****               /* Transfer the variable to the Page1 */
+ 268:Src/eeprom.c  ****               eepromstatus = EE_VerifyPageFullWriteVariable(VirtAddVarTab[varidx], DataVar);
+ 269:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 270:Src/eeprom.c  ****               if (eepromstatus != HAL_OK)
+ 271:Src/eeprom.c  ****               {
+ 272:Src/eeprom.c  ****                 return eepromstatus;
+ 273:Src/eeprom.c  ****               }
+ 274:Src/eeprom.c  ****             }
+ 275:Src/eeprom.c  ****           }
+ 276:Src/eeprom.c  ****         }
+ 277:Src/eeprom.c  ****         /* Mark Page1 as valid */
+ 278:Src/eeprom.c  ****         flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PAGE1_BASE_ADDRESS, VALID_PAGE)
+ 279:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 280:Src/eeprom.c  ****         if (flashstatus != HAL_OK)
+ 281:Src/eeprom.c  ****         {
+ 282:Src/eeprom.c  ****           return flashstatus;
+ 283:Src/eeprom.c  ****         }
+ 284:Src/eeprom.c  ****         s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 285:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE0_ID;
+ 286:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 287:Src/eeprom.c  ****         /* Erase Page0 */
+ 288:Src/eeprom.c  ****         if(!EE_VerifyPageFullyErased(PAGE0_BASE_ADDRESS))
+ 289:Src/eeprom.c  ****         {
+ 290:Src/eeprom.c  ****           flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 291:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 292:Src/eeprom.c  ****           if (flashstatus != HAL_OK)
+ 293:Src/eeprom.c  ****           {
+ 294:Src/eeprom.c  ****             return flashstatus;
+ 295:Src/eeprom.c  ****           }
+ 296:Src/eeprom.c  ****         }
+ 297:Src/eeprom.c  ****       }
+ 298:Src/eeprom.c  ****       break;
+ 299:Src/eeprom.c  **** 
+ 300:Src/eeprom.c  ****     default:  /* Any other state -> format eeprom */
+ 301:Src/eeprom.c  ****       /* Erase both Page0 and Page1 and set Page0 as valid page */
+ 302:Src/eeprom.c  ****       flashstatus = EE_Format();
+ 303:Src/eeprom.c  ****       /* If erase/program operation was failed, a Flash error code is returned */
+ 304:Src/eeprom.c  ****       if (flashstatus != HAL_OK)
+ 305:Src/eeprom.c  ****       {
+ 306:Src/eeprom.c  ****         return flashstatus;
+ 307:Src/eeprom.c  ****       }
+ 308:Src/eeprom.c  ****       break;
+ 309:Src/eeprom.c  ****   }
+ 310:Src/eeprom.c  **** 
+ 311:Src/eeprom.c  ****   return HAL_OK;
+ 312:Src/eeprom.c  **** }
+ 313:Src/eeprom.c  **** 
+ 314:Src/eeprom.c  **** /**
+ 315:Src/eeprom.c  ****   * @brief  Verify if specified page is fully erased.
+ 316:Src/eeprom.c  ****   * @param  Address: page address
+ 317:Src/eeprom.c  ****   *   This parameter can be one of the following values:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 7
+
+
+ 318:Src/eeprom.c  ****   *     @arg PAGE0_BASE_ADDRESS: Page0 base address
+ 319:Src/eeprom.c  ****   *     @arg PAGE1_BASE_ADDRESS: Page1 base address
+ 320:Src/eeprom.c  ****   * @retval page fully erased status:
+ 321:Src/eeprom.c  ****   *           - 0: if Page not erased
+ 322:Src/eeprom.c  ****   *           - 1: if Page erased
+ 323:Src/eeprom.c  ****   */
+ 324:Src/eeprom.c  **** uint16_t EE_VerifyPageFullyErased(uint32_t Address)
+ 325:Src/eeprom.c  **** {
+  27              		.loc 1 325 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 326:Src/eeprom.c  ****   uint32_t readstatus = 1;
+  32              		.loc 1 326 3 view .LVU1
+ 327:Src/eeprom.c  ****   uint16_t addressvalue = 0x5555;
+  33              		.loc 1 327 3 view .LVU2
+ 328:Src/eeprom.c  **** 
+ 329:Src/eeprom.c  ****   /* Check each active page address starting from end */
+ 330:Src/eeprom.c  ****   while (Address <= PAGE0_END_ADDRESS)
+  34              		.loc 1 330 3 view .LVU3
+  35              		.loc 1 330 9 is_stmt 0 view .LVU4
+  36 0000 00E0     		b	.L2
+  37              	.LVL1:
+  38              	.L7:
+ 331:Src/eeprom.c  ****   {
+ 332:Src/eeprom.c  ****     /* Get the current location content to be compared with virtual address */
+ 333:Src/eeprom.c  ****     addressvalue = (*(__IO uint16_t*)Address);
+ 334:Src/eeprom.c  **** 
+ 335:Src/eeprom.c  ****     /* Compare the read address with the virtual address */
+ 336:Src/eeprom.c  ****     if (addressvalue != ERASED)
+ 337:Src/eeprom.c  ****     {
+ 338:Src/eeprom.c  **** 
+ 339:Src/eeprom.c  ****       /* In case variable value is read, reset readstatus flag */
+ 340:Src/eeprom.c  ****       readstatus = 0;
+ 341:Src/eeprom.c  **** 
+ 342:Src/eeprom.c  ****       break;
+ 343:Src/eeprom.c  ****     }
+ 344:Src/eeprom.c  ****     /* Next address location */
+ 345:Src/eeprom.c  ****     Address = Address + 4;
+  39              		.loc 1 345 5 is_stmt 1 view .LVU5
+  40              		.loc 1 345 13 is_stmt 0 view .LVU6
+  41 0002 0430     		adds	r0, r0, #4
+  42              	.LVL2:
+  43              	.L2:
+ 330:Src/eeprom.c  ****   {
+  44              		.loc 1 330 18 is_stmt 1 view .LVU7
+  45 0004 064B     		ldr	r3, .L8
+  46 0006 9842     		cmp	r0, r3
+  47 0008 07D2     		bcs	.L6
+ 333:Src/eeprom.c  **** 
+  48              		.loc 1 333 5 view .LVU8
+ 333:Src/eeprom.c  **** 
+  49              		.loc 1 333 18 is_stmt 0 view .LVU9
+  50 000a 0388     		ldrh	r3, [r0]
+  51 000c 9BB2     		uxth	r3, r3
+  52              	.LVL3:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 8
+
+
+ 336:Src/eeprom.c  ****     {
+  53              		.loc 1 336 5 is_stmt 1 view .LVU10
+ 336:Src/eeprom.c  ****     {
+  54              		.loc 1 336 8 is_stmt 0 view .LVU11
+  55 000e 4FF6FF72 		movw	r2, #65535
+  56 0012 9342     		cmp	r3, r2
+  57 0014 F5D0     		beq	.L7
+ 340:Src/eeprom.c  **** 
+  58              		.loc 1 340 18 view .LVU12
+  59 0016 0020     		movs	r0, #0
+  60              	.LVL4:
+ 346:Src/eeprom.c  ****   }
+ 347:Src/eeprom.c  **** 
+ 348:Src/eeprom.c  ****   /* Return readstatus value: (0: Page not erased, 1: Page erased) */
+ 349:Src/eeprom.c  ****   return readstatus;
+  61              		.loc 1 349 3 is_stmt 1 view .LVU13
+ 350:Src/eeprom.c  **** }
+  62              		.loc 1 350 1 is_stmt 0 view .LVU14
+  63 0018 7047     		bx	lr
+  64              	.LVL5:
+  65              	.L6:
+ 326:Src/eeprom.c  ****   uint16_t addressvalue = 0x5555;
+  66              		.loc 1 326 12 view .LVU15
+  67 001a 0120     		movs	r0, #1
+  68              	.LVL6:
+ 326:Src/eeprom.c  ****   uint16_t addressvalue = 0x5555;
+  69              		.loc 1 326 12 view .LVU16
+  70 001c 7047     		bx	lr
+  71              	.L9:
+  72 001e 00BF     		.align	2
+  73              	.L8:
+  74 0020 00080108 		.word	134285312
+  75              		.cfi_endproc
+  76              	.LFE67:
+  78              		.section	.text.EE_FindValidPage,"ax",%progbits
+  79              		.align	1
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  84              	EE_FindValidPage:
+  85              	.LVL7:
+  86              	.LFB71:
+ 351:Src/eeprom.c  **** 
+ 352:Src/eeprom.c  **** /**
+ 353:Src/eeprom.c  ****   * @brief  Returns the last stored variable data, if found, which correspond to
+ 354:Src/eeprom.c  ****   *   the passed virtual address
+ 355:Src/eeprom.c  ****   * @param  VirtAddress: Variable virtual address
+ 356:Src/eeprom.c  ****   * @param  Data: Global variable contains the read variable value
+ 357:Src/eeprom.c  ****   * @retval Success or error status:
+ 358:Src/eeprom.c  ****   *           - 0: if variable was found
+ 359:Src/eeprom.c  ****   *           - 1: if the variable was not found
+ 360:Src/eeprom.c  ****   *           - NO_VALID_PAGE: if no valid page was found.
+ 361:Src/eeprom.c  ****   */
+ 362:Src/eeprom.c  **** uint16_t EE_ReadVariable(uint16_t VirtAddress, uint16_t* Data)
+ 363:Src/eeprom.c  **** {
+ 364:Src/eeprom.c  ****   uint16_t validpage = PAGE0;
+ 365:Src/eeprom.c  ****   uint16_t addressvalue = 0x5555, readstatus = 1;
+ARM GAS  /tmp/ccK5k7ZA.s 			page 9
+
+
+ 366:Src/eeprom.c  ****   uint32_t address = EEPROM_START_ADDRESS, PageStartAddress = EEPROM_START_ADDRESS;
+ 367:Src/eeprom.c  **** 
+ 368:Src/eeprom.c  ****   /* Get active Page for read operation */
+ 369:Src/eeprom.c  ****   validpage = EE_FindValidPage(READ_FROM_VALID_PAGE);
+ 370:Src/eeprom.c  **** 
+ 371:Src/eeprom.c  ****   /* Check if there is no valid page */
+ 372:Src/eeprom.c  ****   if (validpage == NO_VALID_PAGE)
+ 373:Src/eeprom.c  ****   {
+ 374:Src/eeprom.c  ****     return  NO_VALID_PAGE;
+ 375:Src/eeprom.c  ****   }
+ 376:Src/eeprom.c  **** 
+ 377:Src/eeprom.c  ****   /* Get the valid Page start Address */
+ 378:Src/eeprom.c  ****   PageStartAddress = (uint32_t)(EEPROM_START_ADDRESS + (uint32_t)(validpage * PAGE_SIZE));
+ 379:Src/eeprom.c  **** 
+ 380:Src/eeprom.c  ****   /* Get the valid Page end Address */
+ 381:Src/eeprom.c  ****   address = (uint32_t)((EEPROM_START_ADDRESS - 2) + (uint32_t)((1 + validpage) * PAGE_SIZE));
+ 382:Src/eeprom.c  **** 
+ 383:Src/eeprom.c  ****   /* Check each active page address starting from end */
+ 384:Src/eeprom.c  ****   while (address > (PageStartAddress + 2))
+ 385:Src/eeprom.c  ****   {
+ 386:Src/eeprom.c  ****     /* Get the current location content to be compared with virtual address */
+ 387:Src/eeprom.c  ****     addressvalue = (*(__IO uint16_t*)address);
+ 388:Src/eeprom.c  **** 
+ 389:Src/eeprom.c  ****     /* Compare the read address with the virtual address */
+ 390:Src/eeprom.c  ****     if (addressvalue == VirtAddress)
+ 391:Src/eeprom.c  ****     {
+ 392:Src/eeprom.c  ****       /* Get content of Address-2 which is variable value */
+ 393:Src/eeprom.c  ****       *Data = (*(__IO uint16_t*)(address - 2));
+ 394:Src/eeprom.c  **** 
+ 395:Src/eeprom.c  ****       /* In case variable value is read, reset readstatus flag */
+ 396:Src/eeprom.c  ****       readstatus = 0;
+ 397:Src/eeprom.c  **** 
+ 398:Src/eeprom.c  ****       break;
+ 399:Src/eeprom.c  ****     }
+ 400:Src/eeprom.c  ****     else
+ 401:Src/eeprom.c  ****     {
+ 402:Src/eeprom.c  ****       /* Next address location */
+ 403:Src/eeprom.c  ****       address = address - 4;
+ 404:Src/eeprom.c  ****     }
+ 405:Src/eeprom.c  ****   }
+ 406:Src/eeprom.c  **** 
+ 407:Src/eeprom.c  ****   /* Return readstatus value: (0: variable exist, 1: variable doesn't exist) */
+ 408:Src/eeprom.c  ****   return readstatus;
+ 409:Src/eeprom.c  **** }
+ 410:Src/eeprom.c  **** 
+ 411:Src/eeprom.c  **** /**
+ 412:Src/eeprom.c  ****   * @brief  Writes/upadtes variable data in EEPROM.
+ 413:Src/eeprom.c  ****   * @param  VirtAddress: Variable virtual address
+ 414:Src/eeprom.c  ****   * @param  Data: 16 bit data to be written
+ 415:Src/eeprom.c  ****   * @retval Success or error status:
+ 416:Src/eeprom.c  ****   *           - FLASH_COMPLETE: on success
+ 417:Src/eeprom.c  ****   *           - PAGE_FULL: if valid page is full
+ 418:Src/eeprom.c  ****   *           - NO_VALID_PAGE: if no valid page was found
+ 419:Src/eeprom.c  ****   *           - Flash error code: on write Flash error
+ 420:Src/eeprom.c  ****   */
+ 421:Src/eeprom.c  **** uint16_t EE_WriteVariable(uint16_t VirtAddress, uint16_t Data)
+ 422:Src/eeprom.c  **** {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 10
+
+
+ 423:Src/eeprom.c  ****   uint16_t Status = 0;
+ 424:Src/eeprom.c  **** 
+ 425:Src/eeprom.c  ****   /* Write the variable virtual address and value in the EEPROM */
+ 426:Src/eeprom.c  ****   Status = EE_VerifyPageFullWriteVariable(VirtAddress, Data);
+ 427:Src/eeprom.c  **** 
+ 428:Src/eeprom.c  ****   /* In case the EEPROM active page is full */
+ 429:Src/eeprom.c  ****   if (Status == PAGE_FULL)
+ 430:Src/eeprom.c  ****   {
+ 431:Src/eeprom.c  ****     /* Perform Page transfer */
+ 432:Src/eeprom.c  ****     Status = EE_PageTransfer(VirtAddress, Data);
+ 433:Src/eeprom.c  ****   }
+ 434:Src/eeprom.c  **** 
+ 435:Src/eeprom.c  ****   /* Return last operation status */
+ 436:Src/eeprom.c  ****   return Status;
+ 437:Src/eeprom.c  **** }
+ 438:Src/eeprom.c  **** 
+ 439:Src/eeprom.c  **** /**
+ 440:Src/eeprom.c  ****   * @brief  Erases PAGE and PAGE1 and writes VALID_PAGE header to PAGE
+ 441:Src/eeprom.c  ****   * @param  None
+ 442:Src/eeprom.c  ****   * @retval Status of the last operation (Flash write or erase) done during
+ 443:Src/eeprom.c  ****   *         EEPROM formating
+ 444:Src/eeprom.c  ****   */
+ 445:Src/eeprom.c  **** static HAL_StatusTypeDef EE_Format(void)
+ 446:Src/eeprom.c  **** {
+ 447:Src/eeprom.c  ****   HAL_StatusTypeDef flashstatus = HAL_OK;
+ 448:Src/eeprom.c  ****   uint32_t page_error = 0;
+ 449:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 450:Src/eeprom.c  **** 
+ 451:Src/eeprom.c  ****   s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 452:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ 453:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 454:Src/eeprom.c  ****   /* Erase Page0 */
+ 455:Src/eeprom.c  ****   if(!EE_VerifyPageFullyErased(PAGE0_BASE_ADDRESS))
+ 456:Src/eeprom.c  ****   {
+ 457:Src/eeprom.c  ****     flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 458:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 459:Src/eeprom.c  ****     if (flashstatus != HAL_OK)
+ 460:Src/eeprom.c  ****     {
+ 461:Src/eeprom.c  ****       return flashstatus;
+ 462:Src/eeprom.c  ****     }
+ 463:Src/eeprom.c  ****   }
+ 464:Src/eeprom.c  ****   /* Set Page0 as valid page: Write VALID_PAGE at Page0 base address */
+ 465:Src/eeprom.c  ****   flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, PAGE0_BASE_ADDRESS, VALID_PAGE);
+ 466:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 467:Src/eeprom.c  ****   if (flashstatus != HAL_OK)
+ 468:Src/eeprom.c  ****   {
+ 469:Src/eeprom.c  ****     return flashstatus;
+ 470:Src/eeprom.c  ****   }
+ 471:Src/eeprom.c  **** 
+ 472:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE1_ID;
+ 473:Src/eeprom.c  ****   /* Erase Page1 */
+ 474:Src/eeprom.c  ****   if(!EE_VerifyPageFullyErased(PAGE1_BASE_ADDRESS))
+ 475:Src/eeprom.c  ****   {
+ 476:Src/eeprom.c  ****     flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 477:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 478:Src/eeprom.c  ****     if (flashstatus != HAL_OK)
+ 479:Src/eeprom.c  ****     {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 11
+
+
+ 480:Src/eeprom.c  ****       return flashstatus;
+ 481:Src/eeprom.c  ****     }
+ 482:Src/eeprom.c  ****   }
+ 483:Src/eeprom.c  **** 
+ 484:Src/eeprom.c  ****   return HAL_OK;
+ 485:Src/eeprom.c  **** }
+ 486:Src/eeprom.c  **** 
+ 487:Src/eeprom.c  **** /**
+ 488:Src/eeprom.c  ****   * @brief  Find valid Page for write or read operation
+ 489:Src/eeprom.c  ****   * @param  Operation: operation to achieve on the valid page.
+ 490:Src/eeprom.c  ****   *   This parameter can be one of the following values:
+ 491:Src/eeprom.c  ****   *     @arg READ_FROM_VALID_PAGE: read operation from valid page
+ 492:Src/eeprom.c  ****   *     @arg WRITE_IN_VALID_PAGE: write operation from valid page
+ 493:Src/eeprom.c  ****   * @retval Valid page number (PAGE or PAGE1) or NO_VALID_PAGE in case
+ 494:Src/eeprom.c  ****   *   of no valid page was found
+ 495:Src/eeprom.c  ****   */
+ 496:Src/eeprom.c  **** static uint16_t EE_FindValidPage(uint8_t Operation)
+ 497:Src/eeprom.c  **** {
+  87              		.loc 1 497 1 is_stmt 1 view -0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91              		@ link register save eliminated.
+ 498:Src/eeprom.c  ****   uint16_t pagestatus0 = 6, pagestatus1 = 6;
+  92              		.loc 1 498 3 view .LVU18
+ 499:Src/eeprom.c  **** 
+ 500:Src/eeprom.c  ****   /* Get Page0 actual status */
+ 501:Src/eeprom.c  ****   pagestatus0 = (*(__IO uint16_t*)PAGE0_BASE_ADDRESS);
+  93              		.loc 1 501 3 view .LVU19
+  94              		.loc 1 501 15 is_stmt 0 view .LVU20
+  95 0000 114B     		ldr	r3, .L19
+  96 0002 1B88     		ldrh	r3, [r3]
+  97 0004 9BB2     		uxth	r3, r3
+  98              	.LVL8:
+ 502:Src/eeprom.c  **** 
+ 503:Src/eeprom.c  ****   /* Get Page1 actual status */
+ 504:Src/eeprom.c  ****   pagestatus1 = (*(__IO uint16_t*)PAGE1_BASE_ADDRESS);
+  99              		.loc 1 504 3 is_stmt 1 view .LVU21
+ 100              		.loc 1 504 15 is_stmt 0 view .LVU22
+ 101 0006 114A     		ldr	r2, .L19+4
+ 102 0008 1288     		ldrh	r2, [r2]
+ 103 000a 92B2     		uxth	r2, r2
+ 104              	.LVL9:
+ 505:Src/eeprom.c  **** 
+ 506:Src/eeprom.c  ****   /* Write or read operation */
+ 507:Src/eeprom.c  ****   switch (Operation)
+ 105              		.loc 1 507 3 is_stmt 1 view .LVU23
+ 106 000c 88B1     		cbz	r0, .L11
+ 107 000e 0128     		cmp	r0, #1
+ 108 0010 13D1     		bne	.L14
+ 508:Src/eeprom.c  ****   {
+ 509:Src/eeprom.c  ****     case WRITE_IN_VALID_PAGE:   /* ---- Write operation ---- */
+ 510:Src/eeprom.c  ****       if (pagestatus1 == VALID_PAGE)
+ 109              		.loc 1 510 7 view .LVU24
+ 110              		.loc 1 510 10 is_stmt 0 view .LVU25
+ 111 0012 3AB9     		cbnz	r2, .L13
+ 511:Src/eeprom.c  ****       {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 12
+
+
+ 512:Src/eeprom.c  ****         /* Page0 receiving data */
+ 513:Src/eeprom.c  ****         if (pagestatus0 == RECEIVE_DATA)
+ 112              		.loc 1 513 9 is_stmt 1 view .LVU26
+ 113              		.loc 1 513 12 is_stmt 0 view .LVU27
+ 114 0014 4EF6EE61 		movw	r1, #61166
+ 115 0018 8B42     		cmp	r3, r1
+ 116 001a 01D0     		beq	.L18
+ 514:Src/eeprom.c  ****         {
+ 515:Src/eeprom.c  ****           return PAGE0;         /* Page0 valid */
+ 516:Src/eeprom.c  ****         }
+ 517:Src/eeprom.c  ****         else
+ 518:Src/eeprom.c  ****         {
+ 519:Src/eeprom.c  ****           return PAGE1;         /* Page1 valid */
+ 117              		.loc 1 519 18 view .LVU28
+ 118 001c 4023     		movs	r3, #64
+ 119              	.LVL10:
+ 120              		.loc 1 519 18 view .LVU29
+ 121 001e 0DE0     		b	.L12
+ 122              	.LVL11:
+ 123              	.L18:
+ 515:Src/eeprom.c  ****         }
+ 124              		.loc 1 515 18 view .LVU30
+ 125 0020 1346     		mov	r3, r2
+ 126              	.LVL12:
+ 515:Src/eeprom.c  ****         }
+ 127              		.loc 1 515 18 view .LVU31
+ 128 0022 0BE0     		b	.L12
+ 129              	.LVL13:
+ 130              	.L13:
+ 520:Src/eeprom.c  ****         }
+ 521:Src/eeprom.c  ****       }
+ 522:Src/eeprom.c  ****       else if (pagestatus0 == VALID_PAGE)
+ 131              		.loc 1 522 12 is_stmt 1 view .LVU32
+ 132              		.loc 1 522 15 is_stmt 0 view .LVU33
+ 133 0024 63B9     		cbnz	r3, .L16
+ 523:Src/eeprom.c  ****       {
+ 524:Src/eeprom.c  ****         /* Page1 receiving data */
+ 525:Src/eeprom.c  ****         if (pagestatus1 == RECEIVE_DATA)
+ 134              		.loc 1 525 9 is_stmt 1 view .LVU34
+ 135              		.loc 1 525 12 is_stmt 0 view .LVU35
+ 136 0026 4EF6EE61 		movw	r1, #61166
+ 137 002a 8A42     		cmp	r2, r1
+ 138 002c 06D1     		bne	.L12
+ 526:Src/eeprom.c  ****         {
+ 527:Src/eeprom.c  ****           return PAGE1;         /* Page1 valid */
+ 139              		.loc 1 527 18 view .LVU36
+ 140 002e 4023     		movs	r3, #64
+ 141              	.LVL14:
+ 142              		.loc 1 527 18 view .LVU37
+ 143 0030 04E0     		b	.L12
+ 144              	.LVL15:
+ 145              	.L11:
+ 528:Src/eeprom.c  ****         }
+ 529:Src/eeprom.c  ****         else
+ 530:Src/eeprom.c  ****         {
+ 531:Src/eeprom.c  ****           return PAGE0;         /* Page0 valid */
+ 532:Src/eeprom.c  ****         }
+ARM GAS  /tmp/ccK5k7ZA.s 			page 13
+
+
+ 533:Src/eeprom.c  ****       }
+ 534:Src/eeprom.c  ****       else
+ 535:Src/eeprom.c  ****       {
+ 536:Src/eeprom.c  ****         return NO_VALID_PAGE;   /* No valid Page */
+ 537:Src/eeprom.c  ****       }
+ 538:Src/eeprom.c  **** 
+ 539:Src/eeprom.c  ****     case READ_FROM_VALID_PAGE:  /* ---- Read operation ---- */
+ 540:Src/eeprom.c  ****       if (pagestatus0 == VALID_PAGE)
+ 146              		.loc 1 540 7 is_stmt 1 view .LVU38
+ 147              		.loc 1 540 10 is_stmt 0 view .LVU39
+ 148 0032 1BB1     		cbz	r3, .L12
+ 541:Src/eeprom.c  ****       {
+ 542:Src/eeprom.c  ****         return PAGE0;           /* Page0 valid */
+ 543:Src/eeprom.c  ****       }
+ 544:Src/eeprom.c  ****       else if (pagestatus1 == VALID_PAGE)
+ 149              		.loc 1 544 12 is_stmt 1 view .LVU40
+ 150              		.loc 1 544 15 is_stmt 0 view .LVU41
+ 151 0034 32B9     		cbnz	r2, .L17
+ 545:Src/eeprom.c  ****       {
+ 546:Src/eeprom.c  ****         return PAGE1;           /* Page1 valid */
+ 152              		.loc 1 546 16 view .LVU42
+ 153 0036 4023     		movs	r3, #64
+ 154              	.LVL16:
+ 155              		.loc 1 546 16 view .LVU43
+ 156 0038 00E0     		b	.L12
+ 157              	.LVL17:
+ 158              	.L14:
+ 507:Src/eeprom.c  ****   {
+ 159              		.loc 1 507 3 view .LVU44
+ 160 003a 0023     		movs	r3, #0
+ 161              	.LVL18:
+ 162              	.L12:
+ 547:Src/eeprom.c  ****       }
+ 548:Src/eeprom.c  ****       else
+ 549:Src/eeprom.c  ****       {
+ 550:Src/eeprom.c  ****         return NO_VALID_PAGE ;  /* No valid Page */
+ 551:Src/eeprom.c  ****       }
+ 552:Src/eeprom.c  **** 
+ 553:Src/eeprom.c  ****     default:
+ 554:Src/eeprom.c  ****       return PAGE0;             /* Page0 valid */
+ 555:Src/eeprom.c  ****   }
+ 556:Src/eeprom.c  **** }
+ 163              		.loc 1 556 1 view .LVU45
+ 164 003c 1846     		mov	r0, r3
+ 165              	.LVL19:
+ 166              		.loc 1 556 1 view .LVU46
+ 167 003e 7047     		bx	lr
+ 168              	.LVL20:
+ 169              	.L16:
+ 536:Src/eeprom.c  ****       }
+ 170              		.loc 1 536 16 view .LVU47
+ 171 0040 AB23     		movs	r3, #171
+ 172              	.LVL21:
+ 536:Src/eeprom.c  ****       }
+ 173              		.loc 1 536 16 view .LVU48
+ 174 0042 FBE7     		b	.L12
+ 175              	.LVL22:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 14
+
+
+ 176              	.L17:
+ 550:Src/eeprom.c  ****       }
+ 177              		.loc 1 550 16 view .LVU49
+ 178 0044 AB23     		movs	r3, #171
+ 179              	.LVL23:
+ 550:Src/eeprom.c  ****       }
+ 180              		.loc 1 550 16 view .LVU50
+ 181 0046 F9E7     		b	.L12
+ 182              	.L20:
+ 183              		.align	2
+ 184              	.L19:
+ 185 0048 00000108 		.word	134283264
+ 186 004c 00000208 		.word	134348800
+ 187              		.cfi_endproc
+ 188              	.LFE71:
+ 190              		.section	.text.EE_VerifyPageFullWriteVariable,"ax",%progbits
+ 191              		.align	1
+ 192              		.syntax unified
+ 193              		.thumb
+ 194              		.thumb_func
+ 196              	EE_VerifyPageFullWriteVariable:
+ 197              	.LVL24:
+ 198              	.LFB72:
+ 557:Src/eeprom.c  **** 
+ 558:Src/eeprom.c  **** /**
+ 559:Src/eeprom.c  ****   * @brief  Verify if active page is full and Writes variable in EEPROM.
+ 560:Src/eeprom.c  ****   * @param  VirtAddress: 16 bit virtual address of the variable
+ 561:Src/eeprom.c  ****   * @param  Data: 16 bit data to be written as variable value
+ 562:Src/eeprom.c  ****   * @retval Success or error status:
+ 563:Src/eeprom.c  ****   *           - FLASH_COMPLETE: on success
+ 564:Src/eeprom.c  ****   *           - PAGE_FULL: if valid page is full
+ 565:Src/eeprom.c  ****   *           - NO_VALID_PAGE: if no valid page was found
+ 566:Src/eeprom.c  ****   *           - Flash error code: on write Flash error
+ 567:Src/eeprom.c  ****   */
+ 568:Src/eeprom.c  **** static uint16_t EE_VerifyPageFullWriteVariable(uint16_t VirtAddress, uint16_t Data)
+ 569:Src/eeprom.c  **** {
+ 199              		.loc 1 569 1 is_stmt 1 view -0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 0
+ 202              		@ frame_needed = 0, uses_anonymous_args = 0
+ 203              		.loc 1 569 1 is_stmt 0 view .LVU52
+ 204 0000 70B5     		push	{r4, r5, r6, lr}
+ 205              	.LCFI0:
+ 206              		.cfi_def_cfa_offset 16
+ 207              		.cfi_offset 4, -16
+ 208              		.cfi_offset 5, -12
+ 209              		.cfi_offset 6, -8
+ 210              		.cfi_offset 14, -4
+ 211 0002 0646     		mov	r6, r0
+ 212 0004 0D46     		mov	r5, r1
+ 570:Src/eeprom.c  ****   HAL_StatusTypeDef flashstatus = HAL_OK;
+ 213              		.loc 1 570 3 is_stmt 1 view .LVU53
+ 214              	.LVL25:
+ 571:Src/eeprom.c  ****   uint16_t validpage = PAGE0;
+ 215              		.loc 1 571 3 view .LVU54
+ 572:Src/eeprom.c  ****   uint32_t address = EEPROM_START_ADDRESS, pageendaddress = EEPROM_START_ADDRESS+PAGE_SIZE;
+ 216              		.loc 1 572 3 view .LVU55
+ARM GAS  /tmp/ccK5k7ZA.s 			page 15
+
+
+ 573:Src/eeprom.c  **** 
+ 574:Src/eeprom.c  ****   /* Get valid Page for write operation */
+ 575:Src/eeprom.c  ****   validpage = EE_FindValidPage(WRITE_IN_VALID_PAGE);
+ 217              		.loc 1 575 3 view .LVU56
+ 218              		.loc 1 575 15 is_stmt 0 view .LVU57
+ 219 0006 0120     		movs	r0, #1
+ 220              	.LVL26:
+ 221              		.loc 1 575 15 view .LVU58
+ 222 0008 FFF7FEFF 		bl	EE_FindValidPage
+ 223              	.LVL27:
+ 576:Src/eeprom.c  **** 
+ 577:Src/eeprom.c  ****   /* Check if there is no valid page */
+ 578:Src/eeprom.c  ****   if (validpage == NO_VALID_PAGE)
+ 224              		.loc 1 578 3 is_stmt 1 view .LVU59
+ 225              		.loc 1 578 6 is_stmt 0 view .LVU60
+ 226 000c AB28     		cmp	r0, #171
+ 227 000e 1ED0     		beq	.L22
+ 579:Src/eeprom.c  ****   {
+ 580:Src/eeprom.c  ****     return  NO_VALID_PAGE;
+ 581:Src/eeprom.c  ****   }
+ 582:Src/eeprom.c  **** 
+ 583:Src/eeprom.c  ****   /* Get the valid Page start address */
+ 584:Src/eeprom.c  ****   address = (uint32_t)(EEPROM_START_ADDRESS + (uint32_t)(validpage * PAGE_SIZE));
+ 228              		.loc 1 584 3 is_stmt 1 view .LVU61
+ 229              		.loc 1 584 13 is_stmt 0 view .LVU62
+ 230 0010 00F58034 		add	r4, r0, #65536
+ 231 0014 2034     		adds	r4, r4, #32
+ 232              		.loc 1 584 11 view .LVU63
+ 233 0016 E402     		lsls	r4, r4, #11
+ 234              	.LVL28:
+ 585:Src/eeprom.c  **** 
+ 586:Src/eeprom.c  ****   /* Get the valid Page end address */
+ 587:Src/eeprom.c  ****   pageendaddress = (uint32_t)((EEPROM_START_ADDRESS - 1) + (uint32_t)((validpage + 1) * PAGE_SIZE))
+ 235              		.loc 1 587 3 is_stmt 1 view .LVU64
+ 236              		.loc 1 587 82 is_stmt 0 view .LVU65
+ 237 0018 0130     		adds	r0, r0, #1
+ 238              	.LVL29:
+ 239              		.loc 1 587 18 view .LVU66
+ 240 001a 0D4B     		ldr	r3, .L30
+ 241 001c 03EBC02C 		add	ip, r3, r0, lsl #11
+ 242              	.LVL30:
+ 588:Src/eeprom.c  **** 
+ 589:Src/eeprom.c  ****   /* Check each active page address starting from begining */
+ 590:Src/eeprom.c  ****   while (address < pageendaddress)
+ 243              		.loc 1 590 3 is_stmt 1 view .LVU67
+ 244              	.L23:
+ 245              		.loc 1 590 18 view .LVU68
+ 246 0020 6445     		cmp	r4, ip
+ 247 0022 13D2     		bcs	.L28
+ 591:Src/eeprom.c  ****   {
+ 592:Src/eeprom.c  ****     /* Verify if address and address+2 contents are 0xFFFFFFFF */
+ 593:Src/eeprom.c  ****     if ((*(__IO uint32_t*)address) == 0xFFFFFFFF)
+ 248              		.loc 1 593 5 view .LVU69
+ 249              		.loc 1 593 10 is_stmt 0 view .LVU70
+ 250 0024 2368     		ldr	r3, [r4]
+ 251              		.loc 1 593 8 view .LVU71
+ 252 0026 B3F1FF3F 		cmp	r3, #-1
+ARM GAS  /tmp/ccK5k7ZA.s 			page 16
+
+
+ 253 002a 01D0     		beq	.L29
+ 594:Src/eeprom.c  ****     {
+ 595:Src/eeprom.c  ****       /* Set variable data */
+ 596:Src/eeprom.c  ****       flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address, Data);
+ 597:Src/eeprom.c  ****       /* If program operation was failed, a Flash error code is returned */
+ 598:Src/eeprom.c  ****       if (flashstatus != HAL_OK)
+ 599:Src/eeprom.c  ****       {
+ 600:Src/eeprom.c  ****         return flashstatus;
+ 601:Src/eeprom.c  ****       }
+ 602:Src/eeprom.c  ****       /* Set variable virtual address */
+ 603:Src/eeprom.c  ****       flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address + 2, VirtAddress);       
+ 604:Src/eeprom.c  ****       /* Return program operation status */
+ 605:Src/eeprom.c  ****       return flashstatus;
+ 606:Src/eeprom.c  ****     }
+ 607:Src/eeprom.c  ****     else
+ 608:Src/eeprom.c  ****     {
+ 609:Src/eeprom.c  ****       /* Next address location */
+ 610:Src/eeprom.c  ****       address = address + 4;
+ 254              		.loc 1 610 7 is_stmt 1 view .LVU72
+ 255              		.loc 1 610 15 is_stmt 0 view .LVU73
+ 256 002c 0434     		adds	r4, r4, #4
+ 257              	.LVL31:
+ 258              		.loc 1 610 15 view .LVU74
+ 259 002e F7E7     		b	.L23
+ 260              	.L29:
+ 596:Src/eeprom.c  ****       /* If program operation was failed, a Flash error code is returned */
+ 261              		.loc 1 596 7 is_stmt 1 view .LVU75
+ 596:Src/eeprom.c  ****       /* If program operation was failed, a Flash error code is returned */
+ 262              		.loc 1 596 21 is_stmt 0 view .LVU76
+ 263 0030 2A46     		mov	r2, r5
+ 264 0032 0023     		movs	r3, #0
+ 265 0034 2146     		mov	r1, r4
+ 266 0036 0120     		movs	r0, #1
+ 267              	.LVL32:
+ 596:Src/eeprom.c  ****       /* If program operation was failed, a Flash error code is returned */
+ 268              		.loc 1 596 21 view .LVU77
+ 269 0038 FFF7FEFF 		bl	HAL_FLASH_Program
+ 270              	.LVL33:
+ 598:Src/eeprom.c  ****       {
+ 271              		.loc 1 598 7 is_stmt 1 view .LVU78
+ 598:Src/eeprom.c  ****       {
+ 272              		.loc 1 598 10 is_stmt 0 view .LVU79
+ 273 003c 38B9     		cbnz	r0, .L22
+ 603:Src/eeprom.c  ****       /* Return program operation status */
+ 274              		.loc 1 603 7 is_stmt 1 view .LVU80
+ 603:Src/eeprom.c  ****       /* Return program operation status */
+ 275              		.loc 1 603 21 is_stmt 0 view .LVU81
+ 276 003e 3246     		mov	r2, r6
+ 277 0040 0023     		movs	r3, #0
+ 278 0042 A11C     		adds	r1, r4, #2
+ 279 0044 0120     		movs	r0, #1
+ 280              	.LVL34:
+ 603:Src/eeprom.c  ****       /* Return program operation status */
+ 281              		.loc 1 603 21 view .LVU82
+ 282 0046 FFF7FEFF 		bl	HAL_FLASH_Program
+ 283              	.LVL35:
+ 605:Src/eeprom.c  ****     }
+ARM GAS  /tmp/ccK5k7ZA.s 			page 17
+
+
+ 284              		.loc 1 605 7 is_stmt 1 view .LVU83
+ 605:Src/eeprom.c  ****     }
+ 285              		.loc 1 605 14 is_stmt 0 view .LVU84
+ 286 004a 00E0     		b	.L22
+ 287              	.LVL36:
+ 288              	.L28:
+ 611:Src/eeprom.c  ****     }
+ 612:Src/eeprom.c  ****   }
+ 613:Src/eeprom.c  **** 
+ 614:Src/eeprom.c  ****   /* Return PAGE_FULL in case the valid page is full */
+ 615:Src/eeprom.c  ****   return PAGE_FULL;
+ 289              		.loc 1 615 10 view .LVU85
+ 290 004c 8020     		movs	r0, #128
+ 291              	.LVL37:
+ 292              	.L22:
+ 616:Src/eeprom.c  **** }
+ 293              		.loc 1 616 1 view .LVU86
+ 294 004e 70BD     		pop	{r4, r5, r6, pc}
+ 295              	.LVL38:
+ 296              	.L31:
+ 297              		.loc 1 616 1 view .LVU87
+ 298              		.align	2
+ 299              	.L30:
+ 300 0050 FFFF0008 		.word	134283263
+ 301              		.cfi_endproc
+ 302              	.LFE72:
+ 304              		.section	.text.EE_Format,"ax",%progbits
+ 305              		.align	1
+ 306              		.syntax unified
+ 307              		.thumb
+ 308              		.thumb_func
+ 310              	EE_Format:
+ 311              	.LFB70:
+ 446:Src/eeprom.c  ****   HAL_StatusTypeDef flashstatus = HAL_OK;
+ 312              		.loc 1 446 1 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 0, pretend = 0, frame = 24
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 316 0000 10B5     		push	{r4, lr}
+ 317              	.LCFI1:
+ 318              		.cfi_def_cfa_offset 8
+ 319              		.cfi_offset 4, -8
+ 320              		.cfi_offset 14, -4
+ 321 0002 86B0     		sub	sp, sp, #24
+ 322              	.LCFI2:
+ 323              		.cfi_def_cfa_offset 32
+ 447:Src/eeprom.c  ****   uint32_t page_error = 0;
+ 324              		.loc 1 447 3 view .LVU89
+ 325              	.LVL39:
+ 448:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 326              		.loc 1 448 3 view .LVU90
+ 448:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 327              		.loc 1 448 12 is_stmt 0 view .LVU91
+ 328 0004 0023     		movs	r3, #0
+ 329 0006 0593     		str	r3, [sp, #20]
+ 449:Src/eeprom.c  **** 
+ 330              		.loc 1 449 3 is_stmt 1 view .LVU92
+ARM GAS  /tmp/ccK5k7ZA.s 			page 18
+
+
+ 451:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ 331              		.loc 1 451 3 view .LVU93
+ 451:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ 332              		.loc 1 451 27 is_stmt 0 view .LVU94
+ 333 0008 0193     		str	r3, [sp, #4]
+ 452:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 334              		.loc 1 452 3 is_stmt 1 view .LVU95
+ 452:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 335              		.loc 1 452 27 is_stmt 0 view .LVU96
+ 336 000a 1248     		ldr	r0, .L37
+ 337 000c 0390     		str	r0, [sp, #12]
+ 453:Src/eeprom.c  ****   /* Erase Page0 */
+ 338              		.loc 1 453 3 is_stmt 1 view .LVU97
+ 453:Src/eeprom.c  ****   /* Erase Page0 */
+ 339              		.loc 1 453 27 is_stmt 0 view .LVU98
+ 340 000e 0123     		movs	r3, #1
+ 341 0010 0493     		str	r3, [sp, #16]
+ 455:Src/eeprom.c  ****   {
+ 342              		.loc 1 455 3 is_stmt 1 view .LVU99
+ 455:Src/eeprom.c  ****   {
+ 343              		.loc 1 455 7 is_stmt 0 view .LVU100
+ 344 0012 FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 345              	.LVL40:
+ 455:Src/eeprom.c  ****   {
+ 346              		.loc 1 455 5 discriminator 1 view .LVU101
+ 347 0016 28B9     		cbnz	r0, .L33
+ 457:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 348              		.loc 1 457 5 is_stmt 1 view .LVU102
+ 457:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 349              		.loc 1 457 19 is_stmt 0 view .LVU103
+ 350 0018 05A9     		add	r1, sp, #20
+ 351 001a 01A8     		add	r0, sp, #4
+ 352 001c FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 353              	.LVL41:
+ 459:Src/eeprom.c  ****     {
+ 354              		.loc 1 459 5 is_stmt 1 view .LVU104
+ 459:Src/eeprom.c  ****     {
+ 355              		.loc 1 459 8 is_stmt 0 view .LVU105
+ 356 0020 0446     		mov	r4, r0
+ 357 0022 38B9     		cbnz	r0, .L34
+ 358              	.LVL42:
+ 359              	.L33:
+ 465:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 360              		.loc 1 465 3 is_stmt 1 view .LVU106
+ 465:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 361              		.loc 1 465 17 is_stmt 0 view .LVU107
+ 362 0024 0022     		movs	r2, #0
+ 363 0026 0023     		movs	r3, #0
+ 364 0028 0A49     		ldr	r1, .L37
+ 365 002a 0120     		movs	r0, #1
+ 366 002c FFF7FEFF 		bl	HAL_FLASH_Program
+ 367              	.LVL43:
+ 467:Src/eeprom.c  ****   {
+ 368              		.loc 1 467 3 is_stmt 1 view .LVU108
+ 467:Src/eeprom.c  ****   {
+ 369              		.loc 1 467 6 is_stmt 0 view .LVU109
+ 370 0030 0446     		mov	r4, r0
+ARM GAS  /tmp/ccK5k7ZA.s 			page 19
+
+
+ 371 0032 10B1     		cbz	r0, .L36
+ 372              	.LVL44:
+ 373              	.L34:
+ 485:Src/eeprom.c  **** 
+ 374              		.loc 1 485 1 view .LVU110
+ 375 0034 2046     		mov	r0, r4
+ 376 0036 06B0     		add	sp, sp, #24
+ 377              	.LCFI3:
+ 378              		.cfi_remember_state
+ 379              		.cfi_def_cfa_offset 8
+ 380              		@ sp needed
+ 381 0038 10BD     		pop	{r4, pc}
+ 382              	.LVL45:
+ 383              	.L36:
+ 384              	.LCFI4:
+ 385              		.cfi_restore_state
+ 472:Src/eeprom.c  ****   /* Erase Page1 */
+ 386              		.loc 1 472 3 is_stmt 1 view .LVU111
+ 472:Src/eeprom.c  ****   /* Erase Page1 */
+ 387              		.loc 1 472 27 is_stmt 0 view .LVU112
+ 388 003a 074B     		ldr	r3, .L37+4
+ 389 003c 0393     		str	r3, [sp, #12]
+ 474:Src/eeprom.c  ****   {
+ 390              		.loc 1 474 3 is_stmt 1 view .LVU113
+ 474:Src/eeprom.c  ****   {
+ 391              		.loc 1 474 7 is_stmt 0 view .LVU114
+ 392 003e 0748     		ldr	r0, .L37+8
+ 393              	.LVL46:
+ 474:Src/eeprom.c  ****   {
+ 394              		.loc 1 474 7 view .LVU115
+ 395 0040 FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 396              	.LVL47:
+ 474:Src/eeprom.c  ****   {
+ 397              		.loc 1 474 5 discriminator 1 view .LVU116
+ 398 0044 0028     		cmp	r0, #0
+ 399 0046 F5D1     		bne	.L34
+ 476:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 400              		.loc 1 476 5 is_stmt 1 view .LVU117
+ 476:Src/eeprom.c  ****     /* If erase operation was failed, a Flash error code is returned */
+ 401              		.loc 1 476 19 is_stmt 0 view .LVU118
+ 402 0048 05A9     		add	r1, sp, #20
+ 403 004a 01A8     		add	r0, sp, #4
+ 404 004c FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 405              	.LVL48:
+ 406 0050 0446     		mov	r4, r0
+ 407              	.LVL49:
+ 478:Src/eeprom.c  ****     {
+ 408              		.loc 1 478 5 is_stmt 1 view .LVU119
+ 409 0052 EFE7     		b	.L34
+ 410              	.L38:
+ 411              		.align	2
+ 412              	.L37:
+ 413 0054 00000108 		.word	134283264
+ 414 0058 00800108 		.word	134316032
+ 415 005c 00000208 		.word	134348800
+ 416              		.cfi_endproc
+ 417              	.LFE70:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 20
+
+
+ 419              		.section	.text.EE_ReadVariable,"ax",%progbits
+ 420              		.align	1
+ 421              		.global	EE_ReadVariable
+ 422              		.syntax unified
+ 423              		.thumb
+ 424              		.thumb_func
+ 426              	EE_ReadVariable:
+ 427              	.LVL50:
+ 428              	.LFB68:
+ 363:Src/eeprom.c  ****   uint16_t validpage = PAGE0;
+ 429              		.loc 1 363 1 view -0
+ 430              		.cfi_startproc
+ 431              		@ args = 0, pretend = 0, frame = 0
+ 432              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363:Src/eeprom.c  ****   uint16_t validpage = PAGE0;
+ 433              		.loc 1 363 1 is_stmt 0 view .LVU121
+ 434 0000 38B5     		push	{r3, r4, r5, lr}
+ 435              	.LCFI5:
+ 436              		.cfi_def_cfa_offset 16
+ 437              		.cfi_offset 3, -16
+ 438              		.cfi_offset 4, -12
+ 439              		.cfi_offset 5, -8
+ 440              		.cfi_offset 14, -4
+ 441 0002 0446     		mov	r4, r0
+ 442 0004 0D46     		mov	r5, r1
+ 364:Src/eeprom.c  ****   uint16_t addressvalue = 0x5555, readstatus = 1;
+ 443              		.loc 1 364 3 is_stmt 1 view .LVU122
+ 444              	.LVL51:
+ 365:Src/eeprom.c  ****   uint32_t address = EEPROM_START_ADDRESS, PageStartAddress = EEPROM_START_ADDRESS;
+ 445              		.loc 1 365 3 view .LVU123
+ 366:Src/eeprom.c  **** 
+ 446              		.loc 1 366 3 view .LVU124
+ 369:Src/eeprom.c  **** 
+ 447              		.loc 1 369 3 view .LVU125
+ 369:Src/eeprom.c  **** 
+ 448              		.loc 1 369 15 is_stmt 0 view .LVU126
+ 449 0006 0020     		movs	r0, #0
+ 450              	.LVL52:
+ 369:Src/eeprom.c  **** 
+ 451              		.loc 1 369 15 view .LVU127
+ 452 0008 FFF7FEFF 		bl	EE_FindValidPage
+ 453              	.LVL53:
+ 372:Src/eeprom.c  ****   {
+ 454              		.loc 1 372 3 is_stmt 1 view .LVU128
+ 372:Src/eeprom.c  ****   {
+ 455              		.loc 1 372 6 is_stmt 0 view .LVU129
+ 456 000c AB28     		cmp	r0, #171
+ 457 000e 13D0     		beq	.L40
+ 378:Src/eeprom.c  **** 
+ 458              		.loc 1 378 3 is_stmt 1 view .LVU130
+ 378:Src/eeprom.c  **** 
+ 459              		.loc 1 378 22 is_stmt 0 view .LVU131
+ 460 0010 0146     		mov	r1, r0
+ 461              	.LVL54:
+ 381:Src/eeprom.c  **** 
+ 462              		.loc 1 381 3 is_stmt 1 view .LVU132
+ 381:Src/eeprom.c  **** 
+ARM GAS  /tmp/ccK5k7ZA.s 			page 21
+
+
+ 463              		.loc 1 381 67 is_stmt 0 view .LVU133
+ 464 0012 0130     		adds	r0, r0, #1
+ 465              	.LVL55:
+ 381:Src/eeprom.c  **** 
+ 466              		.loc 1 381 11 view .LVU134
+ 467 0014 0A4B     		ldr	r3, .L47
+ 468 0016 03EBC023 		add	r3, r3, r0, lsl #11
+ 469              	.LVL56:
+ 384:Src/eeprom.c  ****   {
+ 470              		.loc 1 384 3 is_stmt 1 view .LVU135
+ 471              	.L41:
+ 384:Src/eeprom.c  ****   {
+ 472              		.loc 1 384 18 view .LVU136
+ 384:Src/eeprom.c  ****   {
+ 473              		.loc 1 384 38 is_stmt 0 view .LVU137
+ 474 001a 0A4A     		ldr	r2, .L47+4
+ 475 001c 02EBC122 		add	r2, r2, r1, lsl #11
+ 384:Src/eeprom.c  ****   {
+ 476              		.loc 1 384 18 view .LVU138
+ 477 0020 9A42     		cmp	r2, r3
+ 478 0022 0AD2     		bcs	.L45
+ 387:Src/eeprom.c  **** 
+ 479              		.loc 1 387 5 is_stmt 1 view .LVU139
+ 387:Src/eeprom.c  **** 
+ 480              		.loc 1 387 18 is_stmt 0 view .LVU140
+ 481 0024 1A88     		ldrh	r2, [r3]
+ 482 0026 92B2     		uxth	r2, r2
+ 483              	.LVL57:
+ 390:Src/eeprom.c  ****     {
+ 484              		.loc 1 390 5 is_stmt 1 view .LVU141
+ 390:Src/eeprom.c  ****     {
+ 485              		.loc 1 390 8 is_stmt 0 view .LVU142
+ 486 0028 A242     		cmp	r2, r4
+ 487 002a 01D0     		beq	.L46
+ 403:Src/eeprom.c  ****     }
+ 488              		.loc 1 403 7 is_stmt 1 view .LVU143
+ 403:Src/eeprom.c  ****     }
+ 489              		.loc 1 403 15 is_stmt 0 view .LVU144
+ 490 002c 043B     		subs	r3, r3, #4
+ 491              	.LVL58:
+ 403:Src/eeprom.c  ****     }
+ 492              		.loc 1 403 15 view .LVU145
+ 493 002e F4E7     		b	.L41
+ 494              	.L46:
+ 393:Src/eeprom.c  **** 
+ 495              		.loc 1 393 7 is_stmt 1 view .LVU146
+ 393:Src/eeprom.c  **** 
+ 496              		.loc 1 393 16 is_stmt 0 view .LVU147
+ 497 0030 33F8023C 		ldrh	r3, [r3, #-2]
+ 498              	.LVL59:
+ 393:Src/eeprom.c  **** 
+ 499              		.loc 1 393 13 view .LVU148
+ 500 0034 2B80     		strh	r3, [r5]	@ movhi
+ 396:Src/eeprom.c  **** 
+ 501              		.loc 1 396 7 is_stmt 1 view .LVU149
+ 502              	.LVL60:
+ 398:Src/eeprom.c  ****     }
+ARM GAS  /tmp/ccK5k7ZA.s 			page 22
+
+
+ 503              		.loc 1 398 7 view .LVU150
+ 396:Src/eeprom.c  **** 
+ 504              		.loc 1 396 18 is_stmt 0 view .LVU151
+ 505 0036 0020     		movs	r0, #0
+ 506              	.LVL61:
+ 507              	.L40:
+ 409:Src/eeprom.c  **** 
+ 508              		.loc 1 409 1 view .LVU152
+ 509 0038 38BD     		pop	{r3, r4, r5, pc}
+ 510              	.LVL62:
+ 511              	.L45:
+ 365:Src/eeprom.c  ****   uint32_t address = EEPROM_START_ADDRESS, PageStartAddress = EEPROM_START_ADDRESS;
+ 512              		.loc 1 365 35 view .LVU153
+ 513 003a 0120     		movs	r0, #1
+ 514 003c FCE7     		b	.L40
+ 515              	.L48:
+ 516 003e 00BF     		.align	2
+ 517              	.L47:
+ 518 0040 FEFF0008 		.word	134283262
+ 519 0044 02000108 		.word	134283266
+ 520              		.cfi_endproc
+ 521              	.LFE68:
+ 523              		.section	.text.EE_Init,"ax",%progbits
+ 524              		.align	1
+ 525              		.global	EE_Init
+ 526              		.syntax unified
+ 527              		.thumb
+ 528              		.thumb_func
+ 530              	EE_Init:
+ 531              	.LFB66:
+  72:Src/eeprom.c  ****   uint16_t pagestatus0 = 6, pagestatus1 = 6;
+ 532              		.loc 1 72 1 is_stmt 1 view -0
+ 533              		.cfi_startproc
+ 534              		@ args = 0, pretend = 0, frame = 24
+ 535              		@ frame_needed = 0, uses_anonymous_args = 0
+ 536 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 537              	.LCFI6:
+ 538              		.cfi_def_cfa_offset 20
+ 539              		.cfi_offset 4, -20
+ 540              		.cfi_offset 5, -16
+ 541              		.cfi_offset 6, -12
+ 542              		.cfi_offset 7, -8
+ 543              		.cfi_offset 14, -4
+ 544 0002 87B0     		sub	sp, sp, #28
+ 545              	.LCFI7:
+ 546              		.cfi_def_cfa_offset 48
+  73:Src/eeprom.c  ****   uint16_t varidx = 0;
+ 547              		.loc 1 73 3 view .LVU155
+ 548              	.LVL63:
+  74:Src/eeprom.c  ****   uint16_t eepromstatus = 0, readstatus = 0;
+ 549              		.loc 1 74 3 view .LVU156
+  75:Src/eeprom.c  ****   int16_t x = -1;
+ 550              		.loc 1 75 3 view .LVU157
+  76:Src/eeprom.c  ****   HAL_StatusTypeDef  flashstatus;
+ 551              		.loc 1 76 3 view .LVU158
+  77:Src/eeprom.c  ****   uint32_t page_error = 0;
+ 552              		.loc 1 77 3 view .LVU159
+ARM GAS  /tmp/ccK5k7ZA.s 			page 23
+
+
+  78:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 553              		.loc 1 78 3 view .LVU160
+  78:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 554              		.loc 1 78 12 is_stmt 0 view .LVU161
+ 555 0004 0022     		movs	r2, #0
+ 556 0006 0592     		str	r2, [sp, #20]
+  79:Src/eeprom.c  **** 
+ 557              		.loc 1 79 3 is_stmt 1 view .LVU162
+  83:Src/eeprom.c  ****   /* Get Page1 status */
+ 558              		.loc 1 83 3 view .LVU163
+  83:Src/eeprom.c  ****   /* Get Page1 status */
+ 559              		.loc 1 83 15 is_stmt 0 view .LVU164
+ 560 0008 8C4B     		ldr	r3, .L98
+ 561 000a 1E88     		ldrh	r6, [r3]
+ 562 000c B6B2     		uxth	r6, r6
+ 563              	.LVL64:
+  85:Src/eeprom.c  **** 
+ 564              		.loc 1 85 3 is_stmt 1 view .LVU165
+  85:Src/eeprom.c  **** 
+ 565              		.loc 1 85 15 is_stmt 0 view .LVU166
+ 566 000e 8C49     		ldr	r1, .L98+4
+ 567 0010 0D88     		ldrh	r5, [r1]
+ 568 0012 ADB2     		uxth	r5, r5
+ 569              	.LVL65:
+  88:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ 570              		.loc 1 88 3 is_stmt 1 view .LVU167
+  88:Src/eeprom.c  ****   s_eraseinit.PageAddress = PAGE0_ID;
+ 571              		.loc 1 88 27 is_stmt 0 view .LVU168
+ 572 0014 0192     		str	r2, [sp, #4]
+  89:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 573              		.loc 1 89 3 is_stmt 1 view .LVU169
+  89:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 574              		.loc 1 89 27 is_stmt 0 view .LVU170
+ 575 0016 0393     		str	r3, [sp, #12]
+  90:Src/eeprom.c  **** 
+ 576              		.loc 1 90 3 is_stmt 1 view .LVU171
+  90:Src/eeprom.c  **** 
+ 577              		.loc 1 90 27 is_stmt 0 view .LVU172
+ 578 0018 0123     		movs	r3, #1
+ 579 001a 0493     		str	r3, [sp, #16]
+  93:Src/eeprom.c  ****   {
+ 580              		.loc 1 93 3 is_stmt 1 view .LVU173
+ 581 001c 4EF6EE63 		movw	r3, #61166
+ 582 0020 9E42     		cmp	r6, r3
+ 583 0022 3FD0     		beq	.L50
+ 584 0024 4FF6FF73 		movw	r3, #65535
+ 585 0028 9E42     		cmp	r6, r3
+ 586 002a 0AD0     		beq	.L51
+ 587 002c 002E     		cmp	r6, #0
+ 588 002e 00F0A380 		beq	.L52
+ 302:Src/eeprom.c  ****       /* If erase/program operation was failed, a Flash error code is returned */
+ 589              		.loc 1 302 7 view .LVU174
+ 302:Src/eeprom.c  ****       /* If erase/program operation was failed, a Flash error code is returned */
+ 590              		.loc 1 302 21 is_stmt 0 view .LVU175
+ 591 0032 FFF7FEFF 		bl	EE_Format
+ 592              	.LVL66:
+ 304:Src/eeprom.c  ****       {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 24
+
+
+ 593              		.loc 1 304 7 is_stmt 1 view .LVU176
+ 304:Src/eeprom.c  ****       {
+ 594              		.loc 1 304 10 is_stmt 0 view .LVU177
+ 595 0036 0546     		mov	r5, r0
+ 596              	.LVL67:
+ 304:Src/eeprom.c  ****       {
+ 597              		.loc 1 304 10 view .LVU178
+ 598 0038 00B9     		cbnz	r0, .L55
+ 311:Src/eeprom.c  **** }
+ 599              		.loc 1 311 10 view .LVU179
+ 600 003a 0025     		movs	r5, #0
+ 601              	.LVL68:
+ 602              	.L55:
+ 312:Src/eeprom.c  **** 
+ 603              		.loc 1 312 1 view .LVU180
+ 604 003c 2846     		mov	r0, r5
+ 605 003e 07B0     		add	sp, sp, #28
+ 606              	.LCFI8:
+ 607              		.cfi_remember_state
+ 608              		.cfi_def_cfa_offset 20
+ 609              		@ sp needed
+ 610 0040 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 611              	.LVL69:
+ 612              	.L51:
+ 613              	.LCFI9:
+ 614              		.cfi_restore_state
+  96:Src/eeprom.c  ****       {
+ 615              		.loc 1 96 7 is_stmt 1 view .LVU181
+  96:Src/eeprom.c  ****       {
+ 616              		.loc 1 96 10 is_stmt 0 view .LVU182
+ 617 0042 55B1     		cbz	r5, .L87
+ 109:Src/eeprom.c  ****       {
+ 618              		.loc 1 109 12 is_stmt 1 view .LVU183
+ 109:Src/eeprom.c  ****       {
+ 619              		.loc 1 109 15 is_stmt 0 view .LVU184
+ 620 0044 4EF6EE63 		movw	r3, #61166
+ 621 0048 9D42     		cmp	r5, r3
+ 622 004a 15D0     		beq	.L88
+ 132:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 623              		.loc 1 132 9 is_stmt 1 view .LVU185
+ 132:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 624              		.loc 1 132 23 is_stmt 0 view .LVU186
+ 625 004c FFF7FEFF 		bl	EE_Format
+ 626              	.LVL70:
+ 134:Src/eeprom.c  ****         {
+ 627              		.loc 1 134 9 is_stmt 1 view .LVU187
+ 134:Src/eeprom.c  ****         {
+ 628              		.loc 1 134 12 is_stmt 0 view .LVU188
+ 629 0050 0546     		mov	r5, r0
+ 630              	.LVL71:
+ 134:Src/eeprom.c  ****         {
+ 631              		.loc 1 134 12 view .LVU189
+ 632 0052 0028     		cmp	r0, #0
+ 633 0054 F2D1     		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 634              		.loc 1 311 10 view .LVU190
+ 635 0056 0025     		movs	r5, #0
+ARM GAS  /tmp/ccK5k7ZA.s 			page 25
+
+
+ 636 0058 F0E7     		b	.L55
+ 637              	.LVL72:
+ 638              	.L87:
+  99:Src/eeprom.c  ****         {
+ 639              		.loc 1 99 9 is_stmt 1 view .LVU191
+  99:Src/eeprom.c  ****         {
+ 640              		.loc 1 99 13 is_stmt 0 view .LVU192
+ 641 005a 7848     		ldr	r0, .L98
+ 642 005c FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 643              	.LVL73:
+  99:Src/eeprom.c  ****         {
+ 644              		.loc 1 99 11 discriminator 1 view .LVU193
+ 645 0060 0446     		mov	r4, r0
+ 646 0062 0028     		cmp	r0, #0
+ 647 0064 EAD1     		bne	.L55
+ 101:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 648              		.loc 1 101 11 is_stmt 1 view .LVU194
+ 101:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 649              		.loc 1 101 25 is_stmt 0 view .LVU195
+ 650 0066 05A9     		add	r1, sp, #20
+ 651 0068 01A8     		add	r0, sp, #4
+ 652 006a FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 653              	.LVL74:
+ 103:Src/eeprom.c  ****           {
+ 654              		.loc 1 103 11 is_stmt 1 view .LVU196
+ 103:Src/eeprom.c  ****           {
+ 655              		.loc 1 103 14 is_stmt 0 view .LVU197
+ 656 006e 0546     		mov	r5, r0
+ 657              	.LVL75:
+ 103:Src/eeprom.c  ****           {
+ 658              		.loc 1 103 14 view .LVU198
+ 659 0070 0028     		cmp	r0, #0
+ 660 0072 E3D1     		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 661              		.loc 1 311 10 view .LVU199
+ 662 0074 2546     		mov	r5, r4
+ 663 0076 E1E7     		b	.L55
+ 664              	.LVL76:
+ 665              	.L88:
+ 112:Src/eeprom.c  ****         {
+ 666              		.loc 1 112 9 is_stmt 1 view .LVU200
+ 112:Src/eeprom.c  ****         {
+ 667              		.loc 1 112 13 is_stmt 0 view .LVU201
+ 668 0078 7048     		ldr	r0, .L98
+ 669 007a FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 670              	.LVL77:
+ 112:Src/eeprom.c  ****         {
+ 671              		.loc 1 112 11 discriminator 1 view .LVU202
+ 672 007e 30B9     		cbnz	r0, .L57
+ 114:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 673              		.loc 1 114 11 is_stmt 1 view .LVU203
+ 114:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 674              		.loc 1 114 25 is_stmt 0 view .LVU204
+ 675 0080 05A9     		add	r1, sp, #20
+ 676 0082 01A8     		add	r0, sp, #4
+ 677 0084 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 678              	.LVL78:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 26
+
+
+ 116:Src/eeprom.c  ****           {
+ 679              		.loc 1 116 11 is_stmt 1 view .LVU205
+ 116:Src/eeprom.c  ****           {
+ 680              		.loc 1 116 14 is_stmt 0 view .LVU206
+ 681 0088 0546     		mov	r5, r0
+ 682              	.LVL79:
+ 116:Src/eeprom.c  ****           {
+ 683              		.loc 1 116 14 view .LVU207
+ 684 008a 0028     		cmp	r0, #0
+ 685 008c D6D1     		bne	.L55
+ 686              	.LVL80:
+ 687              	.L57:
+ 122:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 688              		.loc 1 122 9 is_stmt 1 view .LVU208
+ 122:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 689              		.loc 1 122 23 is_stmt 0 view .LVU209
+ 690 008e 0022     		movs	r2, #0
+ 691 0090 0023     		movs	r3, #0
+ 692 0092 6B49     		ldr	r1, .L98+4
+ 693 0094 0120     		movs	r0, #1
+ 694 0096 FFF7FEFF 		bl	HAL_FLASH_Program
+ 695              	.LVL81:
+ 124:Src/eeprom.c  ****         {
+ 696              		.loc 1 124 9 is_stmt 1 view .LVU210
+ 124:Src/eeprom.c  ****         {
+ 697              		.loc 1 124 12 is_stmt 0 view .LVU211
+ 698 009a 0546     		mov	r5, r0
+ 699 009c 0028     		cmp	r0, #0
+ 700 009e CDD1     		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 701              		.loc 1 311 10 view .LVU212
+ 702 00a0 0025     		movs	r5, #0
+ 703 00a2 CBE7     		b	.L55
+ 704              	.LVL82:
+ 705              	.L50:
+ 142:Src/eeprom.c  ****       {
+ 706              		.loc 1 142 7 is_stmt 1 view .LVU213
+ 142:Src/eeprom.c  ****       {
+ 707              		.loc 1 142 10 is_stmt 0 view .LVU214
+ 708 00a4 5DB3     		cbz	r5, .L75
+ 189:Src/eeprom.c  ****       {
+ 709              		.loc 1 189 12 is_stmt 1 view .LVU215
+ 189:Src/eeprom.c  ****       {
+ 710              		.loc 1 189 15 is_stmt 0 view .LVU216
+ 711 00a6 4FF6FF73 		movw	r3, #65535
+ 712 00aa 9D42     		cmp	r5, r3
+ 713 00ac 4AD0     		beq	.L89
+ 215:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 714              		.loc 1 215 9 is_stmt 1 view .LVU217
+ 215:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 715              		.loc 1 215 23 is_stmt 0 view .LVU218
+ 716 00ae FFF7FEFF 		bl	EE_Format
+ 717              	.LVL83:
+ 217:Src/eeprom.c  ****         {
+ 718              		.loc 1 217 9 is_stmt 1 view .LVU219
+ 217:Src/eeprom.c  ****         {
+ 719              		.loc 1 217 12 is_stmt 0 view .LVU220
+ARM GAS  /tmp/ccK5k7ZA.s 			page 27
+
+
+ 720 00b2 0546     		mov	r5, r0
+ 721              	.LVL84:
+ 217:Src/eeprom.c  ****         {
+ 722              		.loc 1 217 12 view .LVU221
+ 723 00b4 0028     		cmp	r0, #0
+ 724 00b6 C1D1     		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 725              		.loc 1 311 10 view .LVU222
+ 726 00b8 0025     		movs	r5, #0
+ 727 00ba BFE7     		b	.L55
+ 728              	.LVL85:
+ 729              	.L91:
+ 149:Src/eeprom.c  ****           }
+ 730              		.loc 1 149 13 is_stmt 1 view .LVU223
+ 149:Src/eeprom.c  ****           }
+ 731              		.loc 1 149 15 is_stmt 0 view .LVU224
+ 732 00bc 27B2     		sxth	r7, r4
+ 733              	.LVL86:
+ 149:Src/eeprom.c  ****           }
+ 734              		.loc 1 149 15 view .LVU225
+ 735 00be 0CE0     		b	.L60
+ 736              	.L61:
+ 145:Src/eeprom.c  ****         {
+ 737              		.loc 1 145 52 is_stmt 1 discriminator 2 view .LVU226
+ 738 00c0 0134     		adds	r4, r4, #1
+ 739              	.LVL87:
+ 145:Src/eeprom.c  ****         {
+ 740              		.loc 1 145 52 is_stmt 0 discriminator 2 view .LVU227
+ 741 00c2 A4B2     		uxth	r4, r4
+ 742              	.LVL88:
+ 743              	.L58:
+ 145:Src/eeprom.c  ****         {
+ 744              		.loc 1 145 33 is_stmt 1 discriminator 1 view .LVU228
+ 745 00c4 122C     		cmp	r4, #18
+ 746 00c6 1ED8     		bhi	.L90
+ 147:Src/eeprom.c  ****           {
+ 747              		.loc 1 147 11 view .LVU229
+ 147:Src/eeprom.c  ****           {
+ 748              		.loc 1 147 17 is_stmt 0 view .LVU230
+ 749 00c8 5C4B     		ldr	r3, .L98
+ 750 00ca DB88     		ldrh	r3, [r3, #6]
+ 751 00cc 9BB2     		uxth	r3, r3
+ 147:Src/eeprom.c  ****           {
+ 752              		.loc 1 147 60 view .LVU231
+ 753 00ce 2646     		mov	r6, r4
+ 147:Src/eeprom.c  ****           {
+ 754              		.loc 1 147 76 view .LVU232
+ 755 00d0 5C4A     		ldr	r2, .L98+8
+ 756 00d2 32F81400 		ldrh	r0, [r2, r4, lsl #1]
+ 147:Src/eeprom.c  ****           {
+ 757              		.loc 1 147 14 view .LVU233
+ 758 00d6 8342     		cmp	r3, r0
+ 759 00d8 F0D0     		beq	.L91
+ 760              	.L60:
+ 151:Src/eeprom.c  ****           {
+ 761              		.loc 1 151 11 is_stmt 1 view .LVU234
+ 151:Src/eeprom.c  ****           {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 28
+
+
+ 762              		.loc 1 151 14 is_stmt 0 view .LVU235
+ 763 00da BE42     		cmp	r6, r7
+ 764 00dc F0D0     		beq	.L61
+ 154:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 765              		.loc 1 154 13 is_stmt 1 view .LVU236
+ 154:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 766              		.loc 1 154 26 is_stmt 0 view .LVU237
+ 767 00de 5A49     		ldr	r1, .L98+12
+ 768 00e0 FFF7FEFF 		bl	EE_ReadVariable
+ 769              	.LVL89:
+ 156:Src/eeprom.c  ****             {
+ 770              		.loc 1 156 13 is_stmt 1 view .LVU238
+ 156:Src/eeprom.c  ****             {
+ 771              		.loc 1 156 16 is_stmt 0 view .LVU239
+ 772 00e4 0128     		cmp	r0, #1
+ 773 00e6 EBD0     		beq	.L61
+ 159:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 774              		.loc 1 159 15 is_stmt 1 view .LVU240
+ 159:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 775              		.loc 1 159 30 is_stmt 0 view .LVU241
+ 776 00e8 574B     		ldr	r3, .L98+12
+ 777 00ea 1988     		ldrh	r1, [r3]
+ 778 00ec 554B     		ldr	r3, .L98+8
+ 779 00ee 33F81600 		ldrh	r0, [r3, r6, lsl #1]
+ 780              	.LVL90:
+ 159:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 781              		.loc 1 159 30 view .LVU242
+ 782 00f2 FFF7FEFF 		bl	EE_VerifyPageFullWriteVariable
+ 783              	.LVL91:
+ 161:Src/eeprom.c  ****               {
+ 784              		.loc 1 161 15 is_stmt 1 view .LVU243
+ 161:Src/eeprom.c  ****               {
+ 785              		.loc 1 161 18 is_stmt 0 view .LVU244
+ 786 00f6 0028     		cmp	r0, #0
+ 787 00f8 E2D0     		beq	.L61
+ 163:Src/eeprom.c  ****               }
+ 788              		.loc 1 163 24 view .LVU245
+ 789 00fa 0546     		mov	r5, r0
+ 790              	.LVL92:
+ 163:Src/eeprom.c  ****               }
+ 791              		.loc 1 163 24 view .LVU246
+ 792 00fc 9EE7     		b	.L55
+ 793              	.LVL93:
+ 794              	.L75:
+ 145:Src/eeprom.c  ****         {
+ 795              		.loc 1 145 21 view .LVU247
+ 796 00fe 2C46     		mov	r4, r5
+  76:Src/eeprom.c  ****   HAL_StatusTypeDef  flashstatus;
+ 797              		.loc 1 76 11 view .LVU248
+ 798 0100 4FF0FF37 		mov	r7, #-1
+ 799 0104 DEE7     		b	.L58
+ 800              	.LVL94:
+ 801              	.L90:
+ 169:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 802              		.loc 1 169 9 is_stmt 1 view .LVU249
+ 169:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 803              		.loc 1 169 23 is_stmt 0 view .LVU250
+ARM GAS  /tmp/ccK5k7ZA.s 			page 29
+
+
+ 804 0106 0022     		movs	r2, #0
+ 805 0108 0023     		movs	r3, #0
+ 806 010a 4C49     		ldr	r1, .L98
+ 807 010c 0120     		movs	r0, #1
+ 808 010e FFF7FEFF 		bl	HAL_FLASH_Program
+ 809              	.LVL95:
+ 171:Src/eeprom.c  ****         {
+ 810              		.loc 1 171 9 is_stmt 1 view .LVU251
+ 171:Src/eeprom.c  ****         {
+ 811              		.loc 1 171 12 is_stmt 0 view .LVU252
+ 812 0112 08B1     		cbz	r0, .L63
+ 173:Src/eeprom.c  ****         }
+ 813              		.loc 1 173 11 is_stmt 1 view .LVU253
+ 173:Src/eeprom.c  ****         }
+ 814              		.loc 1 173 18 is_stmt 0 view .LVU254
+ 815 0114 0546     		mov	r5, r0
+ 816              	.LVL96:
+ 173:Src/eeprom.c  ****         }
+ 817              		.loc 1 173 18 view .LVU255
+ 818 0116 91E7     		b	.L55
+ 819              	.LVL97:
+ 820              	.L63:
+ 175:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 821              		.loc 1 175 9 is_stmt 1 view .LVU256
+ 175:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 822              		.loc 1 175 33 is_stmt 0 view .LVU257
+ 823 0118 0023     		movs	r3, #0
+ 824 011a 0193     		str	r3, [sp, #4]
+ 176:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 825              		.loc 1 176 9 is_stmt 1 view .LVU258
+ 176:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 826              		.loc 1 176 33 is_stmt 0 view .LVU259
+ 827 011c 4B4B     		ldr	r3, .L98+16
+ 828 011e 0393     		str	r3, [sp, #12]
+ 177:Src/eeprom.c  ****         /* Erase Page1 */
+ 829              		.loc 1 177 9 is_stmt 1 view .LVU260
+ 177:Src/eeprom.c  ****         /* Erase Page1 */
+ 830              		.loc 1 177 33 is_stmt 0 view .LVU261
+ 831 0120 0123     		movs	r3, #1
+ 832 0122 0493     		str	r3, [sp, #16]
+ 179:Src/eeprom.c  ****         {
+ 833              		.loc 1 179 9 is_stmt 1 view .LVU262
+ 179:Src/eeprom.c  ****         {
+ 834              		.loc 1 179 13 is_stmt 0 view .LVU263
+ 835 0124 4648     		ldr	r0, .L98+4
+ 836              	.LVL98:
+ 179:Src/eeprom.c  ****         {
+ 837              		.loc 1 179 13 view .LVU264
+ 838 0126 FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 839              	.LVL99:
+ 179:Src/eeprom.c  ****         {
+ 840              		.loc 1 179 11 discriminator 1 view .LVU265
+ 841 012a 0446     		mov	r4, r0
+ 842              	.LVL100:
+ 179:Src/eeprom.c  ****         {
+ 843              		.loc 1 179 11 discriminator 1 view .LVU266
+ 844 012c 0028     		cmp	r0, #0
+ARM GAS  /tmp/ccK5k7ZA.s 			page 30
+
+
+ 845 012e 85D1     		bne	.L55
+ 181:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 846              		.loc 1 181 11 is_stmt 1 view .LVU267
+ 181:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 847              		.loc 1 181 25 is_stmt 0 view .LVU268
+ 848 0130 05A9     		add	r1, sp, #20
+ 849 0132 01A8     		add	r0, sp, #4
+ 850 0134 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 851              	.LVL101:
+ 183:Src/eeprom.c  ****           {
+ 852              		.loc 1 183 11 is_stmt 1 view .LVU269
+ 183:Src/eeprom.c  ****           {
+ 853              		.loc 1 183 14 is_stmt 0 view .LVU270
+ 854 0138 0546     		mov	r5, r0
+ 855              	.LVL102:
+ 183:Src/eeprom.c  ****           {
+ 856              		.loc 1 183 14 view .LVU271
+ 857 013a 0028     		cmp	r0, #0
+ 858 013c 7FF47EAF 		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 859              		.loc 1 311 10 view .LVU272
+ 860 0140 2546     		mov	r5, r4
+ 861 0142 7BE7     		b	.L55
+ 862              	.LVL103:
+ 863              	.L89:
+ 191:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 864              		.loc 1 191 9 is_stmt 1 view .LVU273
+ 192:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 865              		.loc 1 192 9 view .LVU274
+ 192:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 866              		.loc 1 192 33 is_stmt 0 view .LVU275
+ 867 0144 414B     		ldr	r3, .L98+16
+ 868 0146 0393     		str	r3, [sp, #12]
+ 193:Src/eeprom.c  ****         /* Erase Page1 */
+ 869              		.loc 1 193 9 is_stmt 1 view .LVU276
+ 195:Src/eeprom.c  ****         {
+ 870              		.loc 1 195 9 view .LVU277
+ 195:Src/eeprom.c  ****         {
+ 871              		.loc 1 195 13 is_stmt 0 view .LVU278
+ 872 0148 3D48     		ldr	r0, .L98+4
+ 873 014a FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 874              	.LVL104:
+ 195:Src/eeprom.c  ****         {
+ 875              		.loc 1 195 11 discriminator 1 view .LVU279
+ 876 014e 38B9     		cbnz	r0, .L65
+ 197:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 877              		.loc 1 197 11 is_stmt 1 view .LVU280
+ 197:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 878              		.loc 1 197 25 is_stmt 0 view .LVU281
+ 879 0150 05A9     		add	r1, sp, #20
+ 880 0152 01A8     		add	r0, sp, #4
+ 881 0154 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 882              	.LVL105:
+ 199:Src/eeprom.c  ****           {
+ 883              		.loc 1 199 11 is_stmt 1 view .LVU282
+ 199:Src/eeprom.c  ****           {
+ 884              		.loc 1 199 14 is_stmt 0 view .LVU283
+ARM GAS  /tmp/ccK5k7ZA.s 			page 31
+
+
+ 885 0158 0546     		mov	r5, r0
+ 886              	.LVL106:
+ 199:Src/eeprom.c  ****           {
+ 887              		.loc 1 199 14 view .LVU284
+ 888 015a 0028     		cmp	r0, #0
+ 889 015c 7FF46EAF 		bne	.L55
+ 890              	.LVL107:
+ 891              	.L65:
+ 205:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 892              		.loc 1 205 9 is_stmt 1 view .LVU285
+ 205:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 893              		.loc 1 205 23 is_stmt 0 view .LVU286
+ 894 0160 0022     		movs	r2, #0
+ 895 0162 0023     		movs	r3, #0
+ 896 0164 3549     		ldr	r1, .L98
+ 897 0166 0120     		movs	r0, #1
+ 898 0168 FFF7FEFF 		bl	HAL_FLASH_Program
+ 899              	.LVL108:
+ 207:Src/eeprom.c  ****         {
+ 900              		.loc 1 207 9 is_stmt 1 view .LVU287
+ 207:Src/eeprom.c  ****         {
+ 901              		.loc 1 207 12 is_stmt 0 view .LVU288
+ 902 016c 0546     		mov	r5, r0
+ 903 016e 0028     		cmp	r0, #0
+ 904 0170 7FF464AF 		bne	.L55
+ 311:Src/eeprom.c  **** }
+ 905              		.loc 1 311 10 view .LVU289
+ 906 0174 0025     		movs	r5, #0
+ 907 0176 61E7     		b	.L55
+ 908              	.LVL109:
+ 909              	.L52:
+ 225:Src/eeprom.c  ****       {
+ 910              		.loc 1 225 7 is_stmt 1 view .LVU290
+ 225:Src/eeprom.c  ****       {
+ 911              		.loc 1 225 10 is_stmt 0 view .LVU291
+ 912 0178 3DB1     		cbz	r5, .L92
+ 235:Src/eeprom.c  ****       {
+ 913              		.loc 1 235 12 is_stmt 1 view .LVU292
+ 235:Src/eeprom.c  ****       {
+ 914              		.loc 1 235 15 is_stmt 0 view .LVU293
+ 915 017a 4FF6FF73 		movw	r3, #65535
+ 916 017e 9D42     		cmp	r5, r3
+ 917 0180 0AD0     		beq	.L93
+ 254:Src/eeprom.c  ****         {
+ 918              		.loc 1 254 21 view .LVU294
+ 919 0182 3446     		mov	r4, r6
+  76:Src/eeprom.c  ****   HAL_StatusTypeDef  flashstatus;
+ 920              		.loc 1 76 11 view .LVU295
+ 921 0184 4FF0FF37 		mov	r7, #-1
+ 922 0188 1CE0     		b	.L67
+ 923              	.L92:
+ 228:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 924              		.loc 1 228 9 is_stmt 1 view .LVU296
+ 228:Src/eeprom.c  ****         /* If erase/program operation was failed, a Flash error code is returned */
+ 925              		.loc 1 228 23 is_stmt 0 view .LVU297
+ 926 018a FFF7FEFF 		bl	EE_Format
+ 927              	.LVL110:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 32
+
+
+ 230:Src/eeprom.c  ****         {
+ 928              		.loc 1 230 9 is_stmt 1 view .LVU298
+ 230:Src/eeprom.c  ****         {
+ 929              		.loc 1 230 12 is_stmt 0 view .LVU299
+ 930 018e 0028     		cmp	r0, #0
+ 931 0190 3FF454AF 		beq	.L55
+ 232:Src/eeprom.c  ****         }
+ 932              		.loc 1 232 11 is_stmt 1 view .LVU300
+ 232:Src/eeprom.c  ****         }
+ 933              		.loc 1 232 18 is_stmt 0 view .LVU301
+ 934 0194 0546     		mov	r5, r0
+ 935              	.LVL111:
+ 232:Src/eeprom.c  ****         }
+ 936              		.loc 1 232 18 view .LVU302
+ 937 0196 51E7     		b	.L55
+ 938              	.LVL112:
+ 939              	.L93:
+ 237:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE1_ID;
+ 940              		.loc 1 237 9 is_stmt 1 view .LVU303
+ 238:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 941              		.loc 1 238 9 view .LVU304
+ 238:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 942              		.loc 1 238 33 is_stmt 0 view .LVU305
+ 943 0198 2C4B     		ldr	r3, .L98+16
+ 944 019a 0393     		str	r3, [sp, #12]
+ 239:Src/eeprom.c  ****         /* Erase Page1 */
+ 945              		.loc 1 239 9 is_stmt 1 view .LVU306
+ 241:Src/eeprom.c  ****         {
+ 946              		.loc 1 241 9 view .LVU307
+ 241:Src/eeprom.c  ****         {
+ 947              		.loc 1 241 13 is_stmt 0 view .LVU308
+ 948 019c 2848     		ldr	r0, .L98+4
+ 949 019e FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 950              	.LVL113:
+ 241:Src/eeprom.c  ****         {
+ 951              		.loc 1 241 11 discriminator 1 view .LVU309
+ 952 01a2 0546     		mov	r5, r0
+ 953              	.LVL114:
+ 241:Src/eeprom.c  ****         {
+ 954              		.loc 1 241 11 discriminator 1 view .LVU310
+ 955 01a4 08B1     		cbz	r0, .L94
+ 311:Src/eeprom.c  **** }
+ 956              		.loc 1 311 10 view .LVU311
+ 957 01a6 3546     		mov	r5, r6
+ 958 01a8 48E7     		b	.L55
+ 959              	.L94:
+ 243:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 960              		.loc 1 243 11 is_stmt 1 view .LVU312
+ 243:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 961              		.loc 1 243 25 is_stmt 0 view .LVU313
+ 962 01aa 05A9     		add	r1, sp, #20
+ 963 01ac 01A8     		add	r0, sp, #4
+ 964 01ae FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 965              	.LVL115:
+ 245:Src/eeprom.c  ****           {
+ 966              		.loc 1 245 11 is_stmt 1 view .LVU314
+ 245:Src/eeprom.c  ****           {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 33
+
+
+ 967              		.loc 1 245 14 is_stmt 0 view .LVU315
+ 968 01b2 0028     		cmp	r0, #0
+ 969 01b4 3FF442AF 		beq	.L55
+ 247:Src/eeprom.c  ****           }
+ 970              		.loc 1 247 13 is_stmt 1 view .LVU316
+ 247:Src/eeprom.c  ****           }
+ 971              		.loc 1 247 20 is_stmt 0 view .LVU317
+ 972 01b8 0546     		mov	r5, r0
+ 973 01ba 3FE7     		b	.L55
+ 974              	.LVL116:
+ 975              	.L96:
+ 258:Src/eeprom.c  ****           }
+ 976              		.loc 1 258 13 is_stmt 1 view .LVU318
+ 258:Src/eeprom.c  ****           }
+ 977              		.loc 1 258 15 is_stmt 0 view .LVU319
+ 978 01bc 27B2     		sxth	r7, r4
+ 979              	.LVL117:
+ 258:Src/eeprom.c  ****           }
+ 980              		.loc 1 258 15 view .LVU320
+ 981 01be 0CE0     		b	.L68
+ 982              	.L69:
+ 254:Src/eeprom.c  ****         {
+ 983              		.loc 1 254 52 is_stmt 1 discriminator 2 view .LVU321
+ 984 01c0 0134     		adds	r4, r4, #1
+ 985              	.LVL118:
+ 254:Src/eeprom.c  ****         {
+ 986              		.loc 1 254 52 is_stmt 0 discriminator 2 view .LVU322
+ 987 01c2 A4B2     		uxth	r4, r4
+ 988              	.LVL119:
+ 989              	.L67:
+ 254:Src/eeprom.c  ****         {
+ 990              		.loc 1 254 33 is_stmt 1 discriminator 1 view .LVU323
+ 991 01c4 122C     		cmp	r4, #18
+ 992 01c6 1AD8     		bhi	.L95
+ 256:Src/eeprom.c  ****           {
+ 993              		.loc 1 256 11 view .LVU324
+ 256:Src/eeprom.c  ****           {
+ 994              		.loc 1 256 16 is_stmt 0 view .LVU325
+ 995 01c8 1D4B     		ldr	r3, .L98+4
+ 996 01ca DB88     		ldrh	r3, [r3, #6]
+ 997 01cc 9BB2     		uxth	r3, r3
+ 256:Src/eeprom.c  ****           {
+ 998              		.loc 1 256 59 view .LVU326
+ 999 01ce 2546     		mov	r5, r4
+ 256:Src/eeprom.c  ****           {
+ 1000              		.loc 1 256 75 view .LVU327
+ 1001 01d0 1C4A     		ldr	r2, .L98+8
+ 1002 01d2 32F81400 		ldrh	r0, [r2, r4, lsl #1]
+ 256:Src/eeprom.c  ****           {
+ 1003              		.loc 1 256 14 view .LVU328
+ 1004 01d6 8342     		cmp	r3, r0
+ 1005 01d8 F0D0     		beq	.L96
+ 1006              	.L68:
+ 260:Src/eeprom.c  ****           {
+ 1007              		.loc 1 260 11 is_stmt 1 view .LVU329
+ 260:Src/eeprom.c  ****           {
+ 1008              		.loc 1 260 14 is_stmt 0 view .LVU330
+ARM GAS  /tmp/ccK5k7ZA.s 			page 34
+
+
+ 1009 01da BD42     		cmp	r5, r7
+ 1010 01dc F0D0     		beq	.L69
+ 263:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 1011              		.loc 1 263 13 is_stmt 1 view .LVU331
+ 263:Src/eeprom.c  ****             /* In case variable corresponding to the virtual address was found */
+ 1012              		.loc 1 263 26 is_stmt 0 view .LVU332
+ 1013 01de 1A49     		ldr	r1, .L98+12
+ 1014 01e0 FFF7FEFF 		bl	EE_ReadVariable
+ 1015              	.LVL120:
+ 265:Src/eeprom.c  ****             {
+ 1016              		.loc 1 265 13 is_stmt 1 view .LVU333
+ 265:Src/eeprom.c  ****             {
+ 1017              		.loc 1 265 16 is_stmt 0 view .LVU334
+ 1018 01e4 0128     		cmp	r0, #1
+ 1019 01e6 EBD0     		beq	.L69
+ 268:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 1020              		.loc 1 268 15 is_stmt 1 view .LVU335
+ 268:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 1021              		.loc 1 268 30 is_stmt 0 view .LVU336
+ 1022 01e8 174B     		ldr	r3, .L98+12
+ 1023 01ea 1988     		ldrh	r1, [r3]
+ 1024 01ec 154B     		ldr	r3, .L98+8
+ 1025 01ee 33F81500 		ldrh	r0, [r3, r5, lsl #1]
+ 1026              	.LVL121:
+ 268:Src/eeprom.c  ****               /* If program operation was failed, a Flash error code is returned */
+ 1027              		.loc 1 268 30 view .LVU337
+ 1028 01f2 FFF7FEFF 		bl	EE_VerifyPageFullWriteVariable
+ 1029              	.LVL122:
+ 270:Src/eeprom.c  ****               {
+ 1030              		.loc 1 270 15 is_stmt 1 view .LVU338
+ 270:Src/eeprom.c  ****               {
+ 1031              		.loc 1 270 18 is_stmt 0 view .LVU339
+ 1032 01f6 0546     		mov	r5, r0
+ 1033 01f8 0028     		cmp	r0, #0
+ 1034 01fa E1D0     		beq	.L69
+ 1035 01fc 1EE7     		b	.L55
+ 1036              	.LVL123:
+ 1037              	.L95:
+ 278:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 1038              		.loc 1 278 9 is_stmt 1 view .LVU340
+ 278:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 1039              		.loc 1 278 23 is_stmt 0 view .LVU341
+ 1040 01fe 0022     		movs	r2, #0
+ 1041 0200 0023     		movs	r3, #0
+ 1042 0202 0F49     		ldr	r1, .L98+4
+ 1043 0204 0120     		movs	r0, #1
+ 1044 0206 FFF7FEFF 		bl	HAL_FLASH_Program
+ 1045              	.LVL124:
+ 280:Src/eeprom.c  ****         {
+ 1046              		.loc 1 280 9 is_stmt 1 view .LVU342
+ 280:Src/eeprom.c  ****         {
+ 1047              		.loc 1 280 12 is_stmt 0 view .LVU343
+ 1048 020a 0546     		mov	r5, r0
+ 1049 020c 0028     		cmp	r0, #0
+ 1050 020e 7FF415AF 		bne	.L55
+ 284:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE0_ID;
+ 1051              		.loc 1 284 9 is_stmt 1 view .LVU344
+ARM GAS  /tmp/ccK5k7ZA.s 			page 35
+
+
+ 284:Src/eeprom.c  ****         s_eraseinit.PageAddress = PAGE0_ID;
+ 1052              		.loc 1 284 33 is_stmt 0 view .LVU345
+ 1053 0212 0023     		movs	r3, #0
+ 1054 0214 0193     		str	r3, [sp, #4]
+ 285:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 1055              		.loc 1 285 9 is_stmt 1 view .LVU346
+ 285:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 1056              		.loc 1 285 33 is_stmt 0 view .LVU347
+ 1057 0216 0948     		ldr	r0, .L98
+ 1058              	.LVL125:
+ 285:Src/eeprom.c  ****         s_eraseinit.NbPages     = 1;
+ 1059              		.loc 1 285 33 view .LVU348
+ 1060 0218 0390     		str	r0, [sp, #12]
+ 286:Src/eeprom.c  ****         /* Erase Page0 */
+ 1061              		.loc 1 286 9 is_stmt 1 view .LVU349
+ 286:Src/eeprom.c  ****         /* Erase Page0 */
+ 1062              		.loc 1 286 33 is_stmt 0 view .LVU350
+ 1063 021a 0123     		movs	r3, #1
+ 1064 021c 0493     		str	r3, [sp, #16]
+ 288:Src/eeprom.c  ****         {
+ 1065              		.loc 1 288 9 is_stmt 1 view .LVU351
+ 288:Src/eeprom.c  ****         {
+ 1066              		.loc 1 288 13 is_stmt 0 view .LVU352
+ 1067 021e FFF7FEFF 		bl	EE_VerifyPageFullyErased
+ 1068              	.LVL126:
+ 288:Src/eeprom.c  ****         {
+ 1069              		.loc 1 288 11 discriminator 1 view .LVU353
+ 1070 0222 0546     		mov	r5, r0
+ 1071              	.LVL127:
+ 288:Src/eeprom.c  ****         {
+ 1072              		.loc 1 288 11 discriminator 1 view .LVU354
+ 1073 0224 08B1     		cbz	r0, .L97
+ 311:Src/eeprom.c  **** }
+ 1074              		.loc 1 311 10 view .LVU355
+ 1075 0226 3546     		mov	r5, r6
+ 1076 0228 08E7     		b	.L55
+ 1077              	.L97:
+ 290:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 1078              		.loc 1 290 11 is_stmt 1 view .LVU356
+ 290:Src/eeprom.c  ****           /* If erase operation was failed, a Flash error code is returned */
+ 1079              		.loc 1 290 25 is_stmt 0 view .LVU357
+ 1080 022a 05A9     		add	r1, sp, #20
+ 1081 022c 01A8     		add	r0, sp, #4
+ 1082 022e FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 1083              	.LVL128:
+ 292:Src/eeprom.c  ****           {
+ 1084              		.loc 1 292 11 is_stmt 1 view .LVU358
+ 292:Src/eeprom.c  ****           {
+ 1085              		.loc 1 292 14 is_stmt 0 view .LVU359
+ 1086 0232 0028     		cmp	r0, #0
+ 1087 0234 3FF402AF 		beq	.L55
+ 294:Src/eeprom.c  ****           }
+ 1088              		.loc 1 294 13 is_stmt 1 view .LVU360
+ 294:Src/eeprom.c  ****           }
+ 1089              		.loc 1 294 20 is_stmt 0 view .LVU361
+ 1090 0238 0546     		mov	r5, r0
+ 1091 023a FFE6     		b	.L55
+ARM GAS  /tmp/ccK5k7ZA.s 			page 36
+
+
+ 1092              	.L99:
+ 1093              		.align	2
+ 1094              	.L98:
+ 1095 023c 00000108 		.word	134283264
+ 1096 0240 00000208 		.word	134348800
+ 1097 0244 00000000 		.word	VirtAddVarTab
+ 1098 0248 00000000 		.word	DataVar
+ 1099 024c 00800108 		.word	134316032
+ 1100              		.cfi_endproc
+ 1101              	.LFE66:
+ 1103              		.section	.text.EE_PageTransfer,"ax",%progbits
+ 1104              		.align	1
+ 1105              		.syntax unified
+ 1106              		.thumb
+ 1107              		.thumb_func
+ 1109              	EE_PageTransfer:
+ 1110              	.LVL129:
+ 1111              	.LFB73:
+ 617:Src/eeprom.c  **** 
+ 618:Src/eeprom.c  **** /**
+ 619:Src/eeprom.c  ****   * @brief  Transfers last updated variables data from the full Page to
+ 620:Src/eeprom.c  ****   *   an empty one.
+ 621:Src/eeprom.c  ****   * @param  VirtAddress: 16 bit virtual address of the variable
+ 622:Src/eeprom.c  ****   * @param  Data: 16 bit data to be written as variable value
+ 623:Src/eeprom.c  ****   * @retval Success or error status:
+ 624:Src/eeprom.c  ****   *           - FLASH_COMPLETE: on success
+ 625:Src/eeprom.c  ****   *           - PAGE_FULL: if valid page is full
+ 626:Src/eeprom.c  ****   *           - NO_VALID_PAGE: if no valid page was found
+ 627:Src/eeprom.c  ****   *           - Flash error code: on write Flash error
+ 628:Src/eeprom.c  ****   */
+ 629:Src/eeprom.c  **** static uint16_t EE_PageTransfer(uint16_t VirtAddress, uint16_t Data)
+ 630:Src/eeprom.c  **** {
+ 1112              		.loc 1 630 1 is_stmt 1 view -0
+ 1113              		.cfi_startproc
+ 1114              		@ args = 0, pretend = 0, frame = 24
+ 1115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1116              		.loc 1 630 1 is_stmt 0 view .LVU363
+ 1117 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1118              	.LCFI10:
+ 1119              		.cfi_def_cfa_offset 24
+ 1120              		.cfi_offset 4, -24
+ 1121              		.cfi_offset 5, -20
+ 1122              		.cfi_offset 6, -16
+ 1123              		.cfi_offset 7, -12
+ 1124              		.cfi_offset 8, -8
+ 1125              		.cfi_offset 14, -4
+ 1126 0004 86B0     		sub	sp, sp, #24
+ 1127              	.LCFI11:
+ 1128              		.cfi_def_cfa_offset 48
+ 1129 0006 0546     		mov	r5, r0
+ 1130 0008 0E46     		mov	r6, r1
+ 631:Src/eeprom.c  ****   HAL_StatusTypeDef flashstatus = HAL_OK;
+ 1131              		.loc 1 631 3 is_stmt 1 view .LVU364
+ 1132              	.LVL130:
+ 632:Src/eeprom.c  ****   uint32_t newpageaddress = EEPROM_START_ADDRESS;
+ 1133              		.loc 1 632 3 view .LVU365
+ 633:Src/eeprom.c  ****   uint32_t oldpageid = 0;
+ARM GAS  /tmp/ccK5k7ZA.s 			page 37
+
+
+ 1134              		.loc 1 633 3 view .LVU366
+ 634:Src/eeprom.c  ****   uint16_t validpage = PAGE0, varidx = 0;
+ 1135              		.loc 1 634 3 view .LVU367
+ 635:Src/eeprom.c  ****   uint16_t eepromstatus = 0, readstatus = 0;
+ 1136              		.loc 1 635 3 view .LVU368
+ 636:Src/eeprom.c  ****   uint32_t page_error = 0;
+ 1137              		.loc 1 636 3 view .LVU369
+ 1138              		.loc 1 636 12 is_stmt 0 view .LVU370
+ 1139 000a 0020     		movs	r0, #0
+ 1140              	.LVL131:
+ 1141              		.loc 1 636 12 view .LVU371
+ 1142 000c 0590     		str	r0, [sp, #20]
+ 637:Src/eeprom.c  ****   FLASH_EraseInitTypeDef s_eraseinit;
+ 1143              		.loc 1 637 3 is_stmt 1 view .LVU372
+ 638:Src/eeprom.c  **** 
+ 639:Src/eeprom.c  ****   /* Get active Page for read operation */
+ 640:Src/eeprom.c  ****   validpage = EE_FindValidPage(READ_FROM_VALID_PAGE);
+ 1144              		.loc 1 640 3 view .LVU373
+ 1145              		.loc 1 640 15 is_stmt 0 view .LVU374
+ 1146 000e FFF7FEFF 		bl	EE_FindValidPage
+ 1147              	.LVL132:
+ 641:Src/eeprom.c  **** 
+ 642:Src/eeprom.c  ****   if (validpage == PAGE1)       /* Page1 valid */
+ 1148              		.loc 1 642 3 is_stmt 1 view .LVU375
+ 1149              		.loc 1 642 6 is_stmt 0 view .LVU376
+ 1150 0012 4028     		cmp	r0, #64
+ 1151 0014 11D0     		beq	.L109
+ 643:Src/eeprom.c  ****   {
+ 644:Src/eeprom.c  ****     /* New page address where variable will be moved to */
+ 645:Src/eeprom.c  ****     newpageaddress = PAGE0_BASE_ADDRESS;
+ 646:Src/eeprom.c  **** 
+ 647:Src/eeprom.c  ****     /* Old page ID where variable will be taken from */
+ 648:Src/eeprom.c  ****     oldpageid = PAGE1_ID;
+ 649:Src/eeprom.c  ****   }
+ 650:Src/eeprom.c  ****   else if (validpage == PAGE0)  /* Page0 valid */
+ 1152              		.loc 1 650 8 is_stmt 1 view .LVU377
+ 1153              		.loc 1 650 11 is_stmt 0 view .LVU378
+ 1154 0016 0028     		cmp	r0, #0
+ 1155 0018 48D1     		bne	.L110
+ 651:Src/eeprom.c  ****   {
+ 652:Src/eeprom.c  ****     /* New page address  where variable will be moved to */
+ 653:Src/eeprom.c  ****     newpageaddress = PAGE1_BASE_ADDRESS;
+ 654:Src/eeprom.c  **** 
+ 655:Src/eeprom.c  ****     /* Old page ID where variable will be taken from */
+ 656:Src/eeprom.c  ****     oldpageid = PAGE0_ID;
+ 1156              		.loc 1 656 15 view .LVU379
+ 1157 001a DFF89480 		ldr	r8, .L115
+ 653:Src/eeprom.c  **** 
+ 1158              		.loc 1 653 20 view .LVU380
+ 1159 001e 254F     		ldr	r7, .L115+4
+ 1160              	.L101:
+ 1161              	.LVL133:
+ 657:Src/eeprom.c  ****   }
+ 658:Src/eeprom.c  ****   else
+ 659:Src/eeprom.c  ****   {
+ 660:Src/eeprom.c  ****     return NO_VALID_PAGE;       /* No valid Page */
+ 661:Src/eeprom.c  ****   }
+ARM GAS  /tmp/ccK5k7ZA.s 			page 38
+
+
+ 662:Src/eeprom.c  **** 
+ 663:Src/eeprom.c  ****   /* Set the new Page status to RECEIVE_DATA status */
+ 664:Src/eeprom.c  ****   flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, newpageaddress, RECEIVE_DATA);
+ 1162              		.loc 1 664 3 is_stmt 1 view .LVU381
+ 1163              		.loc 1 664 17 is_stmt 0 view .LVU382
+ 1164 0020 4EF6EE62 		movw	r2, #61166
+ 1165 0024 0023     		movs	r3, #0
+ 1166 0026 3946     		mov	r1, r7
+ 1167 0028 0120     		movs	r0, #1
+ 1168              	.LVL134:
+ 1169              		.loc 1 664 17 view .LVU383
+ 1170 002a FFF7FEFF 		bl	HAL_FLASH_Program
+ 1171              	.LVL135:
+ 665:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 666:Src/eeprom.c  ****   if (flashstatus != HAL_OK)
+ 1172              		.loc 1 666 3 is_stmt 1 view .LVU384
+ 1173              		.loc 1 666 6 is_stmt 0 view .LVU385
+ 1174 002e 0446     		mov	r4, r0
+ 1175 0030 38B1     		cbz	r0, .L113
+ 1176              	.LVL136:
+ 1177              	.L102:
+ 667:Src/eeprom.c  ****   {
+ 668:Src/eeprom.c  ****     return flashstatus;
+ 669:Src/eeprom.c  ****   }
+ 670:Src/eeprom.c  **** 
+ 671:Src/eeprom.c  ****   /* Write the variable passed as parameter in the new active page */
+ 672:Src/eeprom.c  ****   eepromstatus = EE_VerifyPageFullWriteVariable(VirtAddress, Data);
+ 673:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 674:Src/eeprom.c  ****   if (eepromstatus != HAL_OK)
+ 675:Src/eeprom.c  ****   {
+ 676:Src/eeprom.c  ****     return eepromstatus;
+ 677:Src/eeprom.c  ****   }
+ 678:Src/eeprom.c  **** 
+ 679:Src/eeprom.c  ****   /* Transfer process: transfer variables from old to the new active page */
+ 680:Src/eeprom.c  ****   for (varidx = 0; varidx < NB_OF_VAR; varidx++)
+ 681:Src/eeprom.c  ****   {
+ 682:Src/eeprom.c  ****     if (VirtAddVarTab[varidx] != VirtAddress)  /* Check each variable except the one passed as para
+ 683:Src/eeprom.c  ****     {
+ 684:Src/eeprom.c  ****       /* Read the other last variable updates */
+ 685:Src/eeprom.c  ****       readstatus = EE_ReadVariable(VirtAddVarTab[varidx], &DataVar);
+ 686:Src/eeprom.c  ****       /* In case variable corresponding to the virtual address was found */
+ 687:Src/eeprom.c  ****       if (readstatus != 0x1)
+ 688:Src/eeprom.c  ****       {
+ 689:Src/eeprom.c  ****         /* Transfer the variable to the new active page */
+ 690:Src/eeprom.c  ****         eepromstatus = EE_VerifyPageFullWriteVariable(VirtAddVarTab[varidx], DataVar);
+ 691:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 692:Src/eeprom.c  ****         if (eepromstatus != HAL_OK)
+ 693:Src/eeprom.c  ****         {
+ 694:Src/eeprom.c  ****           return eepromstatus;
+ 695:Src/eeprom.c  ****         }
+ 696:Src/eeprom.c  ****       }
+ 697:Src/eeprom.c  ****     }
+ 698:Src/eeprom.c  ****   }
+ 699:Src/eeprom.c  **** 
+ 700:Src/eeprom.c  ****   s_eraseinit.TypeErase   = FLASH_TYPEERASE_PAGES;
+ 701:Src/eeprom.c  ****   s_eraseinit.PageAddress = oldpageid;
+ 702:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ARM GAS  /tmp/ccK5k7ZA.s 			page 39
+
+
+ 703:Src/eeprom.c  **** 
+ 704:Src/eeprom.c  ****   /* Erase the old Page: Set old Page status to ERASED status */
+ 705:Src/eeprom.c  ****   flashstatus = HAL_FLASHEx_Erase(&s_eraseinit, &page_error);
+ 706:Src/eeprom.c  ****   /* If erase operation was failed, a Flash error code is returned */
+ 707:Src/eeprom.c  ****   if (flashstatus != HAL_OK)
+ 708:Src/eeprom.c  ****   {
+ 709:Src/eeprom.c  ****     return flashstatus;
+ 710:Src/eeprom.c  ****   }
+ 711:Src/eeprom.c  **** 
+ 712:Src/eeprom.c  ****   /* Set new Page status to VALID_PAGE status */
+ 713:Src/eeprom.c  ****   flashstatus = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, newpageaddress, VALID_PAGE);
+ 714:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 715:Src/eeprom.c  ****   if (flashstatus != HAL_OK)
+ 716:Src/eeprom.c  ****   {
+ 717:Src/eeprom.c  ****     return flashstatus;
+ 718:Src/eeprom.c  ****   }
+ 719:Src/eeprom.c  **** 
+ 720:Src/eeprom.c  **** 
+ 721:Src/eeprom.c  **** 
+ 722:Src/eeprom.c  ****   /* Return last operation flash status */
+ 723:Src/eeprom.c  ****   return flashstatus;
+ 724:Src/eeprom.c  **** }
+ 1178              		.loc 1 724 1 view .LVU386
+ 1179 0032 2046     		mov	r0, r4
+ 1180 0034 06B0     		add	sp, sp, #24
+ 1181              	.LCFI12:
+ 1182              		.cfi_remember_state
+ 1183              		.cfi_def_cfa_offset 24
+ 1184              		@ sp needed
+ 1185 0036 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1186              	.LVL137:
+ 1187              	.L109:
+ 1188              	.LCFI13:
+ 1189              		.cfi_restore_state
+ 648:Src/eeprom.c  ****   }
+ 1190              		.loc 1 648 15 view .LVU387
+ 1191 003a DFF87C80 		ldr	r8, .L115+8
+ 645:Src/eeprom.c  **** 
+ 1192              		.loc 1 645 20 view .LVU388
+ 1193 003e 1C4F     		ldr	r7, .L115
+ 1194 0040 EEE7     		b	.L101
+ 1195              	.LVL138:
+ 1196              	.L113:
+ 672:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1197              		.loc 1 672 3 is_stmt 1 view .LVU389
+ 672:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1198              		.loc 1 672 18 is_stmt 0 view .LVU390
+ 1199 0042 3146     		mov	r1, r6
+ 1200 0044 2846     		mov	r0, r5
+ 1201              	.LVL139:
+ 672:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1202              		.loc 1 672 18 view .LVU391
+ 1203 0046 FFF7FEFF 		bl	EE_VerifyPageFullWriteVariable
+ 1204              	.LVL140:
+ 674:Src/eeprom.c  ****   {
+ 1205              		.loc 1 674 3 is_stmt 1 view .LVU392
+ 674:Src/eeprom.c  ****   {
+ARM GAS  /tmp/ccK5k7ZA.s 			page 40
+
+
+ 1206              		.loc 1 674 6 is_stmt 0 view .LVU393
+ 1207 004a 0446     		mov	r4, r0
+ 1208              	.LVL141:
+ 674:Src/eeprom.c  ****   {
+ 1209              		.loc 1 674 6 view .LVU394
+ 1210 004c 10B1     		cbz	r0, .L104
+ 1211 004e F0E7     		b	.L102
+ 1212              	.LVL142:
+ 1213              	.L105:
+ 680:Src/eeprom.c  ****   {
+ 1214              		.loc 1 680 46 is_stmt 1 discriminator 2 view .LVU395
+ 1215 0050 0134     		adds	r4, r4, #1
+ 1216              	.LVL143:
+ 680:Src/eeprom.c  ****   {
+ 1217              		.loc 1 680 46 is_stmt 0 discriminator 2 view .LVU396
+ 1218 0052 A4B2     		uxth	r4, r4
+ 1219              	.LVL144:
+ 1220              	.L104:
+ 680:Src/eeprom.c  ****   {
+ 1221              		.loc 1 680 27 is_stmt 1 discriminator 1 view .LVU397
+ 1222 0054 122C     		cmp	r4, #18
+ 1223 0056 14D8     		bhi	.L114
+ 682:Src/eeprom.c  ****     {
+ 1224              		.loc 1 682 5 view .LVU398
+ 682:Src/eeprom.c  ****     {
+ 1225              		.loc 1 682 22 is_stmt 0 view .LVU399
+ 1226 0058 184B     		ldr	r3, .L115+12
+ 1227 005a 33F81400 		ldrh	r0, [r3, r4, lsl #1]
+ 682:Src/eeprom.c  ****     {
+ 1228              		.loc 1 682 8 view .LVU400
+ 1229 005e A842     		cmp	r0, r5
+ 1230 0060 F6D0     		beq	.L105
+ 685:Src/eeprom.c  ****       /* In case variable corresponding to the virtual address was found */
+ 1231              		.loc 1 685 7 is_stmt 1 view .LVU401
+ 685:Src/eeprom.c  ****       /* In case variable corresponding to the virtual address was found */
+ 1232              		.loc 1 685 20 is_stmt 0 view .LVU402
+ 1233 0062 1749     		ldr	r1, .L115+16
+ 1234 0064 FFF7FEFF 		bl	EE_ReadVariable
+ 1235              	.LVL145:
+ 687:Src/eeprom.c  ****       {
+ 1236              		.loc 1 687 7 is_stmt 1 view .LVU403
+ 687:Src/eeprom.c  ****       {
+ 1237              		.loc 1 687 10 is_stmt 0 view .LVU404
+ 1238 0068 0128     		cmp	r0, #1
+ 1239 006a F1D0     		beq	.L105
+ 690:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 1240              		.loc 1 690 9 is_stmt 1 view .LVU405
+ 690:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 1241              		.loc 1 690 24 is_stmt 0 view .LVU406
+ 1242 006c 144B     		ldr	r3, .L115+16
+ 1243 006e 1988     		ldrh	r1, [r3]
+ 1244 0070 124B     		ldr	r3, .L115+12
+ 1245 0072 33F81400 		ldrh	r0, [r3, r4, lsl #1]
+ 1246              	.LVL146:
+ 690:Src/eeprom.c  ****         /* If program operation was failed, a Flash error code is returned */
+ 1247              		.loc 1 690 24 view .LVU407
+ 1248 0076 FFF7FEFF 		bl	EE_VerifyPageFullWriteVariable
+ARM GAS  /tmp/ccK5k7ZA.s 			page 41
+
+
+ 1249              	.LVL147:
+ 692:Src/eeprom.c  ****         {
+ 1250              		.loc 1 692 9 is_stmt 1 view .LVU408
+ 692:Src/eeprom.c  ****         {
+ 1251              		.loc 1 692 12 is_stmt 0 view .LVU409
+ 1252 007a 0028     		cmp	r0, #0
+ 1253 007c E8D0     		beq	.L105
+ 694:Src/eeprom.c  ****         }
+ 1254              		.loc 1 694 18 view .LVU410
+ 1255 007e 0446     		mov	r4, r0
+ 1256              	.LVL148:
+ 694:Src/eeprom.c  ****         }
+ 1257              		.loc 1 694 18 view .LVU411
+ 1258 0080 D7E7     		b	.L102
+ 1259              	.LVL149:
+ 1260              	.L114:
+ 700:Src/eeprom.c  ****   s_eraseinit.PageAddress = oldpageid;
+ 1261              		.loc 1 700 3 is_stmt 1 view .LVU412
+ 700:Src/eeprom.c  ****   s_eraseinit.PageAddress = oldpageid;
+ 1262              		.loc 1 700 27 is_stmt 0 view .LVU413
+ 1263 0082 0023     		movs	r3, #0
+ 1264 0084 0193     		str	r3, [sp, #4]
+ 701:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 1265              		.loc 1 701 3 is_stmt 1 view .LVU414
+ 701:Src/eeprom.c  ****   s_eraseinit.NbPages     = 1;
+ 1266              		.loc 1 701 27 is_stmt 0 view .LVU415
+ 1267 0086 CDF80C80 		str	r8, [sp, #12]
+ 702:Src/eeprom.c  **** 
+ 1268              		.loc 1 702 3 is_stmt 1 view .LVU416
+ 702:Src/eeprom.c  **** 
+ 1269              		.loc 1 702 27 is_stmt 0 view .LVU417
+ 1270 008a 0123     		movs	r3, #1
+ 1271 008c 0493     		str	r3, [sp, #16]
+ 705:Src/eeprom.c  ****   /* If erase operation was failed, a Flash error code is returned */
+ 1272              		.loc 1 705 3 is_stmt 1 view .LVU418
+ 705:Src/eeprom.c  ****   /* If erase operation was failed, a Flash error code is returned */
+ 1273              		.loc 1 705 17 is_stmt 0 view .LVU419
+ 1274 008e 05A9     		add	r1, sp, #20
+ 1275 0090 01A8     		add	r0, sp, #4
+ 1276 0092 FFF7FEFF 		bl	HAL_FLASHEx_Erase
+ 1277              	.LVL150:
+ 707:Src/eeprom.c  ****   {
+ 1278              		.loc 1 707 3 is_stmt 1 view .LVU420
+ 707:Src/eeprom.c  ****   {
+ 1279              		.loc 1 707 6 is_stmt 0 view .LVU421
+ 1280 0096 0446     		mov	r4, r0
+ 1281              	.LVL151:
+ 707:Src/eeprom.c  ****   {
+ 1282              		.loc 1 707 6 view .LVU422
+ 1283 0098 0028     		cmp	r0, #0
+ 1284 009a CAD1     		bne	.L102
+ 713:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1285              		.loc 1 713 3 is_stmt 1 view .LVU423
+ 713:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1286              		.loc 1 713 17 is_stmt 0 view .LVU424
+ 1287 009c 0022     		movs	r2, #0
+ 1288 009e 0023     		movs	r3, #0
+ARM GAS  /tmp/ccK5k7ZA.s 			page 42
+
+
+ 1289 00a0 3946     		mov	r1, r7
+ 1290 00a2 0120     		movs	r0, #1
+ 1291              	.LVL152:
+ 713:Src/eeprom.c  ****   /* If program operation was failed, a Flash error code is returned */
+ 1292              		.loc 1 713 17 view .LVU425
+ 1293 00a4 FFF7FEFF 		bl	HAL_FLASH_Program
+ 1294              	.LVL153:
+ 715:Src/eeprom.c  ****   {
+ 1295              		.loc 1 715 3 is_stmt 1 view .LVU426
+ 715:Src/eeprom.c  ****   {
+ 1296              		.loc 1 715 6 is_stmt 0 view .LVU427
+ 1297 00a8 0446     		mov	r4, r0
+ 1298 00aa C2E7     		b	.L102
+ 1299              	.LVL154:
+ 1300              	.L110:
+ 660:Src/eeprom.c  ****   }
+ 1301              		.loc 1 660 12 view .LVU428
+ 1302 00ac AB24     		movs	r4, #171
+ 1303 00ae C0E7     		b	.L102
+ 1304              	.L116:
+ 1305              		.align	2
+ 1306              	.L115:
+ 1307 00b0 00000108 		.word	134283264
+ 1308 00b4 00000208 		.word	134348800
+ 1309 00b8 00800108 		.word	134316032
+ 1310 00bc 00000000 		.word	VirtAddVarTab
+ 1311 00c0 00000000 		.word	DataVar
+ 1312              		.cfi_endproc
+ 1313              	.LFE73:
+ 1315              		.section	.text.EE_WriteVariable,"ax",%progbits
+ 1316              		.align	1
+ 1317              		.global	EE_WriteVariable
+ 1318              		.syntax unified
+ 1319              		.thumb
+ 1320              		.thumb_func
+ 1322              	EE_WriteVariable:
+ 1323              	.LVL155:
+ 1324              	.LFB69:
+ 422:Src/eeprom.c  ****   uint16_t Status = 0;
+ 1325              		.loc 1 422 1 is_stmt 1 view -0
+ 1326              		.cfi_startproc
+ 1327              		@ args = 0, pretend = 0, frame = 0
+ 1328              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422:Src/eeprom.c  ****   uint16_t Status = 0;
+ 1329              		.loc 1 422 1 is_stmt 0 view .LVU430
+ 1330 0000 38B5     		push	{r3, r4, r5, lr}
+ 1331              	.LCFI14:
+ 1332              		.cfi_def_cfa_offset 16
+ 1333              		.cfi_offset 3, -16
+ 1334              		.cfi_offset 4, -12
+ 1335              		.cfi_offset 5, -8
+ 1336              		.cfi_offset 14, -4
+ 1337 0002 0446     		mov	r4, r0
+ 1338 0004 0D46     		mov	r5, r1
+ 423:Src/eeprom.c  **** 
+ 1339              		.loc 1 423 3 is_stmt 1 view .LVU431
+ 1340              	.LVL156:
+ARM GAS  /tmp/ccK5k7ZA.s 			page 43
+
+
+ 426:Src/eeprom.c  **** 
+ 1341              		.loc 1 426 3 view .LVU432
+ 426:Src/eeprom.c  **** 
+ 1342              		.loc 1 426 12 is_stmt 0 view .LVU433
+ 1343 0006 FFF7FEFF 		bl	EE_VerifyPageFullWriteVariable
+ 1344              	.LVL157:
+ 429:Src/eeprom.c  ****   {
+ 1345              		.loc 1 429 3 is_stmt 1 view .LVU434
+ 429:Src/eeprom.c  ****   {
+ 1346              		.loc 1 429 6 is_stmt 0 view .LVU435
+ 1347 000a 8028     		cmp	r0, #128
+ 1348 000c 00D0     		beq	.L120
+ 1349              	.L118:
+ 436:Src/eeprom.c  **** }
+ 1350              		.loc 1 436 3 is_stmt 1 view .LVU436
+ 437:Src/eeprom.c  **** 
+ 1351              		.loc 1 437 1 is_stmt 0 view .LVU437
+ 1352 000e 38BD     		pop	{r3, r4, r5, pc}
+ 1353              	.LVL158:
+ 1354              	.L120:
+ 432:Src/eeprom.c  ****   }
+ 1355              		.loc 1 432 5 is_stmt 1 view .LVU438
+ 432:Src/eeprom.c  ****   }
+ 1356              		.loc 1 432 14 is_stmt 0 view .LVU439
+ 1357 0010 2946     		mov	r1, r5
+ 1358 0012 2046     		mov	r0, r4
+ 1359              	.LVL159:
+ 432:Src/eeprom.c  ****   }
+ 1360              		.loc 1 432 14 view .LVU440
+ 1361 0014 FFF7FEFF 		bl	EE_PageTransfer
+ 1362              	.LVL160:
+ 432:Src/eeprom.c  ****   }
+ 1363              		.loc 1 432 14 view .LVU441
+ 1364 0018 F9E7     		b	.L118
+ 1365              		.cfi_endproc
+ 1366              	.LFE69:
+ 1368              		.global	DataVar
+ 1369              		.section	.bss.DataVar,"aw",%nobits
+ 1370              		.align	1
+ 1373              	DataVar:
+ 1374 0000 0000     		.space	2
+ 1375              		.text
+ 1376              	.Letext0:
+ 1377              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1378              		.file 3 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1379              		.file 4 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h"
+ 1380              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h"
+ARM GAS  /tmp/ccK5k7ZA.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 eeprom.c
+     /tmp/ccK5k7ZA.s:19     .text.EE_VerifyPageFullyErased:00000000 $t
+     /tmp/ccK5k7ZA.s:24     .text.EE_VerifyPageFullyErased:00000000 EE_VerifyPageFullyErased
+     /tmp/ccK5k7ZA.s:74     .text.EE_VerifyPageFullyErased:00000020 $d
+     /tmp/ccK5k7ZA.s:79     .text.EE_FindValidPage:00000000 $t
+     /tmp/ccK5k7ZA.s:84     .text.EE_FindValidPage:00000000 EE_FindValidPage
+     /tmp/ccK5k7ZA.s:185    .text.EE_FindValidPage:00000048 $d
+     /tmp/ccK5k7ZA.s:191    .text.EE_VerifyPageFullWriteVariable:00000000 $t
+     /tmp/ccK5k7ZA.s:196    .text.EE_VerifyPageFullWriteVariable:00000000 EE_VerifyPageFullWriteVariable
+     /tmp/ccK5k7ZA.s:300    .text.EE_VerifyPageFullWriteVariable:00000050 $d
+     /tmp/ccK5k7ZA.s:305    .text.EE_Format:00000000 $t
+     /tmp/ccK5k7ZA.s:310    .text.EE_Format:00000000 EE_Format
+     /tmp/ccK5k7ZA.s:413    .text.EE_Format:00000054 $d
+     /tmp/ccK5k7ZA.s:420    .text.EE_ReadVariable:00000000 $t
+     /tmp/ccK5k7ZA.s:426    .text.EE_ReadVariable:00000000 EE_ReadVariable
+     /tmp/ccK5k7ZA.s:518    .text.EE_ReadVariable:00000040 $d
+     /tmp/ccK5k7ZA.s:524    .text.EE_Init:00000000 $t
+     /tmp/ccK5k7ZA.s:530    .text.EE_Init:00000000 EE_Init
+     /tmp/ccK5k7ZA.s:1095   .text.EE_Init:0000023c $d
+     /tmp/ccK5k7ZA.s:1373   .bss.DataVar:00000000 DataVar
+     /tmp/ccK5k7ZA.s:1104   .text.EE_PageTransfer:00000000 $t
+     /tmp/ccK5k7ZA.s:1109   .text.EE_PageTransfer:00000000 EE_PageTransfer
+     /tmp/ccK5k7ZA.s:1307   .text.EE_PageTransfer:000000b0 $d
+     /tmp/ccK5k7ZA.s:1316   .text.EE_WriteVariable:00000000 $t
+     /tmp/ccK5k7ZA.s:1322   .text.EE_WriteVariable:00000000 EE_WriteVariable
+     /tmp/ccK5k7ZA.s:1370   .bss.DataVar:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_FLASH_Program
+HAL_FLASHEx_Erase
+VirtAddVarTab
