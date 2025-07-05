@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_anasayfa"
+            android:icon="@drawable/baseline_add_home_24"
+            android:title="Anasayfa" />
+        <item
+            android:id="@+id/nav_otonom"
+            android:icon="@drawable/baseline_adb_24"
+            android:title="Otonom sürüş" />
+        <item
+            android:id="@+id/nav_manuel"
+            android:icon="@drawable/baseline_accessibility_24"
+            android:title="Manuel Sürüş" />
+        <item
+            android:id="@+id/nav_harita"
+            android:icon="@drawable/baseline_add_location_24"
+            android:title="Harita" />
+        <item
+            android:id="@+id/nav_hakkimizda"
+            android:icon="@drawable/baseline_announcement_24"
+            android:title="Hakkımızda" />
+
+    </group>
+</menu>

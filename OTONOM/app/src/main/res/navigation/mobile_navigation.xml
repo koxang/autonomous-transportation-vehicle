@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_anasayfa">
+
+    <fragment
+        android:id="@+id/nav_anasayfa"
+        android:name="com.example.otonom.ui.home.HomeFragment"
+        android:label="ANASAYFA"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_otonom"
+        android:name="com.example.otonom.ui.gallery.GalleryFragment"
+        android:label="OTONOM SÜRÜŞ"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_manuel"
+        android:name="com.example.otonom.ui.slideshow.SlideshowFragment"
+        android:label="MANUEL SÜRÜŞ"
+        tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_harita"
+        android:name="com.example.otonom.ui.harita.HaritaFragment"
+        android:label="HARİTA"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_hakkimizda"
+        android:name="com.example.otonom.ui.hakkimizda.HakkimizdaFragment"
+        android:label="HAKKIMIZDA"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_ayarlar"
+        android:name="com.example.otonom.ui.ayarlar.AyarlarFragment"
+        android:label="AYARLAR"
+        tools:layout="@layout/fragment_ayarlar" />
+
+</navigation>

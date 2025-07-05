@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">OTONOM</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Ayarlar</string> <!-- "Home" yerine "Ayarlar" daha uygun olabilir IP ayarı için -->
+    <string name="menu_gallery">Otonom Sürüş</string> <!-- "Gallery" yerine "Otonom Sürüş" daha açıklayıcı -->
+    <string name="menu_slideshow">Diğer Ekran</string> <!-- "Slideshow" yerine daha anlamlı bir isim -->
+
+    <!-- GalleryFragment için Stringler (YENİ EKLENENLER) -->
+    <string name="gallery_title_loading_map">OTONOM SÜRÜŞ - Harita Yükleniyor...</string>
+    <string name="gallery_title_ip_required">OTONOM SÜRÜŞ - Sunucu IP Adresi Gerekli</string>
+    <string name="gallery_title_connecting_to_ip">OTONOM SÜRÜŞ - %1$s adresine bağlanılıyor...</string>
+    <string name="gallery_title_connected_to_ip">OTONOM SÜRÜŞ - %1$s Bağlandı</string>
+    <string name="gallery_title_connection_error_ip">OTONOM SÜRÜŞ - Bağlantı Hatası: %1$s</string>
+    <string name="gallery_title_connection_lost">OTONOM SÜRÜŞ - Bağlantı Kesildi</string>
+    <string name="gallery_toast_ip_needed">Lütfen Ayarlar\'dan geçerli bir sunucu IP adresi girin.</string>
+
+    <string name="marker_title_vehicle_location">Araç Konumu</string>
+    <string name="marker_title_target_point">Hedef Nokta</string>
+
+    <!-- HomeFragment (IP Ayar Sayfası) için Stringler (Eğer yoksa eklenebilir) -->
+    <string name="home_fragment_label">IP Ayarları</string>
+    <string name="enter_server_ip">Sunucu IP Adresini Girin</string>
+    <string name="update_ip_button">IP GÜNCELLE</string>
+    <string name="ip_updated_success">IP güncellendi: %1$s</string>
+    <string name="ip_cannot_be_empty">IP boş olamaz</string>
+
+
+    <!-- ... diğer stringleriniz ... -->
+    <string name="button_start_autonomous_driving">Otonom Sürüşü Başlat</string>
+    <string name="toast_target_not_set">Lütfen önce haritadan bir hedef seçin.</string>
+    <string name="toast_sending_command">Komut gönderiliyor: %1$s</string>
+    <string name="toast_command_sent_failed">Komut gönderilemedi.</string>
+    <string name="toast_not_connected_for_command">Komut göndermek için sunucuya bağlı değilsiniz.</string>
+
+
+</resources>
