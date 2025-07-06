@@ -1,0 +1,146 @@
+[0.000000] (-) TimerEvent: {}
+[0.001810] (articubot_one) JobQueued: {'identifier': 'articubot_one', 'dependencies': OrderedDict()}
+[0.002416] (manual_drive) JobQueued: {'identifier': 'manual_drive', 'dependencies': OrderedDict()}
+[0.002920] (articubot_one) JobStarted: {'identifier': 'articubot_one'}
+[0.031808] (manual_drive) JobStarted: {'identifier': 'manual_drive'}
+[0.065191] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'cmake'}
+[0.069745] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'build'}
+[0.072355] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/rob/ros2_ws/src/build/articubot_one', '--', '-j4', '-l4'], 'cwd': '/home/rob/ros2_ws/src/build/articubot_one', 'env': OrderedDict([('USER', 'rob'), ('SSH_CLIENT', '192.168.1.40 1746 22'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('OLDPWD', '/home/rob/ros2_ws'), ('SSH_TTY', '/dev/pts/3'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rob'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '8'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', 'localhost:13.0'), ('LANG', 'en_US.UTF-8'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/rob/ros2_ws/src/build/articubot_one'), ('LC_ALL', 'en_US.UTF-8'), ('SSH_CONNECTION', '192.168.1.40 1746 192.168.1.39 22'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.099131] (-) TimerEvent: {}
+[0.200075] (-) TimerEvent: {}
+[0.300970] (-) TimerEvent: {}
+[0.401681] (-) TimerEvent: {}
+[0.502410] (-) TimerEvent: {}
+[0.603149] (-) TimerEvent: {}
+[0.703875] (-) TimerEvent: {}
+[0.804737] (-) TimerEvent: {}
+[0.906194] (-) TimerEvent: {}
+[1.008326] (-) TimerEvent: {}
+[1.109002] (-) TimerEvent: {}
+[1.209701] (-) TimerEvent: {}
+[1.310443] (-) TimerEvent: {}
+[1.411238] (-) TimerEvent: {}
+[1.491308] (articubot_one) CommandEnded: {'returncode': 0}
+[1.495258] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'install'}
+[1.511418] (-) TimerEvent: {}
+[1.533118] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/rob/ros2_ws/src/build/articubot_one'], 'cwd': '/home/rob/ros2_ws/src/build/articubot_one', 'env': OrderedDict([('USER', 'rob'), ('SSH_CLIENT', '192.168.1.40 1746 22'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('OLDPWD', '/home/rob/ros2_ws'), ('SSH_TTY', '/dev/pts/3'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rob'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '8'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', 'localhost:13.0'), ('LANG', 'en_US.UTF-8'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/rob/ros2_ws/src/build/articubot_one'), ('LC_ALL', 'en_US.UTF-8'), ('SSH_CONNECTION', '192.168.1.40 1746 192.168.1.39 22'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[1.572648] (articubot_one) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[1.575775] (articubot_one) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[1.578996] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/ball_tracker_params_robot.yaml\n'}
+[1.581002] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/ball_tracker_params_sim.yaml\n'}
+[1.582129] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/drive_bot.rviz\n'}
+[1.583470] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/empty.yaml\n'}
+[1.584811] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/gaz_ros2_ctl_use_sim.yaml\n'}
+[1.586333] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/gazebo_params.yaml\n'}
+[1.587952] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/joystick.yaml\n'}
+[1.590021] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/main.rviz\n'}
+[1.591424] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/map.rviz\n'}
+[1.592912] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/mapper_params_online_async.yaml\n'}
+[1.594393] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/my_controllers.yaml\n'}
+[1.595927] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/nav2_params.yaml\n'}
+[1.597368] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/twist_mux.yaml\n'}
+[1.598536] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/config/view_bot.rviz\n'}
+[1.601414] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/camera.xacro\n'}
+[1.603201] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/depth_camera.xacro\n'}
+[1.607779] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/face.xacro\n'}
+[1.610166] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/gazebo_control.xacro\n'}
+[1.610954] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/inertial_macros.xacro\n'}
+[1.611550] (-) TimerEvent: {}
+[1.613012] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/lidar.xacro\n'}
+[1.615660] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/robot.urdf.xacro\n'}
+[1.616723] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/robot_core.xacro\n'}
+[1.618333] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/description/ros2_control.xacro\n'}
+[1.620847] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/ball_tracker.launch.py\n'}
+[1.622341] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/camera.launch.py\n'}
+[1.623531] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/joystick.launch.py\n'}
+[1.624719] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/launch_robot.launch.py\n'}
+[1.626189] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/launch_sim.launch.py\n'}
+[1.627546] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/localization_launch.py\n'}
+[1.629167] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/navigation_launch.py\n'}
+[1.630774] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/online_async_launch.py\n'}
+[1.632538] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/rplidar.launch.py\n'}
+[1.634411] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/launch/rsp.launch.py\n'}
+[1.637233] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/worlds/empty.world\n'}
+[1.638471] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/worlds/obstacles.world\n'}
+[1.640079] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/ament_index/resource_index/package_run_dependencies/articubot_one\n'}
+[1.641628] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/ament_index/resource_index/parent_prefix_path/articubot_one\n'}
+[1.643575] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/environment/ament_prefix_path.sh\n'}
+[1.645167] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/environment/ament_prefix_path.dsv\n'}
+[1.646637] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/environment/path.sh\n'}
+[1.648231] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/environment/path.dsv\n'}
+[1.649766] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/local_setup.bash\n'}
+[1.651263] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/local_setup.sh\n'}
+[1.652446] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/local_setup.zsh\n'}
+[1.653901] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/local_setup.dsv\n'}
+[1.655855] (articubot_one) StdoutLine: {'line': b'-- Symlinking: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/package.dsv\n'}
+[1.692451] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/ament_index/resource_index/packages/articubot_one\n'}
+[1.693926] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/cmake/articubot_oneConfig.cmake\n'}
+[1.694886] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/cmake/articubot_oneConfig-version.cmake\n'}
+[1.695731] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/src/install/articubot_one/share/articubot_one/package.xml\n'}
+[1.702374] (articubot_one) CommandEnded: {'returncode': 0}
+[1.715805] (-) TimerEvent: {}
+[1.803220] (articubot_one) JobEnded: {'identifier': 'articubot_one', 'rc': 0}
+[1.816000] (-) TimerEvent: {}
+[1.916781] (-) TimerEvent: {}
+[2.017518] (-) TimerEvent: {}
+[2.118335] (-) TimerEvent: {}
+[2.218999] (-) TimerEvent: {}
+[2.319697] (-) TimerEvent: {}
+[2.420546] (-) TimerEvent: {}
+[2.521442] (-) TimerEvent: {}
+[2.622574] (-) TimerEvent: {}
+[2.723233] (-) TimerEvent: {}
+[2.823886] (-) TimerEvent: {}
+[2.924616] (-) TimerEvent: {}
+[3.029538] (-) TimerEvent: {}
+[3.130494] (-) TimerEvent: {}
+[3.231427] (-) TimerEvent: {}
+[3.332651] (-) TimerEvent: {}
+[3.433571] (-) TimerEvent: {}
+[3.534440] (-) TimerEvent: {}
+[3.611245] (manual_drive) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/rob/ros2_ws/src/build/manual_drive/build', '--no-deps', 'symlink_data'], 'cwd': '/home/rob/ros2_ws/src/build/manual_drive', 'env': {'USER': 'rob', 'SSH_CLIENT': '192.168.1.40 1746 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'MOTD_SHOWN': 'pam', 'HOME': '/home/rob', 'OLDPWD': '/home/rob/ros2_ws', 'SSH_TTY': '/dev/pts/3', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'ROS_DISTRO': 'humble', 'LOGNAME': 'rob', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '8', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': 'localhost:13.0', 'LANG': 'en_US.UTF-8', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'SHELL': '/bin/bash', 'PWD': '/home/rob/ros2_ws/src/build/manual_drive', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '192.168.1.40 1746 192.168.1.39 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/rob/ros2_ws/src/build/manual_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1'}, 'shell': False}
+[3.634656] (-) TimerEvent: {}
+[3.735431] (-) TimerEvent: {}
+[3.836177] (-) TimerEvent: {}
+[3.936901] (-) TimerEvent: {}
+[4.037716] (-) TimerEvent: {}
+[4.138422] (-) TimerEvent: {}
+[4.239122] (-) TimerEvent: {}
+[4.339821] (-) TimerEvent: {}
+[4.440554] (-) TimerEvent: {}
+[4.541296] (-) TimerEvent: {}
+[4.641990] (-) TimerEvent: {}
+[4.742664] (-) TimerEvent: {}
+[4.843366] (-) TimerEvent: {}
+[4.944025] (-) TimerEvent: {}
+[4.997358] (manual_drive) StdoutLine: {'line': b'running develop\n'}
+[5.044174] (-) TimerEvent: {}
+[5.145179] (-) TimerEvent: {}
+[5.245816] (-) TimerEvent: {}
+[5.346638] (-) TimerEvent: {}
+[5.447292] (-) TimerEvent: {}
+[5.547967] (-) TimerEvent: {}
+[5.648677] (-) TimerEvent: {}
+[5.749387] (-) TimerEvent: {}
+[5.850167] (-) TimerEvent: {}
+[5.951257] (-) TimerEvent: {}
+[5.969525] (manual_drive) StdoutLine: {'line': b'running egg_info\n'}
+[5.970509] (manual_drive) StdoutLine: {'line': b'writing manual_drive.egg-info/PKG-INFO\n'}
+[5.971648] (manual_drive) StdoutLine: {'line': b'writing dependency_links to manual_drive.egg-info/dependency_links.txt\n'}
+[5.972551] (manual_drive) StdoutLine: {'line': b'writing entry points to manual_drive.egg-info/entry_points.txt\n'}
+[5.973486] (manual_drive) StdoutLine: {'line': b'writing requirements to manual_drive.egg-info/requires.txt\n'}
+[5.974428] (manual_drive) StdoutLine: {'line': b'writing top-level names to manual_drive.egg-info/top_level.txt\n'}
+[5.983909] (manual_drive) StdoutLine: {'line': b"reading manifest file 'manual_drive.egg-info/SOURCES.txt'\n"}
+[5.988006] (manual_drive) StdoutLine: {'line': b"writing manifest file 'manual_drive.egg-info/SOURCES.txt'\n"}
+[5.994000] (manual_drive) StdoutLine: {'line': b'running build_ext\n'}
+[5.994951] (manual_drive) StdoutLine: {'line': b'Creating /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual-drive.egg-link (link to .)\n'}
+[5.998890] (manual_drive) StdoutLine: {'line': b'Installing hoverboard_controller script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive\n'}
+[5.999913] (manual_drive) StdoutLine: {'line': b'Installing manual_drive_node script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive\n'}
+[6.001231] (manual_drive) StdoutLine: {'line': b'\n'}
+[6.002052] (manual_drive) StdoutLine: {'line': b'Installed /home/rob/ros2_ws/src/build/manual_drive\n'}
+[6.002795] (manual_drive) StdoutLine: {'line': b'running symlink_data\n'}
+[6.051630] (-) TimerEvent: {}
+[6.153807] (manual_drive) CommandEnded: {'returncode': 0}
+[6.156502] (-) TimerEvent: {}
+[6.197161] (manual_drive) JobEnded: {'identifier': 'manual_drive', 'rc': 0}
+[6.200121] (-) EventReactorShutdown: {}
