@@ -1,0 +1,18 @@
+running develop
+running egg_info
+writing manual_drive.egg-info/PKG-INFO
+writing dependency_links to manual_drive.egg-info/dependency_links.txt
+writing entry points to manual_drive.egg-info/entry_points.txt
+writing requirements to manual_drive.egg-info/requires.txt
+writing top-level names to manual_drive.egg-info/top_level.txt
+reading manifest file 'manual_drive.egg-info/SOURCES.txt'
+writing manifest file 'manual_drive.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual-drive.egg-link (link to .)
+Installing hoverboard_controller script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive
+Installing manual_drive_node script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive
+
+Installed /home/rob/ros2_ws/src/build/manual_drive
+running symlink_data
+symbolically linking /home/rob/ros2_ws/src/build/manual_drive/resource/manual_drive -> /home/rob/ros2_ws/src/install/manual_drive/share/ament_index/resource_index/packages
+symbolically linking /home/rob/ros2_ws/src/build/manual_drive/package.xml -> /home/rob/ros2_ws/src/install/manual_drive/share/manual_drive

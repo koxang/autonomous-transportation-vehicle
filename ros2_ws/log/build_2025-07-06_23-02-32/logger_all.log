@@ -1,0 +1,197 @@
+[1.665s] DEBUG:colcon:Command line arguments: ['/usr/local/bin/colcon', 'build']
+[1.665s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0xffffb58ac640>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0xffffb5a35b40>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0xffffb5a35b40>>)
+[3.591s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[3.592s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[3.592s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[3.593s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[3.593s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[3.594s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[3.595s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/rob/ros2_ws'
+[3.596s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[3.597s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[3.598s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[3.598s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[3.599s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[3.600s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[3.601s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[3.601s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[3.601s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[3.684s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[3.692s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[3.692s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[3.693s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[3.693s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[3.694s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[3.696s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[3.696s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[3.697s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[3.697s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[3.698s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[3.698s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[3.699s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[3.699s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[3.706s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[3.707s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[3.707s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[3.708s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[3.708s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[3.709s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[3.709s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[3.715s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[3.716s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[3.717s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[3.717s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[3.717s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[3.718s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[3.718s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[3.719s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extensions ['ignore', 'ignore_ament_install']
+[3.719s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extension 'ignore'
+[3.725s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extension 'ignore_ament_install'
+[3.726s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extensions ['colcon_pkg']
+[3.726s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extension 'colcon_pkg'
+[3.726s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extensions ['colcon_meta']
+[3.727s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extension 'colcon_meta'
+[3.727s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extensions ['ros']
+[3.727s] Level 1:colcon.colcon_core.package_identification:_identify(src/articubot_one) by extension 'ros'
+[3.780s] DEBUG:colcon.colcon_core.package_identification:Package 'src/articubot_one' with type 'ros.ament_cmake' and name 'articubot_one'
+[3.781s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extensions ['ignore', 'ignore_ament_install']
+[3.783s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) by extension 'ignore'
+[3.784s] Level 1:colcon.colcon_core.package_identification:_identify(src/build) ignored
+[3.789s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extensions ['ignore', 'ignore_ament_install']
+[3.791s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) by extension 'ignore'
+[3.792s] Level 1:colcon.colcon_core.package_identification:_identify(src/install) ignored
+[3.793s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extensions ['ignore', 'ignore_ament_install']
+[3.794s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) by extension 'ignore'
+[3.800s] Level 1:colcon.colcon_core.package_identification:_identify(src/log) ignored
+[3.801s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extensions ['ignore', 'ignore_ament_install']
+[3.802s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extension 'ignore'
+[3.803s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extension 'ignore_ament_install'
+[3.803s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extensions ['colcon_pkg']
+[3.804s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extension 'colcon_pkg'
+[3.804s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extensions ['colcon_meta']
+[3.804s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extension 'colcon_meta'
+[3.811s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extensions ['ros']
+[3.811s] Level 1:colcon.colcon_core.package_identification:_identify(src/manual_drive) by extension 'ros'
+[3.822s] DEBUG:colcon.colcon_core.package_identification:Package 'src/manual_drive' with type 'ros.ament_python' and name 'manual_drive'
+[3.822s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[3.823s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[3.823s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[3.823s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[3.823s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[4.015s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_args' from command line to 'None'
+[4.016s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_target' from command line to 'None'
+[4.016s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[4.017s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_clean_cache' from command line to 'False'
+[4.017s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_clean_first' from command line to 'False'
+[4.018s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'cmake_force_configure' from command line to 'False'
+[4.019s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'ament_cmake_args' from command line to 'None'
+[4.019s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'catkin_cmake_args' from command line to 'None'
+[4.020s] Level 5:colcon.colcon_core.verb:set package 'articubot_one' build argument 'catkin_skip_building_tests' from command line to 'False'
+[4.021s] DEBUG:colcon.colcon_core.verb:Building package 'articubot_one' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/rob/ros2_ws/build/articubot_one', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/rob/ros2_ws/install/articubot_one', 'merge_install': False, 'path': '/home/rob/ros2_ws/src/articubot_one', 'symlink_install': False, 'test_result_base': None}
+[4.027s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_args' from command line to 'None'
+[4.029s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_target' from command line to 'None'
+[4.030s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[4.031s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_clean_cache' from command line to 'False'
+[4.031s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_clean_first' from command line to 'False'
+[4.032s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'cmake_force_configure' from command line to 'False'
+[4.032s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'ament_cmake_args' from command line to 'None'
+[4.033s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'catkin_cmake_args' from command line to 'None'
+[4.033s] Level 5:colcon.colcon_core.verb:set package 'manual_drive' build argument 'catkin_skip_building_tests' from command line to 'False'
+[4.033s] DEBUG:colcon.colcon_core.verb:Building package 'manual_drive' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/rob/ros2_ws/build/manual_drive', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/rob/ros2_ws/install/manual_drive', 'merge_install': False, 'path': '/home/rob/ros2_ws/src/manual_drive', 'symlink_install': False, 'test_result_base': None}
+[4.035s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[4.048s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[4.050s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/rob/ros2_ws/src/articubot_one' with build type 'ament_cmake'
+[4.051s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/rob/ros2_ws/src/articubot_one'
+[4.081s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[4.082s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[4.083s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[4.253s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/rob/ros2_ws/src/manual_drive' with build type 'ament_python'
+[4.254s] Level 1:colcon.colcon_core.shell:create_environment_hook('manual_drive', 'ament_prefix_path')
+[4.255s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/ament_prefix_path.ps1'
+[4.260s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/ament_prefix_path.dsv'
+[4.263s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/ament_prefix_path.sh'
+[4.279s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[4.279s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[4.357s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rob/ros2_ws/build/articubot_one': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --build /home/rob/ros2_ws/build/articubot_one -- -j4 -l4
+[7.401s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/rob/ros2_ws/src/manual_drive'
+[7.402s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[7.402s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[7.444s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rob/ros2_ws/build/articubot_one' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --build /home/rob/ros2_ws/build/articubot_one -- -j4 -l4
+[7.502s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rob/ros2_ws/build/articubot_one': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --install /home/rob/ros2_ws/build/articubot_one
+[7.763s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(articubot_one)
+[7.764s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rob/ros2_ws/build/articubot_one' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --install /home/rob/ros2_ws/build/articubot_one
+[7.783s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one' for CMake module files
+[7.787s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one' for CMake config files
+[7.791s] Level 1:colcon.colcon_core.shell:create_environment_hook('articubot_one', 'cmake_prefix_path')
+[7.793s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.ps1'
+[7.796s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.dsv'
+[7.799s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.sh'
+[7.804s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib'
+[7.808s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/bin'
+[7.809s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib/pkgconfig/articubot_one.pc'
+[7.811s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib/python3.10/site-packages'
+[7.813s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/bin'
+[7.819s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.ps1'
+[7.839s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.dsv'
+[7.843s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.sh'
+[7.855s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.bash'
+[7.861s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.zsh'
+[7.874s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rob/ros2_ws/install/articubot_one/share/colcon-core/packages/articubot_one)
+[7.878s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(articubot_one)
+[7.892s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one' for CMake module files
+[7.895s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one' for CMake config files
+[7.899s] Level 1:colcon.colcon_core.shell:create_environment_hook('articubot_one', 'cmake_prefix_path')
+[7.900s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.ps1'
+[7.908s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.dsv'
+[7.916s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/hook/cmake_prefix_path.sh'
+[7.936s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib'
+[7.936s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/bin'
+[7.937s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib/pkgconfig/articubot_one.pc'
+[7.938s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/lib/python3.10/site-packages'
+[7.940s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/articubot_one/bin'
+[7.941s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.ps1'
+[7.964s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.dsv'
+[7.975s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.sh'
+[7.986s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.bash'
+[7.994s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/articubot_one/share/articubot_one/package.zsh'
+[7.997s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rob/ros2_ws/install/articubot_one/share/colcon-core/packages/articubot_one)
+[11.245s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rob/ros2_ws/src/manual_drive': PYTHONPATH=/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/manual_drive build --build-base /home/rob/ros2_ws/build/manual_drive/build install --record /home/rob/ros2_ws/build/manual_drive/install.log --single-version-externally-managed install_data
+[14.815s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive' for CMake module files
+[14.816s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rob/ros2_ws/src/manual_drive' returned '0': PYTHONPATH=/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/manual_drive build --build-base /home/rob/ros2_ws/build/manual_drive/build install --record /home/rob/ros2_ws/build/manual_drive/install.log --single-version-externally-managed install_data
+[14.821s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive' for CMake config files
+[14.829s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive/lib'
+[14.830s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive/bin'
+[14.831s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive/lib/pkgconfig/manual_drive.pc'
+[14.832s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages'
+[14.833s] Level 1:colcon.colcon_core.shell:create_environment_hook('manual_drive', 'pythonpath')
+[14.834s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/pythonpath.ps1'
+[14.840s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/pythonpath.dsv'
+[14.862s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/hook/pythonpath.sh'
+[14.897s] Level 1:colcon.colcon_core.environment:checking '/home/rob/ros2_ws/install/manual_drive/bin'
+[14.898s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(manual_drive)
+[14.902s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/package.ps1'
+[14.917s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/package.dsv'
+[14.921s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/package.sh'
+[14.928s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/package.bash'
+[14.935s] INFO:colcon.colcon_core.shell:Creating package script '/home/rob/ros2_ws/install/manual_drive/share/manual_drive/package.zsh'
+[14.943s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rob/ros2_ws/install/manual_drive/share/colcon-core/packages/manual_drive)
+[14.953s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[14.958s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[14.959s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[14.959s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[15.028s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[15.029s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[15.029s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[15.030s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[15.043s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.Notifications was not provided by any .service files
+[15.044s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[15.045s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rob/ros2_ws/install/local_setup.ps1'
+[15.053s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rob/ros2_ws/install/_local_setup_util_ps1.py'
+[15.070s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rob/ros2_ws/install/setup.ps1'
+[15.087s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rob/ros2_ws/install/local_setup.sh'
+[15.098s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rob/ros2_ws/install/_local_setup_util_sh.py'
+[15.123s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rob/ros2_ws/install/setup.sh'
+[15.139s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rob/ros2_ws/install/local_setup.bash'
+[15.143s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rob/ros2_ws/install/setup.bash'
+[15.160s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rob/ros2_ws/install/local_setup.zsh'
+[15.164s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rob/ros2_ws/install/setup.zsh'
