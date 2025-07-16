@@ -1,4 +1,0 @@
-[console_scripts]
-hoverboard_controller = manual_drive.hoverboard_controller:main
-manual_drive_node = manual_drive.manual_drive_node:main
-

@@ -1,4 +1,0 @@
-Invoking command in '/home/rob/ros2_ws/build/articubot_one': /usr/bin/cmake --build /home/rob/ros2_ws/build/articubot_one -- -j4 -l4
-Invoked command in '/home/rob/ros2_ws/build/articubot_one' returned '0': /usr/bin/cmake --build /home/rob/ros2_ws/build/articubot_one -- -j4 -l4
-Invoking command in '/home/rob/ros2_ws/build/articubot_one': /usr/bin/cmake --install /home/rob/ros2_ws/build/articubot_one
-Invoked command in '/home/rob/ros2_ws/build/articubot_one' returned '0': /usr/bin/cmake --install /home/rob/ros2_ws/build/articubot_one
