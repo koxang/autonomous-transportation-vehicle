@@ -1,0 +1,47 @@
+[0.000000] (-) TimerEvent: {}
+[0.002164] (articubot_one) JobQueued: {'identifier': 'articubot_one', 'dependencies': OrderedDict()}
+[0.002862] (manual_drive) JobQueued: {'identifier': 'manual_drive', 'dependencies': OrderedDict()}
+[0.003635] (articubot_one) JobStarted: {'identifier': 'articubot_one'}
+[0.044874] (manual_drive) JobStarted: {'identifier': 'manual_drive'}
+[0.089970] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'cmake'}
+[0.093017] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'build'}
+[0.095810] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/rob/ros2_ws/build/articubot_one', '--', '-j4', '-l4'], 'cwd': '/home/rob/ros2_ws/build/articubot_one', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('MAIL', '/var/mail/rob'), ('USER', 'rob'), ('XDG_SEAT', 'seat0'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs/lib:/home/rob/ros2_ws/install/nav2_voxel_grid/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('OLDPWD', '/home/rob'), ('HUSHLOGIN', 'FALSE'), ('ROS_PYTHON_VERSION', '3'), ('SYSTEMD_EXEC_PID', '871'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('COLCON_PREFIX_PATH', '/home/rob/ros2_ws/install:/home/rob/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rob'), ('JOURNAL_STREAM', '8:23682'), ('_', '/usr/local/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('INVOCATION_ID', '37bfb4ace6314fb393543a061d5610d9'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'C.UTF-8'), ('XAUTHORITY', '/home/rob/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/manual_drive:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:eca29659-f40f-473f-985f-6ec6c957d13c'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_VTNR', '1'), ('PWD', '/home/rob/ros2_ws/build/articubot_one'), ('TURTLEBOT3_MODEL', 'burger'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rob/ros2_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/nav2_common/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:/home/rob/turtlebot3_ws/build/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble')]), 'shell': False}
+[0.100918] (-) TimerEvent: {}
+[0.201873] (-) TimerEvent: {}
+[0.208650] (articubot_one) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.302111] (-) TimerEvent: {}
+[0.403091] (-) TimerEvent: {}
+[0.504240] (-) TimerEvent: {}
+[0.605833] (-) TimerEvent: {}
+[0.706852] (-) TimerEvent: {}
+[0.807753] (-) TimerEvent: {}
+[0.873385] (articubot_one) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.908356] (-) TimerEvent: {}
+[0.944287] (articubot_one) StdoutLine: {'line': b'-- Found rclpy: 3.3.16 (/opt/ros/humble/share/rclpy/cmake)\n'}
+[0.949832] (articubot_one) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[1.008581] (-) TimerEvent: {}
+[1.110089] (-) TimerEvent: {}
+[1.211958] (-) TimerEvent: {}
+[1.313508] (-) TimerEvent: {}
+[1.371114] (articubot_one) StderrLine: {'line': b'\x1b[31mCMake Error at /opt/ros/humble/share/ament_cmake_core/cmake/environment_hooks/ament_environment_hooks.cmake:29 (message):\n'}
+[1.372051] (articubot_one) StderrLine: {'line': b'  ament_environment_hooks() must be called before\n'}
+[1.372695] (articubot_one) StderrLine: {'line': b'  ament_generate_package_environment() (which is invoked by ament_package())\n'}
+[1.373321] (articubot_one) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.373861] (articubot_one) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/environment_hooks/ament_cmake_environment_hooks_package_hook.cmake:20 (ament_environment_hooks)\n'}
+[1.374976] (articubot_one) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.375912] (articubot_one) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_package.cmake:66 (ament_execute_extensions)\n'}
+[1.376899] (articubot_one) StderrLine: {'line': b'  CMakeLists.txt:84 (ament_package)\n'}
+[1.377599] (articubot_one) StderrLine: {'line': b'\n'}
+[1.378220] (articubot_one) StderrLine: {'line': b'\x1b[0m\n'}
+[1.378967] (articubot_one) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.379806] (articubot_one) StdoutLine: {'line': b'See also "/home/rob/ros2_ws/build/articubot_one/CMakeFiles/CMakeOutput.log".\n'}
+[1.382229] (articubot_one) StderrLine: {'line': b'gmake: *** [Makefile:226: cmake_check_build_system] Error 1\n'}
+[1.413724] (-) TimerEvent: {}
+[1.514647] (-) TimerEvent: {}
+[1.615358] (-) TimerEvent: {}
+[1.716183] (-) TimerEvent: {}
+[1.790225] (articubot_one) CommandEnded: {'returncode': 2}
+[1.816635] (-) TimerEvent: {}
+[1.852390] (articubot_one) JobEnded: {'identifier': 'articubot_one', 'rc': 2}
+[1.856125] (manual_drive) JobEnded: {'identifier': 'manual_drive', 'rc': 'SIGINT'}
+[1.867553] (-) EventReactorShutdown: {}

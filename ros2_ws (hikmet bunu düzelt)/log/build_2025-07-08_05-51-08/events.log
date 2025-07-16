@@ -1,0 +1,308 @@
+[0.000000] (-) TimerEvent: {}
+[0.001848] (articubot_one) JobQueued: {'identifier': 'articubot_one', 'dependencies': OrderedDict()}
+[0.019752] (manual_drive) JobQueued: {'identifier': 'manual_drive', 'dependencies': OrderedDict()}
+[0.024905] (articubot_one) JobStarted: {'identifier': 'articubot_one'}
+[0.079218] (-) TimerEvent: {}
+[0.087023] (manual_drive) JobStarted: {'identifier': 'manual_drive'}
+[0.183603] (-) TimerEvent: {}
+[0.203036] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'cmake'}
+[0.222492] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'build'}
+[0.231794] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/rob/ros2_ws/build/articubot_one', '--', '-j4', '-l4'], 'cwd': '/home/rob/ros2_ws/build/articubot_one', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('MAIL', '/var/mail/rob'), ('USER', 'rob'), ('XDG_SEAT', 'seat0'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '2'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('HUSHLOGIN', 'FALSE'), ('SYSTEMD_EXEC_PID', '882'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('LOGNAME', 'rob'), ('JOURNAL_STREAM', '8:21368'), ('_', '/usr/local/bin/colcon'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '1'), ('WINDOWPATH', '1'), ('PATH', '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('INVOCATION_ID', '565e4f07b52340b68aedd1e2b2a40b25'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'C.UTF-8'), ('XAUTHORITY', '/home/rob/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:301c43cd-344d-44ce-b183-7b7b966e7c4f'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_VTNR', '1'), ('PWD', '/home/rob/ros2_ws/build/articubot_one'), ('TURTLEBOT3_MODEL', 'burger'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('COLCON', '1'), ('VTE_VERSION', '6800')]), 'shell': False}
+[0.295463] (-) TimerEvent: {}
+[0.396446] (-) TimerEvent: {}
+[0.497796] (-) TimerEvent: {}
+[0.601424] (-) TimerEvent: {}
+[0.702409] (-) TimerEvent: {}
+[0.807131] (-) TimerEvent: {}
+[0.908159] (-) TimerEvent: {}
+[1.009487] (-) TimerEvent: {}
+[1.110470] (-) TimerEvent: {}
+[1.211443] (-) TimerEvent: {}
+[1.312565] (-) TimerEvent: {}
+[1.414049] (-) TimerEvent: {}
+[1.515147] (-) TimerEvent: {}
+[1.616110] (-) TimerEvent: {}
+[1.717541] (-) TimerEvent: {}
+[1.818801] (-) TimerEvent: {}
+[1.920023] (-) TimerEvent: {}
+[2.021287] (-) TimerEvent: {}
+[2.122574] (-) TimerEvent: {}
+[2.223649] (-) TimerEvent: {}
+[2.325194] (-) TimerEvent: {}
+[2.426675] (-) TimerEvent: {}
+[2.527629] (-) TimerEvent: {}
+[2.628542] (-) TimerEvent: {}
+[2.729488] (-) TimerEvent: {}
+[2.831603] (-) TimerEvent: {}
+[2.933328] (-) TimerEvent: {}
+[3.034299] (-) TimerEvent: {}
+[3.136785] (-) TimerEvent: {}
+[3.237764] (-) TimerEvent: {}
+[3.338676] (-) TimerEvent: {}
+[3.439494] (-) TimerEvent: {}
+[3.543088] (-) TimerEvent: {}
+[3.646385] (-) TimerEvent: {}
+[3.747608] (-) TimerEvent: {}
+[3.858260] (-) TimerEvent: {}
+[3.966755] (-) TimerEvent: {}
+[4.067896] (-) TimerEvent: {}
+[4.172761] (-) TimerEvent: {}
+[4.274792] (-) TimerEvent: {}
+[4.376696] (-) TimerEvent: {}
+[4.477723] (-) TimerEvent: {}
+[4.579007] (-) TimerEvent: {}
+[4.684534] (-) TimerEvent: {}
+[4.788883] (-) TimerEvent: {}
+[4.889886] (-) TimerEvent: {}
+[4.991061] (-) TimerEvent: {}
+[5.094439] (-) TimerEvent: {}
+[5.196836] (-) TimerEvent: {}
+[5.299306] (-) TimerEvent: {}
+[5.400231] (-) TimerEvent: {}
+[5.501199] (-) TimerEvent: {}
+[5.602142] (-) TimerEvent: {}
+[5.704297] (-) TimerEvent: {}
+[5.805376] (-) TimerEvent: {}
+[5.907489] (-) TimerEvent: {}
+[6.009636] (-) TimerEvent: {}
+[6.112700] (-) TimerEvent: {}
+[6.217773] (-) TimerEvent: {}
+[6.318691] (-) TimerEvent: {}
+[6.419750] (-) TimerEvent: {}
+[6.525083] (-) TimerEvent: {}
+[6.628320] (-) TimerEvent: {}
+[6.730995] (-) TimerEvent: {}
+[6.833050] (-) TimerEvent: {}
+[6.936717] (articubot_one) CommandEnded: {'returncode': 0}
+[6.940821] (-) TimerEvent: {}
+[6.947936] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'install'}
+[7.041015] (-) TimerEvent: {}
+[7.145020] (-) TimerEvent: {}
+[7.165455] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/rob/ros2_ws/build/articubot_one'], 'cwd': '/home/rob/ros2_ws/build/articubot_one', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('MAIL', '/var/mail/rob'), ('USER', 'rob'), ('XDG_SEAT', 'seat0'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '2'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('HUSHLOGIN', 'FALSE'), ('SYSTEMD_EXEC_PID', '882'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('LOGNAME', 'rob'), ('JOURNAL_STREAM', '8:21368'), ('_', '/usr/local/bin/colcon'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '1'), ('WINDOWPATH', '1'), ('PATH', '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('INVOCATION_ID', '565e4f07b52340b68aedd1e2b2a40b25'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'C.UTF-8'), ('XAUTHORITY', '/home/rob/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:301c43cd-344d-44ce-b183-7b7b966e7c4f'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_VTNR', '1'), ('PWD', '/home/rob/ros2_ws/build/articubot_one'), ('TURTLEBOT3_MODEL', 'burger'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('COLCON', '1'), ('VTE_VERSION', '6800')]), 'shell': False}
+[7.251075] (-) TimerEvent: {}
+[7.356944] (-) TimerEvent: {}
+[7.368116] (articubot_one) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[7.373984] (articubot_one) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[7.398287] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/cmdvel_hover.py\n'}
+[7.400789] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/odom_publisher.py\n'}
+[7.401616] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/ultrasonic_sensor_node.py\n'}
+[7.422471] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/empty.yaml\n'}
+[7.425503] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/gazebo_params.yaml\n'}
+[7.426234] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/joystick.yaml\n'}
+[7.427012] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/main.rviz\n'}
+[7.430615] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/map.rviz\n'}
+[7.452905] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/map_params.yaml\n'}
+[7.455514] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/mapper_params_online_async.yaml\n'}
+[7.457715] (-) TimerEvent: {}
+[7.469422] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/my_controllers.yaml\n'}
+[7.472310] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/nav2_params.yaml\n'}
+[7.473299] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/twist_mux.yaml\n'}
+[7.489437] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/view_bot.rviz\n'}
+[7.500851] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/ylmz.rviz\n'}
+[7.501647] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/gazebo_control.xacro\n'}
+[7.521071] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/inertial_macros.xacro\n'}
+[7.521929] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/lidar.xacro\n'}
+[7.522724] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/robot.urdf.xacro\n'}
+[7.529635] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/robot_core.xacro\n'}
+[7.530607] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/ros2_control.xacro\n'}
+[7.535004] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/baslat.launch.py\n'}
+[7.553007] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/cmdvel_hover_launch.py\n'}
+[7.557964] (-) TimerEvent: {}
+[7.560210] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/localization_launch.py\n'}
+[7.573530] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/map_launch.py\n'}
+[7.580136] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/navigation_launch.py\n'}
+[7.594072] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/online_async_launch.py\n'}
+[7.601568] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rplidar.launch.py\n'}
+[7.603207] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rsp.launch.py\n'}
+[7.617748] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rviz_launch.py\n'}
+[7.625715] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/slam_launch.py\n'}
+[7.636086] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/ultrasonic_launch.py\n'}
+[7.656523] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/worlds/empty.world\n'}
+[7.658269] (-) TimerEvent: {}
+[7.660556] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/worlds/obstacles.world\n'}
+[7.689926] (articubot_one) CommandEnded: {'returncode': 0}
+[7.763051] (-) TimerEvent: {}
+[7.865322] (-) TimerEvent: {}
+[7.974457] (-) TimerEvent: {}
+[8.077131] (-) TimerEvent: {}
+[8.179668] (-) TimerEvent: {}
+[8.281963] (-) TimerEvent: {}
+[8.355585] (articubot_one) JobEnded: {'identifier': 'articubot_one', 'rc': 0}
+[8.382177] (-) TimerEvent: {}
+[8.484491] (-) TimerEvent: {}
+[8.588314] (-) TimerEvent: {}
+[8.689256] (-) TimerEvent: {}
+[8.790237] (-) TimerEvent: {}
+[8.892613] (-) TimerEvent: {}
+[8.993779] (-) TimerEvent: {}
+[9.094865] (-) TimerEvent: {}
+[9.197305] (-) TimerEvent: {}
+[9.298291] (-) TimerEvent: {}
+[9.401085] (-) TimerEvent: {}
+[9.502059] (-) TimerEvent: {}
+[9.602918] (-) TimerEvent: {}
+[9.703816] (-) TimerEvent: {}
+[9.804905] (-) TimerEvent: {}
+[9.906929] (-) TimerEvent: {}
+[10.007899] (-) TimerEvent: {}
+[10.108791] (-) TimerEvent: {}
+[10.209631] (-) TimerEvent: {}
+[10.310568] (-) TimerEvent: {}
+[10.411964] (-) TimerEvent: {}
+[10.513349] (-) TimerEvent: {}
+[10.616537] (-) TimerEvent: {}
+[10.728017] (-) TimerEvent: {}
+[10.840520] (-) TimerEvent: {}
+[10.941927] (-) TimerEvent: {}
+[11.045623] (-) TimerEvent: {}
+[11.149043] (-) TimerEvent: {}
+[11.261886] (-) TimerEvent: {}
+[11.364167] (-) TimerEvent: {}
+[11.467067] (-) TimerEvent: {}
+[11.569851] (-) TimerEvent: {}
+[11.672460] (-) TimerEvent: {}
+[11.775792] (-) TimerEvent: {}
+[11.878968] (-) TimerEvent: {}
+[11.982129] (-) TimerEvent: {}
+[12.084798] (-) TimerEvent: {}
+[12.189790] (-) TimerEvent: {}
+[12.296130] (-) TimerEvent: {}
+[12.399026] (-) TimerEvent: {}
+[12.502131] (-) TimerEvent: {}
+[12.605713] (-) TimerEvent: {}
+[12.708812] (-) TimerEvent: {}
+[12.811345] (-) TimerEvent: {}
+[12.915488] (-) TimerEvent: {}
+[13.019410] (-) TimerEvent: {}
+[13.122619] (-) TimerEvent: {}
+[13.226053] (-) TimerEvent: {}
+[13.330614] (-) TimerEvent: {}
+[13.433451] (-) TimerEvent: {}
+[13.541033] (-) TimerEvent: {}
+[13.643053] (-) TimerEvent: {}
+[13.746296] (-) TimerEvent: {}
+[13.851612] (-) TimerEvent: {}
+[13.957930] (-) TimerEvent: {}
+[14.061731] (-) TimerEvent: {}
+[14.166085] (-) TimerEvent: {}
+[14.268739] (-) TimerEvent: {}
+[14.371313] (-) TimerEvent: {}
+[14.474264] (-) TimerEvent: {}
+[14.578021] (-) TimerEvent: {}
+[14.680964] (-) TimerEvent: {}
+[14.784304] (-) TimerEvent: {}
+[14.886516] (-) TimerEvent: {}
+[14.992147] (-) TimerEvent: {}
+[15.095213] (-) TimerEvent: {}
+[15.200993] (-) TimerEvent: {}
+[15.305898] (-) TimerEvent: {}
+[15.409877] (-) TimerEvent: {}
+[15.513737] (-) TimerEvent: {}
+[15.616867] (-) TimerEvent: {}
+[15.722955] (-) TimerEvent: {}
+[15.827389] (-) TimerEvent: {}
+[15.929909] (-) TimerEvent: {}
+[16.050361] (-) TimerEvent: {}
+[16.152906] (-) TimerEvent: {}
+[16.254917] (-) TimerEvent: {}
+[16.357740] (-) TimerEvent: {}
+[16.461382] (-) TimerEvent: {}
+[16.563843] (-) TimerEvent: {}
+[16.666508] (-) TimerEvent: {}
+[16.768904] (-) TimerEvent: {}
+[16.871656] (-) TimerEvent: {}
+[16.974187] (-) TimerEvent: {}
+[17.076091] (-) TimerEvent: {}
+[17.119014] (manual_drive) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/manual_drive', 'build', '--build-base', '/home/rob/ros2_ws/build/manual_drive/build', 'install', '--record', '/home/rob/ros2_ws/build/manual_drive/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/rob/ros2_ws/src/manual_drive', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'MAIL': '/var/mail/rob', 'USER': 'rob', 'XDG_SEAT': 'seat0', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '2', 'MOTD_SHOWN': 'pam', 'HOME': '/home/rob', 'HUSHLOGIN': 'FALSE', 'SYSTEMD_EXEC_PID': '882', 'COLORTERM': 'truecolor', 'TERMINATOR_DBUS_NAME': 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873', 'LOGNAME': 'rob', 'JOURNAL_STREAM': '8:21368', '_': '/usr/local/bin/colcon', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '1', 'WINDOWPATH': '1', 'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'INVOCATION_ID': '565e4f07b52340b68aedd1e2b2a40b25', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'TERMINATOR_DBUS_PATH': '/net/tenshu/Terminator2', 'LANG': 'C.UTF-8', 'XAUTHORITY': '/home/rob/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'SHELL': '/bin/bash', 'TERMINATOR_UUID': 'urn:uuid:301c43cd-344d-44ce-b183-7b7b966e7c4f', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'XDG_VTNR': '1', 'PWD': '/home/rob/ros2_ws/build/manual_drive', 'TURTLEBOT3_MODEL': 'burger', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'COLCON': '1', 'VTE_VERSION': '6800', 'PYTHONPATH': '/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:'}, 'shell': False}
+[17.176948] (-) TimerEvent: {}
+[17.283128] (-) TimerEvent: {}
+[17.389367] (-) TimerEvent: {}
+[17.493140] (-) TimerEvent: {}
+[17.598561] (-) TimerEvent: {}
+[17.701695] (-) TimerEvent: {}
+[17.808544] (-) TimerEvent: {}
+[17.911741] (-) TimerEvent: {}
+[18.015252] (-) TimerEvent: {}
+[18.118345] (-) TimerEvent: {}
+[18.221647] (-) TimerEvent: {}
+[18.322601] (-) TimerEvent: {}
+[18.423638] (-) TimerEvent: {}
+[18.525910] (-) TimerEvent: {}
+[18.627301] (-) TimerEvent: {}
+[18.728370] (-) TimerEvent: {}
+[18.829464] (-) TimerEvent: {}
+[18.930344] (-) TimerEvent: {}
+[19.031810] (-) TimerEvent: {}
+[19.134561] (-) TimerEvent: {}
+[19.237322] (-) TimerEvent: {}
+[19.339686] (-) TimerEvent: {}
+[19.441481] (-) TimerEvent: {}
+[19.542851] (-) TimerEvent: {}
+[19.646273] (-) TimerEvent: {}
+[19.749064] (-) TimerEvent: {}
+[19.849975] (-) TimerEvent: {}
+[19.953566] (-) TimerEvent: {}
+[20.056527] (-) TimerEvent: {}
+[20.157624] (-) TimerEvent: {}
+[20.265149] (-) TimerEvent: {}
+[20.366148] (-) TimerEvent: {}
+[20.467842] (-) TimerEvent: {}
+[20.568729] (-) TimerEvent: {}
+[20.669610] (-) TimerEvent: {}
+[20.770641] (-) TimerEvent: {}
+[20.872642] (-) TimerEvent: {}
+[20.973605] (-) TimerEvent: {}
+[21.080466] (-) TimerEvent: {}
+[21.182467] (-) TimerEvent: {}
+[21.286858] (-) TimerEvent: {}
+[21.390023] (-) TimerEvent: {}
+[21.496799] (-) TimerEvent: {}
+[21.597663] (-) TimerEvent: {}
+[21.699146] (-) TimerEvent: {}
+[21.799941] (-) TimerEvent: {}
+[21.900842] (-) TimerEvent: {}
+[22.001733] (-) TimerEvent: {}
+[22.102797] (-) TimerEvent: {}
+[22.203826] (-) TimerEvent: {}
+[22.320554] (-) TimerEvent: {}
+[22.428913] (-) TimerEvent: {}
+[22.532931] (-) TimerEvent: {}
+[22.634873] (-) TimerEvent: {}
+[22.736766] (-) TimerEvent: {}
+[22.839550] (-) TimerEvent: {}
+[22.942172] (-) TimerEvent: {}
+[23.043108] (-) TimerEvent: {}
+[23.144022] (-) TimerEvent: {}
+[23.194584] (manual_drive) StdoutLine: {'line': b'running egg_info\n'}
+[23.213407] (manual_drive) StdoutLine: {'line': b'writing ../../build/manual_drive/manual_drive.egg-info/PKG-INFO\n'}
+[23.219673] (manual_drive) StdoutLine: {'line': b'writing dependency_links to ../../build/manual_drive/manual_drive.egg-info/dependency_links.txt\n'}
+[23.220590] (manual_drive) StdoutLine: {'line': b'writing entry points to ../../build/manual_drive/manual_drive.egg-info/entry_points.txt\n'}
+[23.222128] (manual_drive) StdoutLine: {'line': b'writing requirements to ../../build/manual_drive/manual_drive.egg-info/requires.txt\n'}
+[23.224928] (manual_drive) StdoutLine: {'line': b'writing top-level names to ../../build/manual_drive/manual_drive.egg-info/top_level.txt\n'}
+[23.237528] (manual_drive) StdoutLine: {'line': b"reading manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'\n"}
+[23.258546] (manual_drive) StdoutLine: {'line': b"writing manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'\n"}
+[23.259431] (-) TimerEvent: {}
+[23.259998] (manual_drive) StdoutLine: {'line': b'running build\n'}
+[23.260812] (manual_drive) StdoutLine: {'line': b'running build_py\n'}
+[23.262368] (manual_drive) StdoutLine: {'line': b'running install\n'}
+[23.262994] (manual_drive) StdoutLine: {'line': b'running install_lib\n'}
+[23.297196] (manual_drive) StdoutLine: {'line': b'running install_data\n'}
+[23.298171] (manual_drive) StdoutLine: {'line': b'running install_egg_info\n'}
+[23.298825] (manual_drive) StdoutLine: {'line': b"removing '/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[23.299450] (manual_drive) StdoutLine: {'line': b'Copying ../../build/manual_drive/manual_drive.egg-info to /home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info\n'}
+[23.311469] (manual_drive) StdoutLine: {'line': b'running install_scripts\n'}
+[23.359917] (-) TimerEvent: {}
+[23.461285] (-) TimerEvent: {}
+[23.562403] (-) TimerEvent: {}
+[23.632751] (manual_drive) StdoutLine: {'line': b'Installing hoverboard_controller script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive\n'}
+[23.638090] (manual_drive) StdoutLine: {'line': b'Installing manual_drive_node script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive\n'}
+[23.643274] (manual_drive) StdoutLine: {'line': b"writing list of installed files to '/home/rob/ros2_ws/build/manual_drive/install.log'\n"}
+[23.670055] (-) TimerEvent: {}
+[23.777378] (-) TimerEvent: {}
+[23.879417] (-) TimerEvent: {}
+[23.984727] (-) TimerEvent: {}
+[24.031018] (manual_drive) CommandEnded: {'returncode': 0}
+[24.084907] (-) TimerEvent: {}
+[24.193923] (-) TimerEvent: {}
+[24.278369] (manual_drive) JobEnded: {'identifier': 'manual_drive', 'rc': 0}
+[24.287282] (-) EventReactorShutdown: {}

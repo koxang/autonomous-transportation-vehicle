@@ -1,0 +1,139 @@
+[0.000000] (-) TimerEvent: {}
+[0.002621] (articubot_one) JobQueued: {'identifier': 'articubot_one', 'dependencies': OrderedDict()}
+[0.003367] (manual_drive) JobQueued: {'identifier': 'manual_drive', 'dependencies': OrderedDict()}
+[0.004158] (articubot_one) JobStarted: {'identifier': 'articubot_one'}
+[0.056257] (manual_drive) JobStarted: {'identifier': 'manual_drive'}
+[0.098761] (-) TimerEvent: {}
+[0.120209] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'cmake'}
+[0.125474] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'build'}
+[0.128269] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/rob/ros2_ws/build/articubot_one', '--', '-j4', '-l4'], 'cwd': '/home/rob/ros2_ws/build/articubot_one', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('MAIL', '/var/mail/rob'), ('USER', 'rob'), ('XDG_SEAT', 'seat0'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs/lib:/home/rob/ros2_ws/install/nav2_voxel_grid/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('OLDPWD', '/home/rob'), ('HUSHLOGIN', 'FALSE'), ('ROS_PYTHON_VERSION', '3'), ('SYSTEMD_EXEC_PID', '891'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('COLCON_PREFIX_PATH', '/home/rob/ros2_ws/install:/home/rob/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rob'), ('JOURNAL_STREAM', '8:22740'), ('_', '/usr/local/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('INVOCATION_ID', '7a2b123b747d41f991b49bdf3728d2ae'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'C.UTF-8'), ('XAUTHORITY', '/home/rob/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/manual_drive:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:b8f71cee-83d1-4297-b3b9-b77f6c79263e'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_VTNR', '1'), ('PWD', '/home/rob/ros2_ws/build/articubot_one'), ('TURTLEBOT3_MODEL', 'burger'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rob/ros2_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/nav2_common/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:/home/rob/turtlebot3_ws/build/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble')]), 'shell': False}
+[0.198987] (-) TimerEvent: {}
+[0.300024] (-) TimerEvent: {}
+[0.401292] (-) TimerEvent: {}
+[0.502664] (-) TimerEvent: {}
+[0.603676] (-) TimerEvent: {}
+[0.704698] (-) TimerEvent: {}
+[0.805611] (-) TimerEvent: {}
+[0.906448] (-) TimerEvent: {}
+[1.007390] (-) TimerEvent: {}
+[1.108465] (-) TimerEvent: {}
+[1.209349] (-) TimerEvent: {}
+[1.310040] (-) TimerEvent: {}
+[1.410838] (-) TimerEvent: {}
+[1.511547] (-) TimerEvent: {}
+[1.612464] (-) TimerEvent: {}
+[1.714045] (-) TimerEvent: {}
+[1.746921] (articubot_one) CommandEnded: {'returncode': 0}
+[1.750076] (articubot_one) JobProgress: {'identifier': 'articubot_one', 'progress': 'install'}
+[1.784085] (articubot_one) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/rob/ros2_ws/build/articubot_one'], 'cwd': '/home/rob/ros2_ws/build/articubot_one', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('MAIL', '/var/mail/rob'), ('USER', 'rob'), ('XDG_SEAT', 'seat0'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs/lib:/home/rob/ros2_ws/install/nav2_voxel_grid/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/rob'), ('OLDPWD', '/home/rob'), ('HUSHLOGIN', 'FALSE'), ('ROS_PYTHON_VERSION', '3'), ('SYSTEMD_EXEC_PID', '891'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873'), ('COLCON_PREFIX_PATH', '/home/rob/ros2_ws/install:/home/rob/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rob'), ('JOURNAL_STREAM', '8:22740'), ('_', '/usr/local/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('INVOCATION_ID', '7a2b123b747d41f991b49bdf3728d2ae'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'C.UTF-8'), ('XAUTHORITY', '/home/rob/.Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/manual_drive:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('TERMINATOR_UUID', 'urn:uuid:b8f71cee-83d1-4297-b3b9-b77f6c79263e'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_VTNR', '1'), ('PWD', '/home/rob/ros2_ws/build/articubot_one'), ('TURTLEBOT3_MODEL', 'burger'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rob/ros2_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/nav2_common/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:/home/rob/turtlebot3_ws/build/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/home/rob/ros2_ws/install/manual_drive:/home/rob/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble')]), 'shell': False}
+[1.814292] (-) TimerEvent: {}
+[1.821958] (articubot_one) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[1.823574] (articubot_one) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[1.824977] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/cmdvel_hover.py\n'}
+[1.827029] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/odom_publisher.py\n'}
+[1.827940] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/lib/articubot_one/ultrasonic_sensor_node.py\n'}
+[1.830308] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/ball_tracker_params_robot.yaml\n'}
+[1.831257] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/ball_tracker_params_sim.yaml\n'}
+[1.832021] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/drive_bot.rviz\n'}
+[1.832788] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/empty.yaml\n'}
+[1.833594] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/gaz_ros2_ctl_use_sim.yaml\n'}
+[1.834318] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/gazebo_params.yaml\n'}
+[1.835101] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/joystick.yaml\n'}
+[1.835900] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/main.rviz\n'}
+[1.836648] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/map.rviz\n'}
+[1.837581] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/map_params.yaml\n'}
+[1.838204] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/mapper_params_online_async.yaml\n'}
+[1.838906] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/my_controllers.yaml\n'}
+[1.839659] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/nav2_params.yaml\n'}
+[1.840485] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/twist_mux.yaml\n'}
+[1.841607] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/view_bot.rviz\n'}
+[1.855891] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/config/ylmz.rviz\n'}
+[1.857711] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/camera.xacro\n'}
+[1.858797] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/depth_camera.xacro\n'}
+[1.859493] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/face.xacro\n'}
+[1.860218] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/gazebo_control.xacro\n'}
+[1.861250] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/inertial_macros.xacro\n'}
+[1.861931] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/lidar.xacro\n'}
+[1.862707] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/robot.urdf.xacro\n'}
+[1.863452] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/robot_core.xacro\n'}
+[1.864186] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/description/ros2_control.xacro\n'}
+[1.864864] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/ball_tracker.launch.py\n'}
+[1.865838] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/baslat.launch.py\n'}
+[1.866750] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/camera.launch.py\n'}
+[1.867522] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/cmdvel_hover_launch.py\n'}
+[1.868257] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/joystick.launch.py\n'}
+[1.869224] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/launch_robot.launch.py\n'}
+[1.869733] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/launch_sim.launch.py\n'}
+[1.870749] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/localization_launch.py\n'}
+[1.871572] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/navigation_launch.py\n'}
+[1.872329] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/online_async_launch.py\n'}
+[1.873792] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rplidar.launch.py\n'}
+[1.874665] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rsp.launch.py\n'}
+[1.875819] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/rviz_launch.py\n'}
+[1.878513] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/slam_launch.py\n'}
+[1.879883] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/launch/ultrasonic_launch.py\n'}
+[1.880904] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/worlds/empty.world\n'}
+[1.883053] (articubot_one) StdoutLine: {'line': b'-- Up-to-date symlink: /home/rob/ros2_ws/install/articubot_one/share/articubot_one/worlds/obstacles.world\n'}
+[1.884261] (articubot_one) CommandEnded: {'returncode': 0}
+[1.914924] (-) TimerEvent: {}
+[1.984296] (articubot_one) JobEnded: {'identifier': 'articubot_one', 'rc': 0}
+[2.015126] (-) TimerEvent: {}
+[2.116561] (-) TimerEvent: {}
+[2.217393] (-) TimerEvent: {}
+[2.318171] (-) TimerEvent: {}
+[2.418839] (-) TimerEvent: {}
+[2.519527] (-) TimerEvent: {}
+[2.620197] (-) TimerEvent: {}
+[2.720911] (-) TimerEvent: {}
+[2.821593] (-) TimerEvent: {}
+[2.922384] (-) TimerEvent: {}
+[3.023262] (-) TimerEvent: {}
+[3.124031] (-) TimerEvent: {}
+[3.224871] (-) TimerEvent: {}
+[3.326379] (-) TimerEvent: {}
+[3.427535] (-) TimerEvent: {}
+[3.529106] (-) TimerEvent: {}
+[3.631418] (-) TimerEvent: {}
+[3.711176] (manual_drive) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/manual_drive', 'build', '--build-base', '/home/rob/ros2_ws/build/manual_drive/build', 'install', '--record', '/home/rob/ros2_ws/build/manual_drive/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/rob/ros2_ws/src/manual_drive', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'MAIL': '/var/mail/rob', 'USER': 'rob', 'XDG_SEAT': 'seat0', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/home/rob/ros2_ws/install/nav_2d_msgs/lib:/home/rob/ros2_ws/install/nav2_voxel_grid/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'MOTD_SHOWN': 'pam', 'HOME': '/home/rob', 'OLDPWD': '/home/rob', 'HUSHLOGIN': 'FALSE', 'ROS_PYTHON_VERSION': '3', 'SYSTEMD_EXEC_PID': '891', 'COLORTERM': 'truecolor', 'TERMINATOR_DBUS_NAME': 'net.tenshu.Terminator21a9d5db22c73a993ff0b42f64b396873', 'COLCON_PREFIX_PATH': '/home/rob/ros2_ws/install:/home/rob/turtlebot3_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'rob', 'JOURNAL_STREAM': '8:22740', '_': '/usr/local/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '1', 'ROS_LOCALHOST_ONLY': '0', 'WINDOWPATH': '1', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'INVOCATION_ID': '7a2b123b747d41f991b49bdf3728d2ae', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'TERMINATOR_DBUS_PATH': '/net/tenshu/Terminator2', 'LANG': 'C.UTF-8', 'XAUTHORITY': '/home/rob/.Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '30', 'AMENT_PREFIX_PATH': '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/manual_drive:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer:/opt/ros/humble', 'SHELL': '/bin/bash', 'TERMINATOR_UUID': 'urn:uuid:b8f71cee-83d1-4297-b3b9-b77f6c79263e', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'XDG_VTNR': '1', 'PWD': '/home/rob/ros2_ws/build/manual_drive', 'TURTLEBOT3_MODEL': 'burger', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:/home/rob/ros2_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/nav2_common/local/lib/python3.10/dist-packages:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:/home/rob/turtlebot3_ws/build/turtlebot3_example:/home/rob/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'VTE_VERSION': '6800', 'CMAKE_PREFIX_PATH': '/home/rob/ros2_ws/install/nav_2d_msgs:/home/rob/ros2_ws/install/nav2_voxel_grid:/home/rob/ros2_ws/install/nav2_common:/home/rob/ros2_ws/install/articubot_one:/home/rob/turtlebot3_ws/install/turtlebot3_node:/home/rob/turtlebot3_ws/install/turtlebot3_description:/home/rob/turtlebot3_ws/install/turtlebot3_cartographer'}, 'shell': False}
+[3.731595] (-) TimerEvent: {}
+[3.832947] (-) TimerEvent: {}
+[3.933647] (-) TimerEvent: {}
+[4.034353] (-) TimerEvent: {}
+[4.135021] (-) TimerEvent: {}
+[4.235783] (-) TimerEvent: {}
+[4.336449] (-) TimerEvent: {}
+[4.437190] (-) TimerEvent: {}
+[4.537962] (-) TimerEvent: {}
+[4.638632] (-) TimerEvent: {}
+[4.739336] (-) TimerEvent: {}
+[4.840063] (-) TimerEvent: {}
+[4.940857] (-) TimerEvent: {}
+[4.954468] (manual_drive) StdoutLine: {'line': b'running egg_info\n'}
+[4.957635] (manual_drive) StdoutLine: {'line': b'writing ../../build/manual_drive/manual_drive.egg-info/PKG-INFO\n'}
+[4.958826] (manual_drive) StdoutLine: {'line': b'writing dependency_links to ../../build/manual_drive/manual_drive.egg-info/dependency_links.txt\n'}
+[4.959907] (manual_drive) StdoutLine: {'line': b'writing entry points to ../../build/manual_drive/manual_drive.egg-info/entry_points.txt\n'}
+[4.960909] (manual_drive) StdoutLine: {'line': b'writing requirements to ../../build/manual_drive/manual_drive.egg-info/requires.txt\n'}
+[4.961665] (manual_drive) StdoutLine: {'line': b'writing top-level names to ../../build/manual_drive/manual_drive.egg-info/top_level.txt\n'}
+[4.971517] (manual_drive) StdoutLine: {'line': b"reading manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'\n"}
+[4.975766] (manual_drive) StdoutLine: {'line': b"writing manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'\n"}
+[4.979619] (manual_drive) StdoutLine: {'line': b'running build\n'}
+[4.980131] (manual_drive) StdoutLine: {'line': b'running build_py\n'}
+[4.981065] (manual_drive) StdoutLine: {'line': b'copying manual_drive/manual_drive_node.py -> /home/rob/ros2_ws/build/manual_drive/build/lib/manual_drive\n'}
+[4.982095] (manual_drive) StdoutLine: {'line': b'running install\n'}
+[4.983393] (manual_drive) StdoutLine: {'line': b'running install_lib\n'}
+[4.987523] (manual_drive) StdoutLine: {'line': b'copying /home/rob/ros2_ws/build/manual_drive/build/lib/manual_drive/manual_drive_node.py -> /home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive\n'}
+[4.991430] (manual_drive) StdoutLine: {'line': b'byte-compiling /home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive/manual_drive_node.py to manual_drive_node.cpython-310.pyc\n'}
+[4.995948] (manual_drive) StdoutLine: {'line': b'running install_data\n'}
+[4.996634] (manual_drive) StdoutLine: {'line': b'running install_egg_info\n'}
+[5.003857] (manual_drive) StdoutLine: {'line': b"removing '/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[5.005802] (manual_drive) StdoutLine: {'line': b'Copying ../../build/manual_drive/manual_drive.egg-info to /home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info\n'}
+[5.011847] (manual_drive) StdoutLine: {'line': b'running install_scripts\n'}
+[5.041001] (-) TimerEvent: {}
+[5.099269] (manual_drive) StdoutLine: {'line': b'Installing hoverboard_controller script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive\n'}
+[5.100454] (manual_drive) StdoutLine: {'line': b'Installing manual_drive_node script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive\n'}
+[5.102331] (manual_drive) StdoutLine: {'line': b"writing list of installed files to '/home/rob/ros2_ws/build/manual_drive/install.log'\n"}
+[5.141240] (-) TimerEvent: {}
+[5.233597] (manual_drive) CommandEnded: {'returncode': 0}
+[5.241464] (-) TimerEvent: {}
+[5.267309] (manual_drive) JobEnded: {'identifier': 'manual_drive', 'rc': 0}
+[5.273013] (-) EventReactorShutdown: {}

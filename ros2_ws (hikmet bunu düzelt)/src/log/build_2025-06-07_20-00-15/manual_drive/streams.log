@@ -1,0 +1,41 @@
+[3.988s] Invoking command in '/home/rob/ros2_ws/src/manual_drive': PYTHONPATH=/home/rob/ros2_ws/src/build/manual_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/manual_drive build --build-base /home/rob/ros2_ws/src/build/manual_drive/build install --record /home/rob/ros2_ws/src/build/manual_drive/install.log --single-version-externally-managed install_data
+[5.420s] running egg_info
+[5.427s] creating ../build/manual_drive/manual_drive.egg-info
+[5.428s] writing ../build/manual_drive/manual_drive.egg-info/PKG-INFO
+[5.429s] writing dependency_links to ../build/manual_drive/manual_drive.egg-info/dependency_links.txt
+[5.429s] writing entry points to ../build/manual_drive/manual_drive.egg-info/entry_points.txt
+[5.430s] writing requirements to ../build/manual_drive/manual_drive.egg-info/requires.txt
+[5.431s] writing top-level names to ../build/manual_drive/manual_drive.egg-info/top_level.txt
+[5.432s] writing manifest file '../build/manual_drive/manual_drive.egg-info/SOURCES.txt'
+[5.439s] reading manifest file '../build/manual_drive/manual_drive.egg-info/SOURCES.txt'
+[5.442s] writing manifest file '../build/manual_drive/manual_drive.egg-info/SOURCES.txt'
+[5.443s] running build
+[5.444s] running build_py
+[5.445s] creating /home/rob/ros2_ws/src/build/manual_drive/build
+[5.446s] creating /home/rob/ros2_ws/src/build/manual_drive/build/lib
+[5.447s] creating /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive
+[5.447s] copying manual_drive/__init__.py -> /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive
+[5.448s] copying manual_drive/hoverboard_controller.py -> /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive
+[5.449s] copying manual_drive/manual_drive_node.py -> /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive
+[5.450s] running install
+[5.450s] running install_lib
+[5.453s] creating /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive
+[5.454s] copying /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive/__init__.py -> /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive
+[5.454s] copying /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive/hoverboard_controller.py -> /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive
+[5.455s] copying /home/rob/ros2_ws/src/build/manual_drive/build/lib/manual_drive/manual_drive_node.py -> /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive
+[5.458s] byte-compiling /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive/__init__.py to __init__.cpython-310.pyc
+[5.460s] byte-compiling /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive/hoverboard_controller.py to hoverboard_controller.cpython-310.pyc
+[5.462s] byte-compiling /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive/manual_drive_node.py to manual_drive_node.cpython-310.pyc
+[5.467s] running install_data
+[5.468s] creating /home/rob/ros2_ws/src/install/manual_drive/share/ament_index
+[5.469s] creating /home/rob/ros2_ws/src/install/manual_drive/share/ament_index/resource_index
+[5.470s] creating /home/rob/ros2_ws/src/install/manual_drive/share/ament_index/resource_index/packages
+[5.470s] copying resource/manual_drive -> /home/rob/ros2_ws/src/install/manual_drive/share/ament_index/resource_index/packages
+[5.471s] copying package.xml -> /home/rob/ros2_ws/src/install/manual_drive/share/manual_drive
+[5.471s] running install_egg_info
+[5.476s] Copying ../build/manual_drive/manual_drive.egg-info to /home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info
+[5.481s] running install_scripts
+[5.558s] Installing hoverboard_controller script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive
+[5.559s] Installing manual_drive_node script to /home/rob/ros2_ws/src/install/manual_drive/lib/manual_drive
+[5.560s] writing list of installed files to '/home/rob/ros2_ws/src/build/manual_drive/install.log'
+[5.681s] Invoked command in '/home/rob/ros2_ws/src/manual_drive' returned '0': PYTHONPATH=/home/rob/ros2_ws/src/build/manual_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/src/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/manual_drive build --build-base /home/rob/ros2_ws/src/build/manual_drive/build install --record /home/rob/ros2_ws/src/build/manual_drive/install.log --single-version-externally-managed install_data

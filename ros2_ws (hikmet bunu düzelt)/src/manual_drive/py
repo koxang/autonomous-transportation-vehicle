@@ -1,0 +1,45 @@
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Int16MultiArray
+import serial
+
+class HoverboardController(Node):
+    def __init__(self):
+        super().__init__('hoverboard_controller')
+        self.subscription = self.create_subscription(
+            Int16MultiArray,
+            'manual_drive_topic',
+            self.listener_callback,
+            10)
+        self.ser = serial.Serial('/dev/serial0', 115200, timeout=0.1)
+        self.get_logger().info("Hoverboard controller started, serial port opened.")
+
+    def listener_callback(self, msg):
+        steer = msg.data[0]
+        speed = msg.data[1]
+        packet = self.build_packet(steer, speed)
+        self.ser.write(packet)
+        self.get_logger().info(f"Sent packet: steer={steer}, speed={speed}")
+
+    def build_packet(self, steer, speed):
+        packet = bytearray()
+        packet.append(0xA5)
+        packet += steer.to_bytes(2, byteorder='little', signed=True)
+        packet += speed.to_bytes(2, byteorder='little', signed=True)
+
+        checksum = 0
+        for b in packet:
+            checksum ^= b
+        packet.append(checksum)
+        return packet
+
+def main(args=None):
+    rclpy.init(args=args)
+    hoverboard_controller = HoverboardController()
+    rclpy.spin(hoverboard_controller)
+    hoverboard_controller.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+

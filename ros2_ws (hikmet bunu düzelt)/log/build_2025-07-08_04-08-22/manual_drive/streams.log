@@ -1,0 +1,22 @@
+[3.717s] Invoking command in '/home/rob/ros2_ws/src/manual_drive': PYTHONPATH=/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/manual_drive build --build-base /home/rob/ros2_ws/build/manual_drive/build install --record /home/rob/ros2_ws/build/manual_drive/install.log --single-version-externally-managed install_data
+[5.015s] running egg_info
+[5.018s] writing ../../build/manual_drive/manual_drive.egg-info/PKG-INFO
+[5.022s] writing dependency_links to ../../build/manual_drive/manual_drive.egg-info/dependency_links.txt
+[5.023s] writing entry points to ../../build/manual_drive/manual_drive.egg-info/entry_points.txt
+[5.023s] writing requirements to ../../build/manual_drive/manual_drive.egg-info/requires.txt
+[5.024s] writing top-level names to ../../build/manual_drive/manual_drive.egg-info/top_level.txt
+[5.035s] reading manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'
+[5.039s] writing manifest file '../../build/manual_drive/manual_drive.egg-info/SOURCES.txt'
+[5.040s] running build
+[5.040s] running build_py
+[5.043s] running install
+[5.045s] running install_lib
+[5.054s] running install_data
+[5.055s] running install_egg_info
+[5.063s] removing '/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info' (and everything under it)
+[5.065s] Copying ../../build/manual_drive/manual_drive.egg-info to /home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages/manual_drive-0.0.0-py3.10.egg-info
+[5.071s] running install_scripts
+[5.156s] Installing hoverboard_controller script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive
+[5.157s] Installing manual_drive_node script to /home/rob/ros2_ws/install/manual_drive/lib/manual_drive
+[5.159s] writing list of installed files to '/home/rob/ros2_ws/build/manual_drive/install.log'
+[5.285s] Invoked command in '/home/rob/ros2_ws/src/manual_drive' returned '0': PYTHONPATH=/home/rob/ros2_ws/build/manual_drive/prefix_override:/home/rob/.local/lib/python3.10/site-packages/colcon_core/task/python/colcon_distutils_commands:/home/rob/ros2_ws/install/manual_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/manual_drive build --build-base /home/rob/ros2_ws/build/manual_drive/build install --record /home/rob/ros2_ws/build/manual_drive/install.log --single-version-externally-managed install_data
