@@ -15,12 +15,15 @@ slam_toolbox:
     base_frame: base_link
     scan_topic: scan
     range_topic: range
-    mode: localization
+    mode: localization #if the map_file_name you given below this section is a map that cannot be serialiazed
+    #or if map name that you given is not true or cannot be found in the directory than slam will start with 
+    #mapping mode anyway and start mapping from begining if you wanna use the localization mode than you should
+    #have a map that serialized before so you can continue your mapping from the position that you finished
 
     # if you'd like to immediately start continuing a map at a given pose
     # or at the dock, but they are mutually exclusive, if pose is given
     # will use pose
-    map_file_name: /home/rob/ros2_ws/kose
+    map_file_name: /home/rob/ros2_ws/maps/okul
     #map_start_pose: [0.0, 0.0, 0.0]
     map_start_at_dock: true
 

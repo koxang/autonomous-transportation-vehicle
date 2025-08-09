@@ -1,3 +1,5 @@
+#this launch file used for launching the essentials for mapping or navigating in Rviz 
+#and if you want to launch files seperately than you have to launch or run (for the nodes) the files one by one
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription
@@ -13,17 +15,17 @@ def generate_launch_description():
     nav2_dir = get_package_share_directory('nav2_bringup')
 
     return LaunchDescription([
-        # RSP başlat
+        # RSP (publishes the robot state)
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(articubot_dir, 'launch', 'rsp.launch.py'))
         ),
 
-        # Lidar başlat
+        # Lidar 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(articubot_dir, 'launch', 'rplidar.launch.py'))
         ),
 
-        # Odometri yayını
+        # Odometry
         Node(
             package='articubot_one',
             executable='odom_publisher.py',
@@ -31,7 +33,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # Hoverboard kontrolü
+        # Hoverboard_controller (this file is to control the hoverboard through the messages that come from mobile application)
         Node(
             package='manual_drive',
             executable='hoverboard_controller',
@@ -39,7 +41,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # cmd_vel dinleyicisi (kullanıyorsan)
+        # cmdvel_hover (this file is used for control the hoverboard through the messages from cmdvel while doing navigation)
         Node(
             package='articubot_one',
             executable='cmdvel_hover.py',
@@ -47,7 +49,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # Manuel sürüş Flask API düğümü
+        # Manuel sürüş Flask API node
         Node(
             package='manual_drive',
             executable='manual_drive_node',
@@ -55,7 +57,7 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # Ultrasonik sensör
+        # Ultrasonic sensor
         Node(
             package='articubot_one',
             executable='ultrasonic_sensor_node.py',

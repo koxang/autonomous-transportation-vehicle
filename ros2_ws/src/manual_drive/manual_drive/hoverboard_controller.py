@@ -27,7 +27,7 @@ class HoverboardController(Node):
         self.tf_broadcaster = TransformBroadcaster(self)
 
         try:
-            self.ser = serial.Serial('/dev/ttyUSB1', 115200, timeout=0.1)
+            self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.1)
             self.get_logger().info("UART bağlantısı kuruldu.")
         except Exception as e:
             self.get_logger().error(f"UART bağlantısı kurulamadı: {e}")
@@ -57,8 +57,8 @@ class HoverboardController(Node):
         twist.angular.z = -float(self.last_steer) / 57.0
         self.cmd_vel_pub.publish(twist)
 
-        self.get_logger().info(f"UART gönderildi: steer={self.last_steer}, speed={self.last_speed}")
-        self.get_logger().info(f"/cmd_vel: linear.x={twist.linear.x:.2f}, angular.z={twist.angular.z:.2f}")
+#        self.get_logger().info(f"UART gönderildi: steer={self.last_steer}, speed={self.last_speed}")
+ #       self.get_logger().info(f"/cmd_vel: linear.x={twist.linear.x:.2f}, angular.z={twist.angular.z:.2f}")
 
     def timer_callback(self):
         # Hızdan odometri hesaplama

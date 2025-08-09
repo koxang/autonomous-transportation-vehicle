@@ -9,7 +9,7 @@ class CmdVelToHover(Node):
         super().__init__('cmdvel_hover')
         self.subscription = self.create_subscription(Twist, '/cmd_vel', self.cmdvel_callback, 10)
         self.publisher = self.create_publisher(Int16MultiArray, 'manual_drive_topic', 10)
-        self.get_logger().info('cmdvel_hover düğümü başlatıldı.')
+#        self.get_logger().info('cmdvel_hover düğümü başlatıldı.')
 
     def cmdvel_callback(self, msg: Twist):
         speed = int(msg.linear.x * 100)         # 0.25 m/s → 25
@@ -17,7 +17,7 @@ class CmdVelToHover(Node):
         out = Int16MultiArray()
         out.data = [steer, speed]
         self.publisher.publish(out)
-        self.get_logger().info(f"Alındı: lin.x={msg.linear.x:.2f}, ang.z={msg.angular.z:.2f} → steer={steer}, speed={speed}")
+ #       self.get_logger().info(f"Alındı: lin.x={msg.linear.x:.2f}, ang.z={msg.angular.z:.2f} → steer={steer}, speed={speed}")
 
 def main(args=None):
     rclpy.init(args=args)

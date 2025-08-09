@@ -68,15 +68,15 @@ def control():
     if isinstance(command, str):
         if command == "forward":
             steer = 0
-            speed = 25
+            speed = 50
         elif command == "backward":
             steer = 0
-            speed = -25
+            speed = -50
         elif command == "left":
-            steer = -25
+            steer = -30
             speed = 0
         elif command == "right":
-            steer = 25
+            steer = 30
             speed = 0
         elif command == "stop":
             steer = 0
@@ -103,7 +103,7 @@ def flask_thread():
 
 # --- Ana Fonksiyon ---
 def main(args=None):
-    print(">>> main() fonksiyonu başlıyor...")
+ #   print(">>> main() fonksiyonu başlıyor...")
     rclpy.init(args=args)
     drive_publisher = DrivePublisher()
 
